@@ -1,4 +1,17 @@
 <KG>
-	<entities />
+	<entities>
+		<entity>
+			<id>0</id>
+			<class_name>&#30693;&#35782;&#39046;&#22495;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#19968;&#32423;</level>
+			<attach>111110</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#26080;</content>
+			<x>405.0</x>
+			<y>197.0</y>
+		</entity>
+	</entities>
 	<relations />
 </KG>

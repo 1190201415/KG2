@@ -65,7 +65,7 @@ class attachment(object):
 
 
 class relationType(object):
-    def __init__(self, class_name='线型1', mask='知识连线', classification='包含关系', head_need='内容方法型节点', tail_need='内容方法型节点'):
+    def __init__(self, class_name='包含关系', mask='知识连线', classification='包含关系', head_need='内容方法型节点', tail_need='内容方法型节点'):
         self.class_name = class_name
         self.mask = mask
         self.classification = classification
@@ -74,7 +74,7 @@ class relationType(object):
 
 
 class relation(object):
-    def __init__(self, name='包含', headnodeid=0, tailnodeid=1, class_name='线型1', mask='知识连线',
+    def __init__(self, name='包含', headnodeid=0, tailnodeid=1, class_name='包含关系', mask='知识连线',
                  classification='包含关系', head_need='内容方法型节点', tail_need='内容方法型节点'):
         self.name = name
         self.headnodeid = headnodeid
@@ -143,6 +143,11 @@ class my_treeview(QTreeView):
                 print(id, i)
                 return i
 
+    def class_nameToflag(self, class_name):
+        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3}
+
+        return dict1[class_name]
+
     def dropEvent(self, e: QtGui.QDropEvent):
         e.acceptProposedAction()
         filePathList = e.mimeData().text()
@@ -179,7 +184,7 @@ class my_treeview(QTreeView):
                     setattr(relation1, j.tag, j.text)
             itemrelation = Link(scene=self.scence, start_item=self.find_item(now_kg_name, int(relation1.headnodeid)),
                                 end_item=self.find_item(now_kg_name, int(relation1.tailnodeid)),
-                                flag=int(relation1.class_name.replace('线型', '')))
+                                flag=self.class_nameToflag(relation1.class_name))
             itemrelation.flagToentity()
             knowledge_graphs_class[now_kg_name]['relations'].append(itemrelation)
         self.scence.update_kg()
@@ -449,6 +454,8 @@ class GraphicView(QGraphicsView):
         text = treeView.model().data(index)
         item_pos = self.mapToScene(event.pos())
         entity = self.nameToentity(name=text, x=item_pos.x(), y=item_pos.y())
+        if entity is None:
+            return
         item = GraphicItemGroup(scene=self.gr_scene, entity=entity, x=item_pos.x(), y=item_pos.y())
         print(item)
         self.gr_scene.add_node(item)
@@ -504,12 +511,12 @@ class GraphicView(QGraphicsView):
                 self.dragging = True
                 self.lastMousePosition = event.pos()
                 self.setCursor(Qt.ClosedHandCursor)  # 修改鼠标图标为闭合手形
+                super().mousePressEvent(event)
                 event.accept()  # 确保事件不会继续传播
         else:
             super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent):
-        print('sad')
         pos = event.pos()
         if self.draw_link_flag != 0 and self.drag_link is not None:
             sc_pos = self.mapToScene(pos)
@@ -612,23 +619,32 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.setPos(x - self.width * 0.5, y - self.height * 0.5)
         self.re_init(entity)
 
+    def boundingRect(self):
+        return self.GraphicItem1.boundingRect()
+
+    def pos(self):
+        pos = super().pos()
+        pos.setX(pos.x()+self.boundingRect().width()*0.5)
+        pos.setY(pos.y()+self.boundingRect().height()*0.5)
+        return pos
+
     def get_class(self, name):
         dict1 = {}
-        dict1['知识领域节点'] = 'KA'
-        dict1['知识单元节点'] = 'KU'
-        dict1['知识点节点'] = 'KP'
-        dict1['知识细节节点'] = 'KD'
+        dict1['知识领域'] = 'KA'
+        dict1['知识单元'] = 'KU'
+        dict1['知识点'] = 'KP'
+        dict1['关键知识细节'] = 'KD'
         if name in dict1.keys():
             self.class_ = dict1[name]
             self.classtype = 1
         else:
-            if name == '视频型节点':
+            if name == '视频':
                 self.class_ = 'VedioClass'
                 pass
-            if name == '测试题型节点':
+            if name == '测试题':
                 self.class_ = 'TestClass'
                 pass
-            if name == '文档型节点':
+            if name == '文档':
                 self.class_ = 'TextClass'
                 pass
             self.classtype = 2
@@ -657,7 +673,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.itemk = myGraphicItemGroup_2(text='K', group=self)
             self.attachment.append('K')
             self.addToGroup(self.itemk)
-            self.itemk.setPos(140 - num * 20, 10)
+            self.itemk.setPos(140 - num * 20, 5)
         if 'K' in self.attachment and not self.attach.K:
             self.removeFromGroup(self.itemk)
             self.scene.removeItem(self.itemk)
@@ -668,7 +684,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.itemT = myGraphicItemGroup_2(text='T', group=self)
             self.attachment.append('T')
             self.addToGroup(self.itemT)
-            self.itemT.setPos(140 - num * 20, 10)
+            self.itemT.setPos(140 - num * 20, 5)
         if 'T' in self.attachment and not self.attach.T:
             self.removeFromGroup(self.itemT)
             self.scene.removeItem(self.itemT)
@@ -679,7 +695,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.itemZ = myGraphicItemGroup_2(text='Z', group=self)
             self.attachment.append('Z')
             self.addToGroup(self.itemZ)
-            self.itemZ.setPos(140 - num * 20, 10)
+            self.itemZ.setPos(140 - num * 20, 5)
         if 'Z' in self.attachment and not self.attach.Z:
             self.removeFromGroup(self.itemZ)
             self.scene.removeItem(self.itemZ)
@@ -690,7 +706,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.itemE = myGraphicItemGroup_2(text='E', group=self)
             self.attachment.append('E')
             self.addToGroup(self.itemE)
-            self.itemE.setPos(140 - num * 20, 10)
+            self.itemE.setPos(140 - num * 20, 5)
         if 'E' in self.attachment and not self.attach.E:
             self.removeFromGroup(self.itemE)
             self.scene.removeItem(self.itemE)
@@ -701,7 +717,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.itemQ = myGraphicItemGroup_2(text='Q', group=self)
             self.attachment.append('Q')
             self.addToGroup(self.itemQ)
-            self.itemQ.setPos(140 - num * 20, 10)
+            self.itemQ.setPos(140 - num * 20, 5)
         if 'Q' in self.attachment and not self.attach.Q:
             self.removeFromGroup(self.itemQ)
             self.scene.removeItem(self.itemQ)
@@ -712,7 +728,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.itemP = myGraphicItemGroup_2(text='P', group=self)
             self.attachment.append('P')
             self.addToGroup(self.itemP)
-            self.itemP.setPos(140 - num * 20, 10)
+            self.itemP.setPos(140 - num * 20, 5)
         if 'P' in self.attachment and not self.attach.P:
             self.removeFromGroup(self.itemP)
             self.scene.removeItem(self.itemP)
@@ -854,14 +870,13 @@ class Link:
         # src_pos 记录的是开始图元的位置，此位置为图元的左上角
         src_pos = self.start_item.pos()
         # 想让线条从图元的中心位置开始，让他们都加上偏移
-        patch = self.start_item.width / 2
-        self.gr_edge.set_src(src_pos.x() + patch, src_pos.y() + patch)
+        self.gr_edge.set_src(src_pos.x() , src_pos.y() )
         # 如果结束位置图元也存在，则做同样操作
         if self.end_item is not None:
             end_pos = self.end_item.pos()
-            self.gr_edge.set_dst(end_pos.x() + patch, end_pos.y() + patch)
+            self.gr_edge.set_dst(end_pos.x() , end_pos.y() )
         else:
-            self.gr_edge.set_dst(src_pos.x() + patch, src_pos.y() + patch)
+            self.gr_edge.set_dst(src_pos.x(), src_pos.y() )
         self.gr_edge.update()
 
     def remove_from_current_items(self):
@@ -880,7 +895,7 @@ class GraphicEdge(QGraphicsPathItem):
         super().__init__(parent)
         # 这个参数是GraphicEdge的包装类，见下文
         self.edge = edge_wrap
-        self.width = 3.0  # 线条的宽度
+        self.width = 2.0  # 线条的宽度
         self.pos_src = [0, 0]  # 线条起始位置 x，y坐标
         self.pos_dst = [0, 0]  # 线条结束位置
         self.id = relation_id
@@ -896,11 +911,11 @@ class GraphicEdge(QGraphicsPathItem):
             self._pen.setWidthF(self.width)
 
         if self.edge.flag == 2:
-            self._pen = QPen(QColor(0, 0, 255))  # 画线条的
+            self._pen = QPen(QColor(0, 0, 196))  # 画线条的
             self._pen.setWidthF(self.width)
 
         if self.edge.flag == 3:
-            self._pen = QPen(QColor(0, 255, 0))  # 画线条的
+            self._pen = QPen(QColor(0, 196, 0))  # 画线条的
             self._pen.setWidthF(self.width)
 
         self._pen_dragging = QPen(QColor("#000"))  # 画拖拽线条时线条的
@@ -936,20 +951,23 @@ class GraphicEdge(QGraphicsPathItem):
     def paint_angle(self, painter):
         x1, y1 = self.pos_src
         x2, y2 = self.pos_dst
-        length = self.get_distance(self.edge.end_item.width, self.edge.end_item.height)  # 圆点距离终点图元的距离
+        length = self.get_distance(self.edge.end_item.boundingRect().width(), self.edge.end_item.boundingRect().height())  # 圆点距离终点图元的距离
         k = math.atan2(y2 - y1, x2 - x1)  # theta
         new_x = x2 - length * math.cos(k)  # 减去线条自身的宽度
         new_y = y2 - length * math.sin(k)
-        new_x1 = new_x - 20 * math.cos(k - np.pi / 6)
-        new_y1 = new_y - 20 * math.sin(k - np.pi / 6)
-        new_x2 = new_x - 20 * math.cos(k + np.pi / 6)
-        new_y2 = new_y - 20 * math.sin(k + np.pi / 6)
-        painter.setPen(self._mark_pen)
+        new_x1 = new_x - 20 * math.cos(k - np.pi / 8)
+        new_y1 = new_y - 20 * math.sin(k - np.pi / 8)
+        new_x2 = new_x - 20 * math.cos(k + np.pi / 8)
+        new_y2 = new_y - 20 * math.sin(k + np.pi / 8)
+        painter.setPen(self._pen)
         painter.setBrush(self._mark_brush)
         point1 = QPoint(int(new_x), int(new_y))
         point2 = QPoint(int(new_x1), int(new_y1))
         point3 = QPoint(int(new_x2), int(new_y2))
-        painter.drawPolygon(point1, point2, point3)
+        line1 = QLine(point1,point2)
+        line2 = QLine(point1,point3)
+        painter.drawLine(line1)
+        painter.drawLine(line2)
 
     # override
     def paint(self, painter, graphics_item, widget=None):

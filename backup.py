@@ -9,6 +9,7 @@
 # Crated：2021-10-06
 # encoding=utf-8
 import sys
+import traceback
 from xml import etree
 
 from PyQt5 import QtCore, QtWidgets
@@ -63,8 +64,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         self.initentityType()
         self.initrelationType()
-        self.init_treeview(self.treeView, Myclass.entityType_dict, name='默认实体类型列表')
-        # self.init_treeview(self.treeView_2, self.KG_dict, name='元知识图谱')
+        self.init_treeview(self.treeView, Myclass.entityType_dict, name='实体类型列表')
+        # self.init_treeview(self.treeView_2, self.KG_dict, name='计算思维与计算系统导论')
         # self.graphicsSence = Myclass.GraphicScene(parent=self.centralwidget)
 
         # 需要在class文件中修改这两句，很恶心（最好不要变动untitled。py，每次变都要改）
@@ -79,7 +80,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # self.graphicsView.relationAdded.connect(self.onRelationAdded)
         # self.graphicsView.relationRemove.connect(self.onRelationRemoved)
 
-        self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='默认关系类型列表')
+        self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
         self.treeView.setDragEnabled(True)
         self.treeView_kg.setAcceptDrops(True)
         self.treeView.setDragDropMode(QListView.DragOnly)
@@ -147,13 +148,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         index = self.treeView_3.currentIndex()
         text = self.treeView_3.model().data(index)
         print(text)
-        if text == '线型1':
+        if text == '包含关系':
             self.graphicsView.draw_link_flag = 1
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '线型2':
+        if text == '次序关系':
             self.graphicsView.draw_link_flag = 2
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '线型3':
+        if text == '连接资源':
             self.graphicsView.draw_link_flag = 3
             self.graphicsView.setCursor(Qt.DragLinkCursor)
         if text == '鼠标':
@@ -189,7 +190,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView_kg.setModel(self.model_kg)
 
         # 添加数据示例
-        root_item = QtGui.QStandardItem("元知识图谱")
+        root_item = QtGui.QStandardItem("计算思维与计算系统导论")
         self.model_kg.appendRow(root_item)
 
         # 示例：添加几个知识图谱
@@ -214,7 +215,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 self.model_kg.item(i).removeRow(j)
             self.model_kg.removeRow(i)
         # 添加数据示例
-        root_item = QtGui.QStandardItem("元知识图谱")
+        root_item = QtGui.QStandardItem("计算思维与计算系统导论")
         self.model_kg.appendRow(root_item)
 
         for i in Myclass.knowledge_graphs_class.keys():
@@ -325,13 +326,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             pass
 
     def initrelationType(self):
-        Myclass.relationType_dict["LineType1"] = Myclass.relationType(class_name='线型1', mask='知识连线',
+        Myclass.relationType_dict["LineType1"] = Myclass.relationType(class_name='包含关系', mask='知识连线',
                                                                       classification='包含关系',
                                                                       head_need='内容方法型节点', tail_need='内容方法型节点')
-        Myclass.relationType_dict["LineType2"] = Myclass.relationType(class_name='线型2', mask='知识连线',
+        Myclass.relationType_dict["LineType2"] = Myclass.relationType(class_name='次序关系', mask='知识连线',
                                                                       classification='次序关系',
                                                                       head_need='内容方法型节点', tail_need='内容方法型节点')
-        Myclass.relationType_dict["LineType3"] = Myclass.relationType(class_name='线型3', mask='知识—资源连线',
+        Myclass.relationType_dict["LineType3"] = Myclass.relationType(class_name='连接资源', mask='知识—资源连线',
                                                                       classification='连接资源',
                                                                       head_need='内容方法型节点', tail_need='资源型节点')
         Myclass.relationType_dict["LineType4"] = Myclass.relationType(class_name='鼠标', mask='无',
@@ -339,25 +340,25 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                                                                       head_need='无', tail_need='无')
 
     def initentityType(self):
-        Myclass.entityType_dict["NodeType1"] = Myclass.entityType(class_name='知识领域节点', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType1"] = Myclass.entityType(class_name='知识领域', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='一级', opentool='无')
-        Myclass.entityType_dict["NodeType2"] = Myclass.entityType(class_name='知识单元节点', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType2"] = Myclass.entityType(class_name='知识单元', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='二级', opentool='无')
-        Myclass.entityType_dict["NodeType3"] = Myclass.entityType(class_name='知识点节点', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType3"] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='归纳级', opentool='无')
-        Myclass.entityType_dict["NodeType4"] = Myclass.entityType(class_name='知识细节节点', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType4"] = Myclass.entityType(class_name='关键知识细节', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='内容级', opentool='无')
-        Myclass.entityType_dict["NodeType5"] = Myclass.entityType(class_name='视频型节点', classification='资源型节点',
+        Myclass.entityType_dict["NodeType5"] = Myclass.entityType(class_name='视频', classification='资源型节点',
                                                                   identity='Video',
                                                                   level='微课', opentool='Mvideo.exe')
-        Myclass.entityType_dict["NodeType6"] = Myclass.entityType(class_name='测试题型节点', classification='资源型节点',
+        Myclass.entityType_dict["NodeType6"] = Myclass.entityType(class_name='测试题', classification='资源型节点',
                                                                   identity='Exec',
                                                                   level='练习题', opentool='YUKETANG.exe')
-        Myclass.entityType_dict["NodeType7"] = Myclass.entityType(class_name='文档型节点', classification='资源型节点',
+        Myclass.entityType_dict["NodeType7"] = Myclass.entityType(class_name='文档', classification='资源型节点',
                                                                   identity='PDF',
                                                                   level='教学素材', opentool='PDFviewer')
 
@@ -368,7 +369,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         self.childwindow.show()
 
-    def insert_EntityType(self, name, class_name='默认实体类型列表'):
+    def insert_EntityType(self, name, class_name='实体类型列表'):
         model = self.treeView.model()
         for i in range(model.rowCount()):
             m_name = model.item(i).text()
@@ -400,7 +401,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             entity = {"name": entity_name, "type": entity_type}
             self.knowledge_graphs[kg_name]["entities"].append(entity)
 
-    def add_relation(self, kg_name, head_entity_name, tail_entity_name, relation_type="线型1"):
+    def add_relation(self, kg_name, head_entity_name, tail_entity_name, relation_type="包含关系"):
         if kg_name in self.knowledge_graphs and relation_type in Myclass.relationType_dict:
             # 确保实体存在
             entities = self.knowledge_graphs[kg_name]["entities"]
@@ -524,11 +525,11 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def onRelationAdded(self, head_entity, tail_entity):
         self.add_relation(current_kg_name, head_entity, tail_entity)
-        self.update_treeview_with_new_relation(head_entity, tail_entity, "线型1", 1)
+        self.update_treeview_with_new_relation(head_entity, tail_entity, "包含关系", 1)
 
     def onRelationRemoved(self, head_entity, tail_entity):
-        self.remove_relation(current_kg_name, head_entity, tail_entity, "线型1")
-        self.update_treeview_with_new_relation(head_entity, tail_entity, "线型1", 2)
+        self.remove_relation(current_kg_name, head_entity, tail_entity, "包含关系")
+        self.update_treeview_with_new_relation(head_entity, tail_entity, "包含关系", 2)
 
 
 if __name__ == '__main__':

@@ -1,16 +1,28 @@
 <KG>
 	<entities>
 		<entity>
-			<id>1</id>
+			<id>0</id>
 			<class_name>&#30693;&#35782;&#39046;&#22495;&#33410;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#19968;&#32423;</level>
 			<attach>000000</attach>
 			<opentool>&#26080;</opentool>
-			<content>&#26080;</content>
-			<x>279.0</x>
-			<y>121.0</y>
+			<content>&#35745;&#31639;&#24605;&#32500;&#19982;&#35745;&#31639;&#31995;&#32479;&#23548;&#35770;</content>
+			<x>101</x>
+			<y>537</y>
+		</entity>
+		<entity>
+			<id>1</id>
+			<class_name>&#30693;&#35782;&#21333;&#20803;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#20108;&#32423;</level>
+			<attach>000000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#12304;&#31243;&#24207;&#19982;&#36882;&#24402;&#12305;&#24605;&#32500;</content>
+			<x>319</x>
+			<y>535</y>
 		</entity>
 		<entity>
 			<id>2</id>
@@ -20,57 +32,21 @@
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#31243;&#24207;:&#22788;&#29702;&#35268;&#21017;</content>
-			<x>267.18750000000006</x>
-			<y>244.12500000000006</y>
+			<content>&#35745;&#31639;&#31995;&#32479;&#19982;&#31243;&#24207;&#30340;&#20851;&#31995;</content>
+			<x>499</x>
+			<y>215</y>
 		</entity>
 		<entity>
 			<id>3</id>
-			<class_name>&#30693;&#35782;&#21333;&#20803;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#20108;&#32423;</level>
-			<attach>100000</attach>
-			<opentool>&#26080;</opentool>
-			<content>[T]&#35745;&#31639;&#31995;&#32479;&#19982;&#31243;&#24207;&#30340;&#20851;&#31995;</content>
-			<x>166.0</x>
-			<y>224.0</y>
-		</entity>
-		<entity>
-			<id>4</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>000000</attach>
-			<opentool>&#26080;</opentool>
-			<content>[T]&#31243;&#24207;&#26500;&#36896;&#24605;&#32500;</content>
-			<x>492.3125000000001</x>
-			<y>258.25000000000006</y>
-		</entity>
-		<entity>
-			<id>5</id>
 			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100010</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ET]&#31995;&#32479;&#25277;&#35937;&#19982;&#36845;&#20195;&#24335;&#26500;&#36896;</content>
-			<x>50.75</x>
-			<y>288.25</y>
-		</entity>
-		<entity>
-			<id>6</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
-			<opentool>&#26080;</opentool>
-			<content>[T]&#32452;&#21512;(&#24050;&#26377;&#36816;&#31639;&#30340;&#32452;&#21512;/&#23884;&#22871;)</content>
-			<x>749.5000000000001</x>
-			<y>283.56250000000006</y>
+			<content>&#31995;&#32479;&#25277;&#35937;&#19982;&#36845;&#20195;&#24335;&#26500;&#36896;</content>
+			<x>731</x>
+			<y>216</y>
 		</entity>
 		<entity>
 			<id>7</id>
@@ -78,11 +54,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>000100</attach>
+			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[K]&#36816;&#31639;&#32452;&#21512;&#24335;</content>
-			<x>23.25</x>
-			<y>388.25</y>
+			<content>&#31243;&#24207;:&#22788;&#29702;&#35268;&#21017;</content>
+			<x>474</x>
+			<y>424</y>
 		</entity>
 		<entity>
 			<id>8</id>
@@ -90,47 +66,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100011</attach>
+			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#36816;&#31639;&#32452;&#21512;&#24335;&#30340;&#23884;&#22871;&#26500;&#36896;</content>
-			<x>197.0</x>
-			<y>408.25</y>
-		</entity>
-		<entity>
-			<id>9</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>101000</attach>
-			<opentool>&#26080;</opentool>
-			<content>[QT]&#20856;&#22411;&#35821;&#35328;:&#21464;&#37327;&#19982;&#36171;&#20540;</content>
-			<x>399.5</x>
-			<y>398.25</y>
-		</entity>
-		<entity>
-			<id>10</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100011</attach>
-			<opentool>&#26080;</opentool>
-			<content>[ETP]&#21629;&#21517;&#26032;&#36816;&#31639;&#31526;</content>
-			<x>579.8125000000001</x>
-			<y>399.18750000000006</y>
-		</entity>
-		<entity>
-			<id>11</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>101000</attach>
-			<opentool>&#26080;</opentool>
-			<content>[QT]&#20856;&#22411;&#35821;&#35328;:&#20989;&#25968;&#23450;&#20041;&#19982;&#20989;&#25968;&#35843;&#29992;</content>
-			<x>805.7500000000001</x>
-			<y>407.62500000000006</y>
+			<content>&#31243;&#24207;&#26500;&#36896;&#24605;&#32500;</content>
+			<x>706.0</x>
+			<y>425.0</y>
 		</entity>
 		<entity>
 			<id>12</id>
@@ -140,9 +80,9 @@
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#36882;&#24402;&#19982;&#36845;&#20195;(&#26080;&#38480;&#22810;&#33258;&#30456;&#20284;&#32452;&#21512;&#30340;&#34920;&#36798;&#25163;&#27573;)</content>
-			<x>29.5</x>
-			<y>522.0</y>
+			<content>&#25277;&#35937;(&#38477;&#20302;&#22797;&#26434;&#32452;&#21512;&#30340;&#34920;&#36798;&#25163;&#27573;)</content>
+			<x>923</x>
+			<y>347</y>
 		</entity>
 		<entity>
 			<id>13</id>
@@ -150,11 +90,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>000100</attach>
+			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[K]&#36882;&#24402;&#22522;&#30784;&#19982;&#36882;&#24402;&#20844;&#24335;</content>
-			<x>207.0</x>
-			<y>522.0</y>
+			<content>&#36882;&#24402;&#19982;&#36845;&#20195;(&#26080;&#38480;&#22810;&#33258;&#30456;&#20284;&#32452;&#21512;&#30340;&#34920;&#36798;&#25163;&#27573;)</content>
+			<x>925</x>
+			<y>537</y>
 		</entity>
 		<entity>
 			<id>14</id>
@@ -162,11 +102,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100010</attach>
+			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ET]&#20004;&#20010;&#19981;&#21516;&#30340;&#36882;&#24402;&#20989;&#25968;</content>
-			<x>458.75</x>
-			<y>587.5</y>
+			<content>&#36816;&#31639;&#32452;&#21512;&#24335;</content>
+			<x>1210</x>
+			<y>185</y>
 		</entity>
 		<entity>
 			<id>15</id>
@@ -176,9 +116,9 @@
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#36882;&#24402;&#23450;&#20041;&#20294;&#21487;&#36845;&#20195;&#35745;&#31639;-&#29992;&#24490;&#29615;&#23454;&#29616;</content>
-			<x>569.5</x>
-			<y>518.25</y>
+			<content>&#36816;&#31639;&#32452;&#21512;&#24335;&#30340;&#23884;&#22871;&#26500;&#36896;</content>
+			<x>1428</x>
+			<y>181</y>
 		</entity>
 		<entity>
 			<id>16</id>
@@ -186,71 +126,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100011</attach>
+			<attach>101000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#36882;&#24402;&#23450;&#20041;&#19988;&#36882;&#24402;&#35745;&#31639;-&#29992;&#20989;&#25968;&#23454;&#29616;</content>
-			<x>816.25</x>
-			<y>577.5</y>
-		</entity>
-		<entity>
-			<id>17</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100011</attach>
-			<opentool>&#26080;</opentool>
-			<content>[ETP]&#29992;&#36882;&#24402;&#23450;&#20041;</content>
-			<x>44.5</x>
-			<y>639.8125000000001</y>
-		</entity>
-		<entity>
-			<id>18</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100011</attach>
-			<opentool>&#26080;</opentool>
-			<content>[ETP]&#29992;&#36882;&#24402;&#26500;&#36896;</content>
-			<x>240.43750000000006</x>
-			<y>650.4375000000001</y>
-		</entity>
-		<entity>
-			<id>19</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
-			<opentool>&#26080;</opentool>
-			<content>[T]&#36882;&#24402;/&#36845;&#20195;&#26159;&#31639;&#27861;&#26500;&#36896;&#30340;&#22522;&#26412;&#25163;&#27573;</content>
-			<x>464.06249999999994</x>
-			<y>687.4999999999999</y>
-		</entity>
-		<entity>
-			<id>20</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>000100</attach>
-			<opentool>&#26080;</opentool>
-			<content>[K]&#21407;&#22987;&#36882;&#24402;&#20989;&#25968;</content>
-			<x>626.5624999999999</x>
-			<y>657.8124999999999</y>
-		</entity>
-		<entity>
-			<id>21</id>
-			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100011</attach>
-			<opentool>&#26080;</opentool>
-			<content>[ETP]&#22797;&#21512;/&#32452;&#21512;(&#20135;&#29983;&#19968;&#20010;&#26032;&#20989;&#25968;)</content>
-			<x>837.4999999999999</x>
-			<y>687.4999999999999</y>
+			<content>&#20856;&#22411;&#35821;&#35328;&#34920;&#36798;&#24335;&#21644;&#36816;&#31639;&#32452;&#21512;&#24335;&#27604;&#36739;</content>
+			<x>1635</x>
+			<y>181</y>
 		</entity>
 		<entity>
 			<id>22</id>
@@ -260,9 +140,9 @@
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#21407;&#22987;&#36882;&#24402;&#20135;&#29983;&#31995;&#21015;&#21270;&#26032;&#20989;&#25968;</content>
-			<x>17.937499999999986</x>
-			<y>779.4999999999999</y>
+			<content>&#21629;&#21517;&#35745;&#31639;&#23545;&#35937;</content>
+			<x>1066</x>
+			<y>245</y>
 		</entity>
 		<entity>
 			<id>23</id>
@@ -270,11 +150,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
+			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#36882;&#24402;&#20989;&#25968;&#19982;&#35745;&#31639;&#26426;</content>
-			<x>289.06249999999994</x>
-			<y>840.6249999999999</y>
+			<content>&#21629;&#21517;&#26032;&#36816;&#31639;&#31526;</content>
+			<x>1140</x>
+			<y>407</y>
 		</entity>
 		<entity>
 			<id>24</id>
@@ -282,11 +162,11 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
+			<attach>101000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#22522;&#26412;&#21160;&#20316;/&#25351;&#20196;</content>
-			<x>435.12499999999994</x>
-			<y>782.6249999999999</y>
+			<content>&#20856;&#22411;&#35821;&#35328;:&#21464;&#37327;&#19982;&#36171;&#20540;</content>
+			<x>1315</x>
+			<y>237</y>
 		</entity>
 		<entity>
 			<id>25</id>
@@ -294,59 +174,155 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
+			<attach>101000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#20856;&#22411;&#35821;&#35328;:&#20989;&#25968;&#23450;&#20041;&#19982;&#20989;&#25968;&#35843;&#29992;</content>
+			<x>1384</x>
+			<y>405</y>
+		</entity>
+		<entity>
+			<id>32</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#31243;&#24207;&#25191;&#34892;&#26426;&#26500;-&#35745;&#31639;&#31995;&#32479;/&#26426;&#22120;</content>
-			<x>633.5624999999999</x>
-			<y>748.2499999999999</y>
+			<content>&#32452;&#21512;(&#24050;&#26377;&#36816;&#31639;&#30340;&#32452;&#21512;/&#23884;&#22871;)</content>
+			<x>994</x>
+			<y>191</y>
 		</entity>
 		<entity>
-			<id>26</id>
+			<id>33</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>000100</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#36882;&#24402;&#22522;&#30784;&#19982;&#36882;&#24402;&#20844;&#24335;</content>
+			<x>1171</x>
+			<y>538</y>
+		</entity>
+		<entity>
+			<id>34</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100010</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#20004;&#20010;&#19981;&#21516;&#30340;&#36882;&#24402;&#20989;&#25968;</content>
+			<x>1388</x>
+			<y>537</y>
+		</entity>
+		<entity>
+			<id>35</id>
 			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#22797;&#26434;&#32452;&#21512;&#24335;&#30340;&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
-			<x>964.0624999999999</x>
-			<y>846.8749999999999</y>
+			<content>&#36882;&#24402;&#23450;&#20041;&#20294;&#21487;&#36845;&#20195;&#35745;&#31639;-&#29992;&#24490;&#29615;&#23454;&#29616;</content>
+			<x>1606</x>
+			<y>463</y>
 		</entity>
 		<entity>
-			<id>52</id>
+			<id>36</id>
 			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#26500;&#36896;-&#26367;&#25442;-&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
-			<x>89.06249999999999</x>
-			<y>928.1249999999999</y>
+			<content>&#36882;&#24402;&#23450;&#20041;&#19988;&#36882;&#24402;&#35745;&#31639;-&#29992;&#20989;&#25968;&#23454;&#29616;</content>
+			<x>1602</x>
+			<y>595</y>
 		</entity>
 		<entity>
-			<id>53</id>
+			<id>37</id>
 			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#36845;&#20195;&#35745;&#31639;/&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
-			<x>307.81249999999994</x>
-			<y>940.6249999999999</y>
+			<content>&#29992;&#36882;&#24402;&#23450;&#20041;</content>
+			<x>1171</x>
+			<y>701</y>
 		</entity>
 		<entity>
-			<id>54</id>
+			<id>38</id>
 			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#36882;&#24402;&#35745;&#31639;/&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
-			<x>490.62499999999994</x>
-			<y>948.4374999999999</y>
+			<content>&#29992;&#36882;&#24402;&#26500;&#36896;</content>
+			<x>1381</x>
+			<y>702</y>
+		</entity>
+		<entity>
+			<id>39</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#36882;&#24402;/&#36845;&#20195;&#26159;&#31639;&#27861;&#26500;&#36896;&#30340;&#22522;&#26412;&#25163;&#27573;</content>
+			<x>1600</x>
+			<y>701</y>
+		</entity>
+		<entity>
+			<id>40</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>000100</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#21407;&#22987;&#36882;&#24402;&#20989;&#25968;</content>
+			<x>961</x>
+			<y>837</y>
+		</entity>
+		<entity>
+			<id>41</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100011</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#22797;&#21512;/&#32452;&#21512;(&#20135;&#29983;&#19968;&#20010;&#26032;&#20989;&#25968;)</content>
+			<x>1180</x>
+			<y>840</y>
+		</entity>
+		<entity>
+			<id>42</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100011</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#21407;&#22987;&#36882;&#24402;&#20135;&#29983;&#31995;&#21015;&#21270;&#26032;&#20989;&#25968;</content>
+			<x>1406</x>
+			<y>837</y>
+		</entity>
+		<entity>
+			<id>43</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#36882;&#24402;&#20989;&#25968;&#19982;&#35745;&#31639;&#26426;</content>
+			<x>1627</x>
+			<y>835</y>
 		</entity>
 		<entity>
 			<id>55</id>
@@ -354,11 +330,47 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#22522;&#26412;&#21160;&#20316;/&#25351;&#20196;</content>
+			<x>464</x>
+			<y>618</y>
+		</entity>
+		<entity>
+			<id>57</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#31243;&#24207;&#25191;&#34892;&#26426;&#26500;-&#35745;&#31639;&#31995;&#32479;/&#26426;&#22120;</content>
+			<x>492</x>
+			<y>971</y>
+		</entity>
+		<entity>
+			<id>58</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[ETP]&#36882;&#24402;&#35745;&#31639;/&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
-			<x>696.8749999999999</x>
-			<y>923.4374999999999</y>
+			<content>&#22797;&#26434;&#32452;&#21512;&#24335;&#30340;&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
+			<x>741</x>
+			<y>974</y>
+		</entity>
+		<entity>
+			<id>59</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100011</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#26500;&#36896;-&#26367;&#25442;-&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
+			<x>977</x>
+			<y>970</y>
 		</entity>
 		<entity>
 			<id>60</id>
@@ -366,11 +378,23 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
+			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#22522;&#26412;&#21160;&#20316;/&#25351;&#20196;</content>
-			<x>879.6874999999999</x>
-			<y>971.8749999999999</y>
+			<content>&#36845;&#20195;&#35745;&#31639;/&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
+			<x>1213</x>
+			<y>968</y>
+		</entity>
+		<entity>
+			<id>61</id>
+			<class_name>&#30693;&#35782;&#28857;&#33410;&#28857;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#24402;&#32435;&#32423;</level>
+			<attach>100011</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#36882;&#24402;&#35745;&#31639;/&#25191;&#34892;&#36807;&#31243;&#27169;&#25311;</content>
+			<x>1444</x>
+			<y>974</y>
 		</entity>
 		<entity>
 			<id>62</id>
@@ -378,12 +402,343 @@
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
 			<identity>&#30693;&#35782;</identity>
 			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
+			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
-			<content>[T]&#31243;&#24207;:&#22788;&#29702;&#35268;&#21017;</content>
-			<x>256.24999999999994</x>
-			<y>1046.8749999999998</y>
+			<content>&#22534;&#26632;&#19968;&#21387;&#20837;&#19982;&#24377;&#20986;</content>
+			<x>1681</x>
+			<y>974</y>
 		</entity>
 	</entities>
-	<relations />
+	<relations>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>0</headnodeid>
+			<tailnodeid>1</tailnodeid>
+			<class_name>&#32447;&#22411;1</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#21253;&#21547;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>1</headnodeid>
+			<tailnodeid>2</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>2</headnodeid>
+			<tailnodeid>3</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>1</headnodeid>
+			<tailnodeid>7</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>7</headnodeid>
+			<tailnodeid>8</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>8</headnodeid>
+			<tailnodeid>12</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>8</headnodeid>
+			<tailnodeid>13</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>12</headnodeid>
+			<tailnodeid>22</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>12</headnodeid>
+			<tailnodeid>23</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>22</headnodeid>
+			<tailnodeid>24</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>23</headnodeid>
+			<tailnodeid>25</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>8</headnodeid>
+			<tailnodeid>32</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>32</headnodeid>
+			<tailnodeid>14</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>14</headnodeid>
+			<tailnodeid>15</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>15</headnodeid>
+			<tailnodeid>16</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>13</headnodeid>
+			<tailnodeid>33</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>33</headnodeid>
+			<tailnodeid>34</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>34</headnodeid>
+			<tailnodeid>35</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>34</headnodeid>
+			<tailnodeid>36</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>13</headnodeid>
+			<tailnodeid>37</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>13</headnodeid>
+			<tailnodeid>40</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>37</headnodeid>
+			<tailnodeid>38</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>38</headnodeid>
+			<tailnodeid>39</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>40</headnodeid>
+			<tailnodeid>41</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>41</headnodeid>
+			<tailnodeid>42</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>42</headnodeid>
+			<tailnodeid>43</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>1</headnodeid>
+			<tailnodeid>55</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>1</headnodeid>
+			<tailnodeid>57</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>57</headnodeid>
+			<tailnodeid>58</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>58</headnodeid>
+			<tailnodeid>59</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>59</headnodeid>
+			<tailnodeid>60</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>60</headnodeid>
+			<tailnodeid>61</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+		<relation>
+			<name>&#21253;&#21547;</name>
+			<headnodeid>62</headnodeid>
+			<tailnodeid>61</tailnodeid>
+			<class_name>&#32447;&#22411;2</class_name>
+			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
+			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
+			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
+			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
+		</relation>
+	</relations>
 </KG>
