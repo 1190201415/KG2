@@ -945,14 +945,23 @@ class GraphicEdge(QGraphicsPathItem):
     def shape(self):
         return self.calc_path()
 
-    def get_distance(self, x, y):
-        return 0.5 * math.sqrt(x * x + y * y)
+    def get_distance(self, x, y, k):
+        if math.sin(k)==0:
+            return x*0.5
+        if math.cos(k)==0:
+            return y*0.5
+        a1 = math.fabs(y/(math.sin(k)*2))
+        a2 = math.fabs(x/(math.cos(k)*2))
+        if a2 > a1:
+            return a1
+        else:
+            return a2
 
     def paint_angle(self, painter):
         x1, y1 = self.pos_src
         x2, y2 = self.pos_dst
-        length = self.get_distance(self.edge.end_item.boundingRect().width(), self.edge.end_item.boundingRect().height())  # 圆点距离终点图元的距离
         k = math.atan2(y2 - y1, x2 - x1)  # theta
+        length = self.get_distance(self.edge.end_item.boundingRect().width(), self.edge.end_item.boundingRect().height(),k)  # 圆点距离终点图元的距离
         new_x = x2 - length * math.cos(k)  # 减去线条自身的宽度
         new_y = y2 - length * math.sin(k)
         new_x1 = new_x - 20 * math.cos(k - np.pi / 8)
