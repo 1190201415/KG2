@@ -9,23 +9,22 @@
 # Crated：2021-10-06
 # encoding=utf-8
 import sys
-import traceback
-from xml import etree
 
-from PyQt5 import QtCore, QtWidgets
+
+from PyQt5 import QtWidgets
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QWidget, QGraphicsItem, QGraphicsPixmapItem, \
-    QGraphicsEllipseItem, QAbstractItemView, QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter
+from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
+    QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
+    QGraphicsScene, QApplication
 
 import Myclass
 from Myclass import current_kg_name
 from untitled import Ui_MainWindow
 from new_entity import Ui_Form
-import xml.etree.ElementTree as ET
-import pretty_xml
+
 
 
 class childwindow_1(QtWidgets.QWidget, Ui_Form):
@@ -47,10 +46,10 @@ class childwindow_1(QtWidgets.QWidget, Ui_Form):
 
 class my_MainWindow(QMainWindow, Ui_MainWindow):
     knowledge_graphs = {
-        "知识图谱1": {
-            "entities": [],
-            "relations": []
-        },
+        # "知识图谱1": {
+        #     "entities": [],
+        #     "relations": []
+        # },
     }
     num = 1
 
@@ -64,8 +63,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         self.initentityType()
         self.initrelationType()
-        self.init_treeview(self.treeView, Myclass.entityType_dict, name='实体类型列表')
-        # self.init_treeview(self.treeView_2, self.KG_dict, name='计算思维与计算系统导论')
+        self.init_treeview_1(self.treeView, Myclass.entityType_dict, name='实体类型列表')
+        # self.init_treeview(self.treeView_2, self.KG_dict, name=' 计算思维（计算机科学导论）')
         # self.graphicsSence = Myclass.GraphicScene(parent=self.centralwidget)
 
         # 需要在class文件中修改这两句，很恶心（最好不要变动untitled。py，每次变都要改）
@@ -75,6 +74,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         self.graphicsView.setSceneRect(0, 0, 10000, 10000)  # 设置场景大小
         self.treeView_kg.my_sign_kg.connect(self.update_kg_treeview)
+        self.graphicsSence.setItemIndexMethod(QGraphicsScene.NoIndex)
         # self.graphicsView.entityDropped.connect(self.onEntityDropped)
         # self.graphicsSence.entityRemove.connect(self.onEntityRemoved)
         # self.graphicsView.relationAdded.connect(self.onRelationAdded)
@@ -91,9 +91,12 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView.clicked.connect(self.clicked_treeView)
         self.treeView_3.clicked.connect(self.clicked_treeView3)
         self.action1_1.triggered.connect(self.clickaction1_1)
+        self.action1_2.triggered.connect(self.csave_kgs)
+        self.action2_1.triggered.connect(self.auto_layout)
 
         # self.initLayouts()
-        self.showMaximized()
+        #self.showMaximized()
+        self.treeView_kg.initxml()
 
     def initLayouts(self):
         # 创建主布局容器
@@ -169,6 +172,34 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         text = self.treeView.model().data(index)
         print(text)
 
+
+    def init_treeview_1(self, treeView, dict, name=''):
+        model = QtGui.QStandardItemModel()
+        entityytpeclass1 = QtGui.QStandardItem(name)
+        item1 = QtGui.QStandardItem('内容型')
+        item2 = QtGui.QStandardItem('资源型')
+        entityytpeclass1.appendRow(item1)
+        entityytpeclass1.appendRow(item2)
+        num = 0
+        for i in dict.keys():
+            if num < 4:
+                item = QtGui.QStandardItem(dict[i].class_name)
+                item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
+                item1.appendRow(item)
+                num = num + 1
+            else:
+                item = QtGui.QStandardItem(dict[i].class_name)
+                item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
+                item2.appendRow(item)
+                num = num  + 1
+
+        model.appendRow(entityytpeclass1)
+
+        treeView.setModel(model)
+        model.setHorizontalHeaderLabels([''])
+        treeView.expandAll()
+        # 03/21：初始化右侧树视图
+
     def init_treeview(self, treeView, dict, name=''):
         model = QtGui.QStandardItemModel()
         entityytpeclass1 = QtGui.QStandardItem(name)
@@ -181,6 +212,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             print(model.item(i))
         treeView.setModel(model)
         model.setHorizontalHeaderLabels([''])
+        treeView.expandAll()
         # 03/21：初始化右侧树视图
 
     def init_kg_treeview(self):
@@ -190,13 +222,15 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView_kg.setModel(self.model_kg)
 
         # 添加数据示例
-        root_item = QtGui.QStandardItem("计算思维与计算系统导论")
+        root_item = QtGui.QStandardItem(" 计算思维（计算机科学导论）")
         self.model_kg.appendRow(root_item)
 
         # 示例：添加几个知识图谱
-        for i in range(1, 2):
-            kg_item = QtGui.QStandardItem(f"知识图谱{i}")
-            root_item.appendRow(kg_item)
+
+        # for i in range(1, 2):
+        #     kg_item = QtGui.QStandardItem(f"知识图谱{i}")
+        #     root_item.appendRow(kg_item)
+        self.treeView_kg.expandAll()
 
             # # 为每个知识图谱添加实体和关系列表
             # entities_item = QtGui.QStandardItem("实体列表")
@@ -209,18 +243,20 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             #     entities_item.appendRow(QtGui.QStandardItem(f"实体{j}"))
             #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
 
+
     def update_kg_treeview(self):
         for i in range(self.model_kg.rowCount()):
             for j in range(self.model_kg.item(i).rowCount()):
                 self.model_kg.item(i).removeRow(j)
             self.model_kg.removeRow(i)
         # 添加数据示例
-        root_item = QtGui.QStandardItem("计算思维与计算系统导论")
+        root_item = QtGui.QStandardItem(" 计算思维（计算机科学导论）")
         self.model_kg.appendRow(root_item)
 
         for i in Myclass.knowledge_graphs_class.keys():
             kg_item = QtGui.QStandardItem(i)
             root_item.appendRow(kg_item)
+        self.treeView_kg.expandAll()
 
             # # 为每个知识图谱添加实体和关系列表
             # entities_item = QtGui.QStandardItem("实体列表")
@@ -241,6 +277,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         print(f"当前选中的项：{item.text()}")
         # 在这里可以根据选中的项进行进一步的操作
 
+
+
     def closeEvent(self, a0: QtGui.QCloseEvent):
         NUM_FUN = 5
         self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
@@ -248,82 +286,36 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
         self.progressDialog.show()
 
-        self.save_entityType()
+        #self.save_entityType()
         self.progressDialog.setValue(1)
         QCoreApplication.processEvents()
 
-        self.save_relationType()
+        #self.save_relationType()
         self.progressDialog.setValue(2)
         QCoreApplication.processEvents()
 
-        self.save_relationType()
+        #self.save_relationType()
         self.progressDialog.setValue(3)
         QCoreApplication.processEvents()
 
-        self.save_kgs()
+        self.csave_kgs()
         self.progressDialog.setValue(NUM_FUN)
-        a0.accept()
+        reply = QMessageBox.question(self, 'Warning', '确认退出？', QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            a0.accept()
 
-    def save_kg(self, name, kg):
-        root = ET.Element('KG')
-        entities = ET.SubElement(root, 'entities')
-        relations = ET.SubElement(root, 'relations')
-        for i in kg['entities']:
-            print(i)
-            entity = ET.SubElement(entities, 'entity')
-            id = ET.SubElement(entity, 'id')
-            name1 = ET.SubElement(entity, 'class_name')
-            classification = ET.SubElement(entity, 'classification')
-            identity = ET.SubElement(entity, 'identity')
-            level = ET.SubElement(entity, 'level')
-            attach = ET.SubElement(entity, 'attach')
-            opentool = ET.SubElement(entity, 'opentool')
-            content = ET.SubElement(entity, 'content')
-            x = ET.SubElement(entity, 'x')
-            y = ET.SubElement(entity, 'y')
-            id.text = str(i.entity.id)
-            name1.text = i.entity.class_name
-            classification.text = i.entity.classification
-            identity.text = i.entity.identity
-            level.text = i.entity.level
-            opentool.text = i.entity.opentool
-            content.text = i.entity.content
-            attach.text = i.entity.attach.tostring()
-            x.text = str(i.entity.x)
-            y.text = str(i.entity.y)
-        for i in kg['relations']:
-            relation = ET.SubElement(relations, 'relation')
-            name2 = ET.SubElement(relation, 'name')
-            headnodeid = ET.SubElement(relation, 'headnodeid')
-            tailnodeid = ET.SubElement(relation, 'tailnodeid')
-            class_name = ET.SubElement(relation, 'class_name')
-            mask = ET.SubElement(relation, 'mask')
-            classification = ET.SubElement(relation, 'classification')
-            head_need = ET.SubElement(relation, 'head_need')
-            tail_need = ET.SubElement(relation, 'tail_need')
-            name2.text = i.relation.name
-            headnodeid.text = str(i.relation.headnodeid)
-            tailnodeid.text = str(i.relation.tailnodeid)
-            class_name.text = i.relation.class_name
-            mask.text = i.relation.mask
-            classification.text = i.relation.classification
-            head_need.text = i.relation.head_need
-            tail_need.text = i.relation.tail_need
-        tree = ET.ElementTree(root)
-        tree.write(name + '.xml')
-        pretty_xml.pretty(name=name + ".xml")
+        else:
+            a0.ignore()
 
-    def save_kgs(self):
-        for KG in Myclass.knowledge_graphs_class.keys():
-            self.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG])
 
-    def save_relationType(self):
-        for relationType in Myclass.relationType_dict.keys():
-            pass
 
-    def save_entityType(self):
-        for entityType in Myclass.entityType_dict.keys():
-            pass
+
+    def csave_kgs(self):
+        self.graphicsSence.update()
+        Myclass.save_kgs()
+
+    def auto_layout(self):
+        self.graphicsSence.auto_layout()
 
     def initrelationType(self):
         Myclass.relationType_dict["LineType1"] = Myclass.relationType(class_name='包含关系', mask='知识连线',
@@ -382,7 +374,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             self.update_kg_treeview()
 
     def deleteAll(self, thisLayout):
-        if thisLayout == None:
+        if thisLayout is None:
             return
         item_list = list(range(thisLayout.count()))
         item_list.reverse()  # 倒序删除，避免影响布局顺序
@@ -533,7 +525,30 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
 
 if __name__ == '__main__':
+    # gc.enable()
     app = QtWidgets.QApplication(sys.argv)  # 初始化界面
     MainWindow = my_MainWindow()
-    MainWindow.show()  # 显示主窗口
+
+    desktop = QApplication.desktop()
+    rect = desktop.frameSize()
+    MainWindow.resize(QSize(rect.width(), rect.height()-80))
+    # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True)
+    #MainWindow.showFullScreen()  # 显示主窗口
+    MainWindow.show()
+    #app.exec_()
     sys.exit(app.exec_())  # 在主线程中退出
+    # 收集所有对象
+#     all_objects = gc.get_objects()
+#     # 打印对象数量
+#     print(len(all_objects))
+#
+#     # 查找未被垃圾回收的对象
+#     unreachable = []
+#     for obj in all_objects:
+#         if gc.get_referents(obj):
+#             unreachable.append(obj)
+#             print(obj)
+#
+#     # 打印未被垃圾回收的对象
+# #        print(unreachable)
+
