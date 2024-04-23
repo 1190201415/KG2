@@ -1,0 +1,29 @@
+<KG>
+	<entities>
+		<entity>
+			<id>1</id>
+			<class_name>&#30693;&#35782;&#39046;&#22495;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#19968;&#32423;</level>
+			<attach>000000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#26080;</content>
+			<x>430.0</x>
+			<y>221.0</y>
+		</entity>
+		<entity>
+			<id>2</id>
+			<class_name>&#30693;&#35782;&#21333;&#20803;</class_name>
+			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
+			<identity>&#30693;&#35782;</identity>
+			<level>&#20108;&#32423;</level>
+			<attach>000000</attach>
+			<opentool>&#26080;</opentool>
+			<content>&#26080;</content>
+			<x>507.0</x>
+			<y>517.0</y>
+		</entity>
+	</entities>
+	<relations />
+</KG>

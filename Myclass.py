@@ -163,6 +163,13 @@ class GraphNode(object):
     def get_child(self):
         return copy.copy(self.child_list)
 
+    def ifgreen(self)->bool:
+        if len(self.child_list) >0:
+            for i in self.child_list:
+                if len(i.parent_list):
+                    return True
+        return False
+
 
 class Graph(object):
     def __init__(self, node_list: list):
@@ -469,13 +476,21 @@ class GraphicScene(QGraphicsScene):
                 list_child_deep.append(deep)
                 deep = self.AF_deep_search(start_node=i, notgetlist=notgetlist, deep=deep,
                                            length=length + node.boundingRect().width() + 20, id_dict=id_dict)
+                list_child_deep.append(deep)
 
         if len(list_child_deep) >= 1:
             all_deep = 0
             for i in list_child_deep:
                 all_deep = all_deep + i
             node_deep = all_deep / len(list_child_deep)
+        # if len(start_node.child_list) >= 1:
+        #     all_deep = 0
+        #     for i in start_node.child_list:
+        #         all_deep = all_deep + id_dict[i.id].pos().y() - id_dict[i.id].boundingRect().height()*0.5
+        #     node_deep = all_deep / len(start_node.child_list)
+
         node.setPos(length + 0.5 * node.boundingRect().width(), node_deep)
+#        if start_node.
 
         if deep1 > deep:
             return deep1
