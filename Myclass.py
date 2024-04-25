@@ -10,7 +10,7 @@ import typing
 from pathlib import Path
 
 import numpy as np
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsEllipseItem, \
     QGraphicsItem, QTreeView, QGraphicsPathItem, QGraphicsItemGroup, QGraphicsSimpleTextItem, QWidget, \
     QGraphicsTextItem, \
@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, 
 from PyQt5.QtCore import Qt, QLine, QPointF, QPoint, pyqtSignal, QRectF
 from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont
 from typing import List, Dict
+
 
 import pretty_xml
 from entity1 import Ui_Dialog
@@ -163,8 +164,8 @@ class GraphNode(object):
     def get_child(self):
         return copy.copy(self.child_list)
 
-    def ifgreen(self)->bool:
-        if len(self.child_list) >0:
+    def ifgreen(self) -> bool:
+        if len(self.child_list) > 0:
             for i in self.child_list:
                 if len(i.parent_list):
                     return True
@@ -350,6 +351,9 @@ class my_treeview(QTreeView):
         now_kg_name = os.path.basename(filePath).split('.')[0]
         if now_kg_name not in knowledge_graphs_class.keys():
             knowledge_graphs_class[now_kg_name] = {"entities": [], "relations": []}
+        if now_kg_name in knowledge_graphs_class.keys():
+            knowledge_graphs_class[now_kg_name]['entities'].clear()
+            knowledge_graphs_class[now_kg_name]['relations'].clear()
         relations1 = relations[0].findall('relation')
         for i in entitys:
             entity1 = entity(x=0, y=0, attach=attachment())
@@ -466,7 +470,7 @@ class GraphicScene(QGraphicsScene):
                        id_dict: Dict[int, 'GraphicItemGroup']):
 
         node = id_dict[start_node.id]
-        deep1 = deep + node.boundingRect().height() + 20
+        deep1 = deep + node.boundingRect().height() + 40
         # print(start_node.id, deep+0.5*node.boundingRect().height(),length + 0.5*node.boundingRect().width())
         node_deep = deep
         list_child_deep = []
@@ -475,8 +479,8 @@ class GraphicScene(QGraphicsScene):
                 notgetlist.remove(i)
                 list_child_deep.append(deep)
                 deep = self.AF_deep_search(start_node=i, notgetlist=notgetlist, deep=deep,
-                                           length=length + node.boundingRect().width() + 20, id_dict=id_dict)
-                list_child_deep.append(deep)
+                                           length=length + node.boundingRect().width() + 40, id_dict=id_dict)
+                # list_child_deep.append(deep)
 
         if len(list_child_deep) >= 1:
             all_deep = 0
@@ -490,7 +494,7 @@ class GraphicScene(QGraphicsScene):
         #     node_deep = all_deep / len(start_node.child_list)
 
         node.setPos(length + 0.5 * node.boundingRect().width(), node_deep)
-#        if start_node.
+        #        if start_node.
 
         if deep1 > deep:
             return deep1
@@ -537,6 +541,7 @@ class GraphicScene(QGraphicsScene):
             j.update_positions()
         node_id = ax + 1
         self.update()
+        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name])
 
     def deleall(self):
         for i in self.nodes:
@@ -906,6 +911,8 @@ class GraphicItemGroup(QGraphicsItemGroup):
 
     def boundingRect(self):
         return self.GraphicItem1.boundingRect()
+
+    def setPos
 
     def pos(self):
         pos = super().pos()
