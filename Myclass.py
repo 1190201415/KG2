@@ -912,7 +912,10 @@ class GraphicItemGroup(QGraphicsItemGroup):
     def boundingRect(self):
         return self.GraphicItem1.boundingRect()
 
-    def setPos
+    def setPos(self, *__args):
+        super().setPos(*__args)
+        self.entity.x = self.pos().x()
+        self.entity.y = self.pos().y()
 
     def pos(self):
         pos = super().pos()
