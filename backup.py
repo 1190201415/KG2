@@ -56,14 +56,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(my_MainWindow, self).__init__(parent)
 
-        self.setWindowTitle('知识图谱编辑器')
         self.now_entity_type = None
         self.now_relation_type = None
         self.setupUi(self)
 
         self.initentityType()
         self.initrelationType()
-        self.init_treeview_1(self.treeView, Myclass.entityType_dict, name='实体类型列表')
+        self.init_treeview_1(self.treeView, Myclass.entityType_dict, Myclass.ktsqepType_dict,name='独立实体类型', name2='附加实体类型')
         # self.init_treeview(self.treeView_2, self.KG_dict, name=' 计算思维（计算机科学导论）')
         # self.graphicsSence = Myclass.GraphicScene(parent=self.centralwidget)
 
@@ -96,6 +95,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         # self.initLayouts()
         #self.showMaximized()
+        self.setWindowTitle('KT-SQEP知识图谱工具')
         self.treeView_kg.initxml()
 
     def initLayouts(self):
@@ -173,13 +173,17 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         print(text)
 
 
-    def init_treeview_1(self, treeView, dict, name=''):
+    def init_treeview_1(self, treeView, dict, dict2, name='', name2 =''):
+        treeView.setHeaderHidden(True)
         model = QtGui.QStandardItemModel()
         entityytpeclass1 = QtGui.QStandardItem(name)
+        entityytpeclass2 = QtGui.QStandardItem(name2)
         item1 = QtGui.QStandardItem('内容型')
         item2 = QtGui.QStandardItem('资源型')
+        item3 = QtGui.QStandardItem('方法型')
         entityytpeclass1.appendRow(item1)
         entityytpeclass1.appendRow(item2)
+        entityytpeclass2.appendRow(item3)
         num = 0
         for i in dict.keys():
             if num < 4:
@@ -192,8 +196,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
                 item2.appendRow(item)
                 num = num  + 1
+        for i in dict2.keys():
+            item = QtGui.QStandardItem(dict2[i].class_name)
+            item.setIcon(QIcon('picture/' + dict2[i].class_name + '.png'))
+            item3.appendRow(item)
 
         model.appendRow(entityytpeclass1)
+        model.appendRow(entityytpeclass2)
 
         treeView.setModel(model)
         model.setHorizontalHeaderLabels([''])
@@ -201,6 +210,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # 03/21：初始化右侧树视图
 
     def init_treeview(self, treeView, dict, name=''):
+        treeView.setHeaderHidden(True)
         model = QtGui.QStandardItemModel()
         entityytpeclass1 = QtGui.QStandardItem(name)
         for i in dict.keys():
@@ -220,6 +230,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.model_kg = QtGui.QStandardItemModel()
         self.model_kg.setHorizontalHeaderLabels([''])
         self.treeView_kg.setModel(self.model_kg)
+        self.treeView_kg.setHeaderHidden(True)
 
         # 添加数据示例
         root_item = QtGui.QStandardItem(" 计算思维（计算机科学导论）")
@@ -353,7 +364,21 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.entityType_dict["NodeType7"] = Myclass.entityType(class_name='文档', classification='资源型节点',
                                                                   identity='PDF',
                                                                   level='教学素材', opentool='PDFviewer')
-
+        Myclass.ktsqepType_dict["NodeType1"] = Myclass.entityType(class_name='知识 K', classification='附加节点',
+                                                                  identity='知识',
+                                                                  level='三级', opentool='无')
+        Myclass.ktsqepType_dict["NodeType2"] = Myclass.entityType(class_name='思维 T', classification='附加节点',
+                                                                  identity='思维',
+                                                                  level='三级', opentool='无')
+        Myclass.ktsqepType_dict["NodeType3"] = Myclass.entityType(class_name='示例 E', classification='附加节点',
+                                                                  identity='示例',
+                                                                  level='三级', opentool='无')
+        Myclass.ktsqepType_dict["NodeType4"] = Myclass.entityType(class_name='问题 Q', classification='附加节点',
+                                                                  identity='问题',
+                                                                  level='三级', opentool='无')
+        Myclass.ktsqepType_dict["NodeType5"] = Myclass.entityType(class_name='练习 P', classification='附加节点',
+                                                                  identity='练习',
+                                                                  level='三级', opentool='无')
     def clickaction1_1(self):
         self.childwindow = childwindow_1()
 

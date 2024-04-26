@@ -24,9 +24,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setObjectName("widget")
+        self.widget.setStyleSheet("border: none;")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.scrollArea = QtWidgets.QScrollArea(self.widget)
+        self.scrollArea.setStyleSheet("border: none;")
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
@@ -35,11 +37,13 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
         self.verticalLayout.setObjectName("verticalLayout")
         self.treeView = QtWidgets.QTreeView(self.scrollAreaWidgetContents_6)
+        self.treeView.setStyleSheet("border: none;")
         self.treeView.setObjectName("treeView")
         self.verticalLayout.addWidget(self.treeView)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_6)
         self.verticalLayout_3.addWidget(self.scrollArea)
         self.scrollArea_2 = QtWidgets.QScrollArea(self.widget)
+        self.scrollArea_2.setStyleSheet("border: none;")
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_9 = QtWidgets.QWidget()
@@ -48,6 +52,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_9)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.treeView_3 = QtWidgets.QTreeView(self.scrollAreaWidgetContents_9)
+        self.treeView_3.setStyleSheet("border: none;")
         self.treeView_3.setObjectName("treeView_3")
         self.verticalLayout_2.addWidget(self.treeView_3)
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_9)
@@ -61,6 +66,7 @@ class Ui_MainWindow(object):
 
         self.graphicsView.setMinimumSize(QtCore.QSize(660, 610))
         self.graphicsView.setObjectName("graphicsView")
+        self.graphicsView.setStyleSheet("border: none;")
         self.horizontalLayout.addWidget(self.graphicsView)
 
 
@@ -69,6 +75,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget_2)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.scrollArea_3 = QtWidgets.QScrollArea(self.widget_2)
+        self.scrollArea_3.setStyleSheet("border: none;")
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName("scrollArea_3")
         self.scrollAreaWidgetContents_10 = QtWidgets.QWidget()
@@ -80,6 +87,7 @@ class Ui_MainWindow(object):
 
 
         self.treeView_kg = Myclass.my_treeview(parent=self.scrollAreaWidgetContents_10,scence=self.graphicsSence)
+        self.treeView_kg.setStyleSheet("border: none;")
         self.treeView_kg.setObjectName("treeView_kg")
         self.verticalLayout_4.addWidget(self.treeView_kg)
 

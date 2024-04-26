@@ -25,6 +25,7 @@ from entity1 import Ui_Dialog
 import xml.etree.ElementTree as ET
 
 entityType_dict = {}
+ktsqepType_dict = {}
 relationType_dict = {}
 knowledge_graphs_class = {
     # "知识图谱1": {

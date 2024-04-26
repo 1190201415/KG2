@@ -23,9 +23,15 @@
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,4,1">
     <item>
      <widget class="QWidget" name="widget" native="true">
+      <property name="styleSheet">
+       <string notr="true">border: none;</string>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QScrollArea" name="scrollArea">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -34,13 +40,17 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>155</width>
-            <height>378</height>
+            <width>157</width>
+            <height>380</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QTreeView" name="treeView"/>
+            <widget class="QTreeView" name="treeView">
+             <property name="styleSheet">
+              <string notr="true">border: none;</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -48,6 +58,9 @@
        </item>
        <item>
         <widget class="QScrollArea" name="scrollArea_2">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -56,13 +69,17 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>155</width>
-            <height>377</height>
+            <width>157</width>
+            <height>379</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QTreeView" name="treeView_3"/>
+            <widget class="QTreeView" name="treeView_3">
+             <property name="styleSheet">
+              <string notr="true">border: none;</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -86,6 +103,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
         <widget class="QScrollArea" name="scrollArea_3">
+         <property name="styleSheet">
+          <string notr="true">border: none;</string>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -94,13 +114,17 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>155</width>
-            <height>764</height>
+            <width>157</width>
+            <height>766</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QTreeView" name="treeView_kg"/>
+            <widget class="QTreeView" name="treeView_kg">
+             <property name="styleSheet">
+              <string notr="true">border: none;</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
