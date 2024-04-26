@@ -112,6 +112,14 @@ class attachment(object):
                 str1 = str1 + '0'
         return str1
 
+    def restrlist(self):
+        list1 = []
+        attri = vars(self)
+        for a, v in attri.items():
+            if v:
+                list1.append(a)
+        return list1
+
     def tobool(self, str):
         if str == '0':
             return False
@@ -879,28 +887,30 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.class_ = 'KA'
         self.get_class(entity.class_name)
         self.attachment = []
-        font = QFont()
-        font.setFamily("SimHei")
-        font.setBold(True)
+        font_text2 = QFont("Arial", 14, QFont.Bold)
+        #font.setFamily("SimHei")
+        self.start_heightth = 18
+        self.start_width = 10
+        font_text2.setBold(True)
         if self.classtype == 1:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type1')
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
-            self.GraphicText2.setBrush(QColor(0, 0, 0))
-            self.GraphicText2.setFont(font)
-            self.GraphicText2.setPos(10, (
-                    self.GraphicItem1.line_distance - self.GraphicText2.boundingRect().height()) * 0.5)
+            self.GraphicText2.setBrush(QColor(189,53,61))
+            self.GraphicText2.setFont(font_text2)
+            self.GraphicText2.setPos(self.start_width, self.start_heightth)
         else:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type2')
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
             self.GraphicText2.setBrush(QColor(255, 255, 255))
-            self.GraphicText2.setFont(font)
+            self.GraphicText2.setFont(font_text2)
             self.GraphicText2.setPos((self.GraphicItem1.width - self.GraphicText2.boundingRect().width()) * 0.5, (
-                    self.GraphicItem1.line_distance - self.GraphicText2.boundingRect().height()) * 0.5)
+                    self.start_heightth - self.GraphicText2.boundingRect().height()) * 0.5)
+        font_text1 = QFont("微软雅黑", 12, QFont.Bold)
         self.GraphicText1 = QGraphicsTextItem("请输入内容")
-        self.GraphicText1.setTextWidth(150)
-        self.textwith = self.GraphicText1.boundingRect().width()
-        self.GraphicText1.setPos(5,
-                                 self.GraphicItem1.line_distance)  # 这里再设置位置，就变成了相对group的位置了
+        self.GraphicText1.setFont(font_text1)
+        self.GraphicText1.setTextWidth(self.GraphicItem1.boundingRect().width()-self.GraphicText2.boundingRect().width()-self.start_width)
+        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width()+self.start_width,
+                                 self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
         self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
         self.addToGroup(self.GraphicItem1)
         self.addToGroup(self.GraphicText1)
@@ -954,81 +964,107 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.entity.x = self.pos().x()
         self.entity.y = self.pos().y()
 
+    def clearlist(self):
+        for i in self.attachment:
+            self.removeFromGroup(i)
+            self.scene.removeItem(i)
+        self.attachment.clear()
+
+    def reinitattach(self):
+        num = 0
+        heoght = 50
+        for i in self.attach.restrlist():
+            print(i)
+            atta = myGraphicItemGroup_2(text=i, group=self)
+            self.attachment.append(atta)
+            self.addToGroup(atta)
+            atta.setPos(5+num * 21, heoght)
+            num = num +1
+            if num==2:
+                num = 0
+                heoght = heoght + 20
+        if len(self.attachment)%2==1:
+            self.attachment[len(self.attachment)-1].setPos(15.5, heoght)
+
+
     def re_init(self, entity: entity):
+        self.clearlist()
         self.entity.class_name = entity.class_name
         self.entity.content = entity.content
         self.entity.attach = entity.attach
         self.name = entity.class_name
         self.GraphicText1.setPlainText(entity.content)
         self.attach = entity.attach
-        num = -1
-        if self.attach.K:
-            num = num + 1
-        if self.attach.K and 'K' not in self.attachment:
-            self.itemk = myGraphicItemGroup_2(text='K', group=self)
-            self.attachment.append('K')
-            self.addToGroup(self.itemk)
-            self.itemk.setPos(140 - num * 20, 5)
-        if 'K' in self.attachment and not self.attach.K:
-            self.removeFromGroup(self.itemk)
-            self.scene.removeItem(self.itemk)
-            self.attachment.remove('K')
-        if self.attach.T:
-            num = num + 1
-        if self.attach.T and 'T' not in self.attachment:
-            self.itemT = myGraphicItemGroup_2(text='T', group=self)
-            self.attachment.append('T')
-            self.addToGroup(self.itemT)
-            self.itemT.setPos(140 - num * 20, 5)
-        if 'T' in self.attachment and not self.attach.T:
-            self.removeFromGroup(self.itemT)
-            self.scene.removeItem(self.itemT)
-            self.attachment.remove('T')
-        if self.attach.Z:
-            num = num + 1
-        if self.attach.Z and 'Z' not in self.attachment:
-            self.itemZ = myGraphicItemGroup_2(text='Z', group=self)
-            self.attachment.append('Z')
-            self.addToGroup(self.itemZ)
-            self.itemZ.setPos(140 - num * 20, 5)
-        if 'Z' in self.attachment and not self.attach.Z:
-            self.removeFromGroup(self.itemZ)
-            self.scene.removeItem(self.itemZ)
-            self.attachment.remove('Z')
-        if self.attach.E:
-            num = num + 1
-        if self.attach.E and 'E' not in self.attachment:
-            self.itemE = myGraphicItemGroup_2(text='E', group=self)
-            self.attachment.append('E')
-            self.addToGroup(self.itemE)
-            self.itemE.setPos(140 - num * 20, 5)
-        if 'E' in self.attachment and not self.attach.E:
-            self.removeFromGroup(self.itemE)
-            self.scene.removeItem(self.itemE)
-            self.attachment.remove('E')
-        if self.attach.Q:
-            num = num + 1
-        if self.attach.Q and 'Q' not in self.attachment:
-            self.itemQ = myGraphicItemGroup_2(text='Q', group=self)
-            self.attachment.append('Q')
-            self.addToGroup(self.itemQ)
-            self.itemQ.setPos(140 - num * 20, 5)
-        if 'Q' in self.attachment and not self.attach.Q:
-            self.removeFromGroup(self.itemQ)
-            self.scene.removeItem(self.itemQ)
-            self.attachment.remove('Q')
-        if self.attach.P:
-            num = num + 1
-        if self.attach.P and 'P' not in self.attachment:
-            self.itemP = myGraphicItemGroup_2(text='P', group=self)
-            self.attachment.append('P')
-            self.addToGroup(self.itemP)
-            self.itemP.setPos(140 - num * 20, 5)
-        if 'P' in self.attachment and not self.attach.P:
-            self.removeFromGroup(self.itemP)
-            self.scene.removeItem(self.itemP)
-            self.attachment.remove('P')
-        if self.GraphicText1.boundingRect().height() > 60:
+        self.reinitattach()
+        #
+        # num = -1
+        # if self.attach.K:
+        #     num = num + 1
+        # if self.attach.K and 'K' not in self.attachment:
+        #     self.itemk = myGraphicItemGroup_2(text='K', group=self)
+        #     self.attachment.append('K')
+        #     self.addToGroup(self.itemk)
+        #     self.itemk.setPos(140 - num * 20, 5)
+        # if 'K' in self.attachment and not self.attach.K:
+        #     self.removeFromGroup(self.itemk)
+        #     self.scene.removeItem(self.itemk)
+        #     self.attachment.remove('K')
+        # if self.attach.T:
+        #     num = num + 1
+        # if self.attach.T and 'T' not in self.attachment:
+        #     self.itemT = myGraphicItemGroup_2(text='T', group=self)
+        #     self.attachment.append('T')
+        #     self.addToGroup(self.itemT)
+        #     self.itemT.setPos(140 - num * 20, 5)
+        # if 'T' in self.attachment and not self.attach.T:
+        #     self.removeFromGroup(self.itemT)
+        #     self.scene.removeItem(self.itemT)
+        #     self.attachment.remove('T')
+        # if self.attach.Z:
+        #     num = num + 1
+        # if self.attach.Z and 'Z' not in self.attachment:
+        #     self.itemZ = myGraphicItemGroup_2(text='Z', group=self)
+        #     self.attachment.append('Z')
+        #     self.addToGroup(self.itemZ)
+        #     self.itemZ.setPos(140 - num * 20, 5)
+        # if 'Z' in self.attachment and not self.attach.Z:
+        #     self.removeFromGroup(self.itemZ)
+        #     self.scene.removeItem(self.itemZ)
+        #     self.attachment.remove('Z')
+        # if self.attach.E:
+        #     num = num + 1
+        # if self.attach.E and 'E' not in self.attachment:
+        #     self.itemE = myGraphicItemGroup_2(text='E', group=self)
+        #     self.attachment.append('E')
+        #     self.addToGroup(self.itemE)
+        #     self.itemE.setPos(140 - num * 20, 5)
+        # if 'E' in self.attachment and not self.attach.E:
+        #     self.removeFromGroup(self.itemE)
+        #     self.scene.removeItem(self.itemE)
+        #     self.attachment.remove('E')
+        # if self.attach.Q:
+        #     num = num + 1
+        # if self.attach.Q and 'Q' not in self.attachment:
+        #     self.itemQ = myGraphicItemGroup_2(text='Q', group=self)
+        #     self.attachment.append('Q')
+        #     self.addToGroup(self.itemQ)
+        #     self.itemQ.setPos(140 - num * 20, 5)
+        # if 'Q' in self.attachment and not self.attach.Q:
+        #     self.removeFromGroup(self.itemQ)
+        #     self.scene.removeItem(self.itemQ)
+        #     self.attachment.remove('Q')
+        # if self.attach.P:
+        #     num = num + 1
+        # if self.attach.P and 'P' not in self.attachment:
+        #     self.itemP = myGraphicItemGroup_2(text='P', group=self)
+        #     self.attachment.append('P')
+        #     self.addToGroup(self.itemP)
+        #     self.itemP.setPos(140 - num * 20, 5)
+        # if 'P' in self.attachment and not self.attach.P:
+        #     self.removeFromGroup(self.itemP)
+        #     self.scene.removeItem(self.itemP)
+        #     self.attachment.remove('P')
+        if self.GraphicText1.boundingRect().height() +self.start_heightth > self.GraphicItem1.boundingRect().height():
             self.GraphicItem1.length = self.GraphicText1.boundingRect().height() + 30
             self.GraphicItem1.update()
 
@@ -1045,24 +1081,25 @@ class myGraphicItem(QGraphicsItem):
         super(myGraphicItem, self).__init__(parent)
         self.Group = group
         self.scene = scene
-        self.line_distance = 30
-        self.width = 160
-        self.length = 90
+        self.paintwidth = 3
+        #self.line_distance = 30
+        self.width = 200
+        self.length = 200*0.62
         self.type = type
 
     def boundingRect(self):
-        penWidth = 1
+        penWidth = self.paintwidth
         return QRectF(0 - penWidth / 2, 0 - penWidth / 2, penWidth + self.width, penWidth + self.length)
 
     def paint1(self, painter, Q=QColor(255, 255, 255)):
         painter.setBrush(Q)
-        painter.setPen(QPen(QColor(0, 139, 139), Qt.SolidLine))
+        painter.setPen(QPen(QColor(54,131,248),self.paintwidth))
         painter.drawRoundedRect(0, 0, self.width, self.length, 30, 30, Qt.RelativeSize)  # z坐标位置 长 宽
-        painter.drawLine(0, self.line_distance, self.width, self.line_distance)
+        #painter.drawLine(0, self.line_distance, self.width, self.line_distance)
 
     def paint2(self, painter):
         painter.setBrush(QColor(128, 128, 128))
-        painter.setPen(QPen(QColor(0, 139, 139), Qt.SolidLine))
+        painter.setPen(QPen(QColor(0, 139, 139), self.paintwidth))
         painter.drawRoundedRect(0, 0, self.width, self.length, 30, 30, Qt.RelativeSize)  # z坐标位置 长 宽
         painter.setPen(QPen(QColor(255, 204, 0), Qt.SolidLine))
         painter.drawLine(0, 30, self.width, 30)
@@ -1077,7 +1114,7 @@ class myGraphicItem(QGraphicsItem):
         if self.Group.class_ == 'KP':
             Q = QColor(189, 181, 225)
         if self.Group.class_ == 'KD':
-            Q = QColor(249, 213, 128)
+            Q = QColor(180,199,231)
         if self.type == 'type1':
             self.paint1(painter, Q=Q)
         elif self.type == 'type2':
@@ -1091,18 +1128,26 @@ class myGraphicItemGroup_2(QGraphicsItemGroup):
     def __init__(self, group, text='',
                  parent=None):
         super(myGraphicItemGroup_2, self).__init__(parent)
-        self.item = QGraphicsEllipseItem(0, 0, 20, 20)
-        font = QFont()
-        font.setFamily("SimHei")
-        font.setBold(True)
-        self.GraphicText = QGraphicsSimpleTextItem(text)
-        self.GraphicText.setBrush(QColor(0, 0, 0))
-        self.GraphicText.setFont(font)
-        self.GraphicText.setPos(10 - 0.5 * self.GraphicText.boundingRect().width(),
-                                10 - 0.5 * self.GraphicText.boundingRect().height())
-        self.addToGroup(self.GraphicText)
-        self.addToGroup(self.item)
-        self.setPos(group.pos())
+        self.group = group
+        self.repaint(True,text=text)
+
+
+    def repaint(self,flag:bool,text = ''):
+        if flag:
+            self.item = QGraphicsEllipseItem(0, 0, 20, 20)
+            self.item.setBrush(QColor(255,192,0))
+            self.item.setPen(QColor(180,199,231))
+            font = QFont()
+            font.setFamily("微软雅黑")
+            font.setBold(True)
+            self.GraphicText = QGraphicsSimpleTextItem(text)
+            self.GraphicText.setBrush(QColor(192,0,0))
+            self.GraphicText.setFont(font)
+            self.GraphicText.setPos(10 - 0.5 * self.GraphicText.boundingRect().width(),
+                                    10 - 0.5 * self.GraphicText.boundingRect().height())
+            self.addToGroup(self.item)
+            self.addToGroup(self.GraphicText)
+            self.setPos(self.group.pos())
 
 
 class GraphicItem(QGraphicsPixmapItem):
