@@ -290,6 +290,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_update_request(self):
         self.graphicsSence.update_kg()
+        self.graphicsSence.update()
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
         NUM_FUN = 5

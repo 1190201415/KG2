@@ -765,6 +765,7 @@ class GraphicView(QGraphicsView):
             if isinstance(group, GraphicItemGroup):
                 print(text)
                 self.handleDropOnEntity(group, text)
+                group.re_init(group.entity)
         else:
             event.acceptProposedAction()
             entity = self.nameToentity(name=text, x=item_pos.x(), y=item_pos.y())
@@ -793,6 +794,7 @@ class GraphicView(QGraphicsView):
         elif '练习 P' in text:
             item.entity.attach.P = not item.entity.attach.P
             self.updateRequest.emit()
+
     def mousePressEvent(self, event: QtGui.QMouseEvent):
 
         item = self.get_item_at_click(event)
