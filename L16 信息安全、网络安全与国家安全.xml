@@ -49,18 +49,6 @@
 			<y>474.0</y>
 		</entity>
 		<entity>
-			<id>11</id>
-			<class_name>&#30693;&#35782;&#28857;</class_name>
-			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
-			<identity>&#30693;&#35782;</identity>
-			<level>&#24402;&#32435;&#32423;</level>
-			<attach>100000</attach>
-			<opentool>&#26080;</opentool>
-			<content>&#22269;&#23478;&#23433;&#20840;</content>
-			<x>189.0</x>
-			<y>673.0</y>
-		</entity>
-		<entity>
 			<id>12</id>
 			<class_name>&#30693;&#35782;&#28857;</class_name>
 			<classification>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</classification>
@@ -599,16 +587,6 @@
 			<class_name>&#27425;&#24207;&#20851;&#31995;</class_name>
 			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
 			<classification>&#27425;&#24207;&#20851;&#31995;</classification>
-			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
-			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
-		</relation>
-		<relation>
-			<name>&#21253;&#21547;</name>
-			<headnodeid>1</headnodeid>
-			<tailnodeid>11</tailnodeid>
-			<class_name>&#21253;&#21547;&#20851;&#31995;</class_name>
-			<mask>&#30693;&#35782;&#36830;&#32447;</mask>
-			<classification>&#21253;&#21547;&#20851;&#31995;</classification>
 			<head_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</head_need>
 			<tail_need>&#20869;&#23481;&#26041;&#27861;&#22411;&#33410;&#28857;</tail_need>
 		</relation>

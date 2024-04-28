@@ -662,6 +662,7 @@ class GraphicView(QGraphicsView):
     entityDropped = pyqtSignal(str)  # 假设信号传递实体名称和坐标
     relationAdded = pyqtSignal(str, str)
     relationRemove = pyqtSignal(str, str)
+    updateRequest = pyqtSignal()
 
     def __init__(self, graphic_scene: GraphicScene, parent=None):
         super().__init__(parent)
@@ -754,15 +755,44 @@ class GraphicView(QGraphicsView):
         index = treeView.currentIndex()
         text = treeView.model().data(index)
         item_pos = self.mapToScene(event.pos())
-        entity = self.nameToentity(name=text, x=item_pos.x(), y=item_pos.y())
-        if entity is None:
-            return
-        item = GraphicItemGroup(scene=self.gr_scene, entity=entity, x=item_pos.x(), y=item_pos.y())
-        self.gr_scene.add_node(item)
 
-        entity_name = text  # 假定拖拽的文本是实体名称
-        self.entityDropped.emit(entity_name)
+        item = self.itemAt(item_pos.x(), item_pos.y())
+        # 04/28 方法新节点拖拽事件
+        if isinstance(item, myGraphicItem):
+            print("11111")
+            # 确定拖拽的对象是从QTreeView中的哪个条目来的
+            group = item.parentItem()  # 获取父项
+            if isinstance(group, GraphicItemGroup):
+                print(text)
+                self.handleDropOnEntity(group, text)
+        else:
+            event.acceptProposedAction()
+            entity = self.nameToentity(name=text, x=item_pos.x(), y=item_pos.y())
+            if entity is None:
+                return
+            item = GraphicItemGroup(scene=self.gr_scene, entity=entity, x=item_pos.x(), y=item_pos.y())
+            self.gr_scene.add_node(item)
 
+            entity_name = text  # 假定拖拽的文本是实体名称
+            self.entityDropped.emit(entity_name)
+
+    def handleDropOnEntity(self, item, text):
+        # 根据text确定需要更新的属性
+        if '知识 K' in text:
+            item.entity.attach.K = not item.entity.attach.K
+            self.updateRequest.emit()
+        elif '思维 T' in text:
+            item.entity.attach.T = not item.entity.attach.T
+            self.updateRequest.emit()
+        elif '示例 E' in text:
+            item.entity.attach.E = not item.entity.attach.E
+            self.updateRequest.emit()
+        elif '问题 Q' in text:
+            item.entity.attach.Q = not item.entity.attach.Q
+            self.updateRequest.emit()
+        elif '练习 P' in text:
+            item.entity.attach.P = not item.entity.attach.P
+            self.updateRequest.emit()
     def mousePressEvent(self, event: QtGui.QMouseEvent):
 
         item = self.get_item_at_click(event)

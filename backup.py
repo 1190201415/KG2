@@ -92,7 +92,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action1_1.triggered.connect(self.clickaction1_1)
         self.action1_2.triggered.connect(self.csave_kgs)
         self.action2_1.triggered.connect(self.auto_layout)
-
+        self.graphicsView.updateRequest.connect(self.handle_update_request)
         # self.initLayouts()
         #self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
@@ -288,7 +288,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         print(f"当前选中的项：{item.text()}")
         # 在这里可以根据选中的项进行进一步的操作
 
-
+    def handle_update_request(self):
+        self.graphicsSence.update_kg()
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
         NUM_FUN = 5
