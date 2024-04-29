@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, 
     QGraphicsTextItem, \
     QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog
 from PyQt5.QtCore import Qt, QLine, QPointF, QPoint, pyqtSignal, QRectF
-from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont
+from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform
 from typing import List, Dict
 
 
@@ -755,8 +755,12 @@ class GraphicView(QGraphicsView):
         index = treeView.currentIndex()
         text = treeView.model().data(index)
         item_pos = self.mapToScene(event.pos())
-
-        item = self.itemAt(item_pos.x(), item_pos.y())
+        # 将QPointF的坐标转换为整数
+        intX = int(item_pos.x())
+        intY = int(item_pos.y())
+        # 使用转换后的整数坐标调用itemAt
+        item = self.scene().itemAt(item_pos, QTransform())
+        print(item)
         # 04/28 方法新节点拖拽事件
         if isinstance(item, myGraphicItem):
             print("11111")
