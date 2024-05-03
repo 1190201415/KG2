@@ -52,7 +52,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # },
     }
     num = 1
-
+    is_kg_changed = False
     def __init__(self, parent=None):
         super(my_MainWindow, self).__init__(parent)
 
@@ -91,7 +91,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView_3.clicked.connect(self.clicked_treeView3)
         self.action1_1.triggered.connect(self.clickaction1_1)
         self.action1_2.triggered.connect(self.csave_kgs)
-        self.action2_1.triggered.connect(self.auto_layout)
+        self.action2_1.triggered.connect(self.confirm_auto_layout)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
         # self.initLayouts()
         #self.showMaximized()
@@ -293,27 +293,31 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.graphicsSence.update()
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
-        NUM_FUN = 5
-        self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
-        self.progressDialog.setWindowTitle("退出中")
-        self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
-        self.progressDialog.show()
+        if self.graphicsSence.is_kg_changed:
+            reply = QMessageBox.question(self, '保存更改', '是否保存图谱更新?', QMessageBox.Yes | QMessageBox.No,
+                                         QMessageBox.Yes)
+            if reply == QMessageBox.Yes:
+                NUM_FUN = 5
+                # self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
+                # self.progressDialog.setWindowTitle("退出中")
+                # self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
+                # self.progressDialog.show()
+                #
+                # #self.save_entityType()
+                # self.progressDialog.setValue(1)
+                # QCoreApplication.processEvents()
+                #
+                # #self.save_relationType()
+                # self.progressDialog.setValue(2)
+                # QCoreApplication.processEvents()
+                #
+                # #self.save_relationType()
+                # self.progressDialog.setValue(3)
+                # QCoreApplication.processEvents()
 
-        #self.save_entityType()
-        self.progressDialog.setValue(1)
-        QCoreApplication.processEvents()
-
-        #self.save_relationType()
-        self.progressDialog.setValue(2)
-        QCoreApplication.processEvents()
-
-        #self.save_relationType()
-        self.progressDialog.setValue(3)
-        QCoreApplication.processEvents()
-
-        self.csave_kgs()
-        self.progressDialog.setValue(NUM_FUN)
-        reply = QMessageBox.question(self, 'Warning', '确认退出？', QMessageBox.Yes, QMessageBox.No)
+                self.csave_kgs()
+                # self.progressDialog.setValue(NUM_FUN)
+        reply = QMessageBox.question(self, '退出', '确认退出？', QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             a0.accept()
 
@@ -327,6 +331,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.graphicsSence.update()
         Myclass.save_kgs()
 
+    def confirm_auto_layout(self):
+        reply = QMessageBox.question(
+            self, '确认自动布局', '您确定要执行自动布局吗？',
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+        )
+        if reply == QMessageBox.Yes:
+            self.auto_layout()
     def auto_layout(self):
         self.graphicsSence.auto_layout()
 
@@ -419,6 +430,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if kg_name in self.knowledge_graphs:
             entity = {"name": entity_name, "type": entity_type}
             self.knowledge_graphs[kg_name]["entities"].append(entity)
+            self.is_kg_changed = True
+            print("is_kg_changed" + self.is_kg_changed)
 
     def add_relation(self, kg_name, head_entity_name, tail_entity_name, relation_type="包含关系"):
         if kg_name in self.knowledge_graphs and relation_type in Myclass.relationType_dict:
@@ -429,6 +442,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             if head_entity and tail_entity:  # 确保头尾实体都存在
                 relation = (head_entity_name, tail_entity_name, relation_type)
                 self.knowledge_graphs[kg_name]["relations"].append(relation)
+                self.is_kg_changed = True
+                print("is_kg_changed" + self.is_kg_changed)
 
     def remove_relation(self, kg_name, head_entity_name, tail_entity_name, relation_type):
         if kg_name in self.knowledge_graphs:
@@ -439,6 +454,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 if not (relation[0] == head_entity_name and relation[1] == tail_entity_name and relation[
                     2] == relation_type)
             ]
+            self.is_kg_changed = True
+            print("is_kg_changed" + self.is_kg_changed)
 
     def remove_entity(self, kg_name, entity_name):
         if kg_name in self.knowledge_graphs:
@@ -454,6 +471,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 relation for relation in relations
                 if relation[0] != entity_name and relation[1] != entity_name
             ]
+            print("is_kg_changed" + self.is_kg_changed)
 
     # 03/21 kg点击槽函数
     def on_kg_selected(self, selected, deselected):
@@ -554,6 +572,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 if __name__ == '__main__':
     # gc.enable()
     app = QtWidgets.QApplication(sys.argv)  # 初始化界面
+    app.setAttribute(Qt.AA_EnableHighDpiScaling)
+    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
     MainWindow = my_MainWindow()
 
     desktop = QApplication.desktop()

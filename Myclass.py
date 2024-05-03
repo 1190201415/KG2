@@ -436,7 +436,7 @@ class my_Ui_Dialog(QDialog, Ui_Dialog):
 
 class GraphicScene(QGraphicsScene):
     entityRemove = pyqtSignal(str)
-
+    is_kg_changed = False
     def __init__(self, parent=None, ):
         super().__init__(parent)
         self.nodes = []
@@ -586,6 +586,7 @@ class GraphicScene(QGraphicsScene):
             print('添加', node)
             knowledge_graphs_class[current_kg_name]['entities'].append(node)
             save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+            self.is_kg_changed = True
 
     def add_link(self, link):
         if link not in self.links:
@@ -593,6 +594,8 @@ class GraphicScene(QGraphicsScene):
             self.links.append(link)
             self.addItem(link)
             knowledge_graphs_class[current_kg_name]['relations'].append(link.edge)
+            self.is_kg_changed = True
+
 
     def remove_node(self, node):
         for i in self.links:
@@ -605,6 +608,7 @@ class GraphicScene(QGraphicsScene):
         del node
         # node.deleteLater()
         save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+        self.is_kg_changed = True
 
     def remove_link(self, link):
         print("删除", link)
@@ -615,6 +619,8 @@ class GraphicScene(QGraphicsScene):
             del link
             # link.deleteLater()
             save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+            self.is_kg_changed = True
+
 
     def get_all_item(self):
         for item in self.nodes:
@@ -1150,7 +1156,7 @@ class myGraphicItem(QGraphicsItem):
         if self.Group.class_ == 'KP':
             Q = QColor(189, 181, 225)
         if self.Group.class_ == 'KD':
-            Q = QColor(180,199,231)
+            Q = QColor(182,215,232)
         if self.type == 'type1':
             self.paint1(painter, Q=Q)
         elif self.type == 'type2':
