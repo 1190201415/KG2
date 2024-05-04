@@ -97,6 +97,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         #self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
         self.treeView_kg.initxml()
+        self.comboBox_2.addItems(["教学知识图谱", "能力知识图谱", "术语知识图谱"])
+        self.comboBox.addItems(["计算思维（计算机科学导论）"])
 
     def initLayouts(self):
         # 创建主布局容器

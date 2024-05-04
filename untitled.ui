@@ -27,6 +27,15 @@
        <string notr="true">border: none;</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>11</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QScrollArea" name="scrollArea">
          <property name="styleSheet">
@@ -41,10 +50,19 @@
             <x>0</x>
             <y>0</y>
             <width>157</width>
-            <height>380</height>
+            <height>391</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="comboBox_2"/>
+           </item>
            <item>
             <widget class="QTreeView" name="treeView">
              <property name="styleSheet">
@@ -70,10 +88,13 @@
             <x>0</x>
             <y>0</y>
             <width>157</width>
-            <height>379</height>
+            <height>390</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QTreeView" name="treeView_3">
              <property name="styleSheet">
@@ -101,6 +122,12 @@
     <item>
      <widget class="QWidget" name="widget_2" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QScrollArea" name="scrollArea_3">
          <property name="styleSheet">
@@ -115,10 +142,16 @@
             <x>0</x>
             <y>0</y>
             <width>157</width>
-            <height>766</height>
+            <height>788</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="comboBox"/>
+           </item>
            <item>
             <widget class="QTreeView" name="treeView_kg">
              <property name="styleSheet">
