@@ -36,18 +36,6 @@ knowledge_graphs_class = {
 current_kg_name = '知识图谱1'
 node_id = 0
 
-def deepcopyentities(entities:list)->list:
-    pass
-
-def deepcopyrelations(relations:list)->list:
-    pass
-
-def copy_kg(na1,na2):
-    entities = deepcopyentities(knowledge_graphs_class[na1]["entities"])
-    relations = deepcopyrelations(knowledge_graphs_class[na2]["relations"])
-    if na2 not in knowledge_graphs_class.keys():
-        knowledge_graphs_class[na2] = {"entities": entities, "relations": relations}
-
 
 def save_kg(name, kg):
     root = ET.Element('KG')
@@ -342,6 +330,27 @@ class my_treeview(QTreeView):
             e.acceptProposedAction()
         else:
             e.ignore()
+
+    def copy_kg(self,name1,name2):
+        global current_kg_name
+        knowledge_graphs_class[name2] = {"entities": [], "relations": []}
+        entities = knowledge_graphs_class[name1]['entities']
+        relations = knowledge_graphs_class[name1]['relations']
+        for i in entities:
+            entity1 = copy.deepcopy(i.entity)
+            entity = GraphicItemGroup(scene=self.scence, entity=entity1, x=entity1.x, y=entity1.y)
+            knowledge_graphs_class[name2]['entities'].append(entity)
+        for i in relations:
+            relation1 = i.relation
+            itemrelation = Link(scene=self.scence, start_item=self.find_item(name2, int(relation1.headnodeid)),
+                                end_item=self.find_item(name2, int(relation1.tailnodeid)),
+                                flag=self.class_nameToflag(relation1.class_name))
+            itemrelation.flagToentity()
+            knowledge_graphs_class[name2]['relations'].append(itemrelation)
+        current_kg_name = name2
+        self.scence.update_kg()
+        self.my_sign_kg.emit()
+        self.expandAll()
 
     def dragMoveEvent(self, event: QtGui.QMouseEvent):
         event.accept()

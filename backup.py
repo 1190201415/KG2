@@ -430,11 +430,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             self.update_kg_treeview()
 
     def handle_my_sign2(self, name):
-        entities = copy.deepcopy(Myclass.knowledge_graphs_class[Myclass.current_kg_name]["entities"])
-        relations = copy.deepcopy(Myclass.knowledge_graphs_class[Myclass.current_kg_name]["relations"])
         if name not in Myclass.knowledge_graphs_class.keys():
-            Myclass.knowledge_graphs_class[name] = {"entities": entities, "relations": relations}
-            self.update_kg_treeview()
+            self.treeView_kg.copy_kg(Myclass.current_kg_name,name)
 
     def deleteAll(self, thisLayout):
         if thisLayout is None:
