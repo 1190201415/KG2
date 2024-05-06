@@ -100,14 +100,14 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         #self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
         self.treeView_kg.initxml()
-        self.comboBox_2.addItems(["教学知识图谱", "能力知识图谱", "术语知识图谱"])
+        self.comboBox_2.addItems(["教学知识图谱"])
         self.comboBox.addItems(["计算思维（计算机科学导论）"])
 
     def copy_kg(self):
         print(1)
         self.childwindow2 = childwindow_1()
         print(2)
-        self.childwindow2.changename(text='输入新的kg名称')
+        self.childwindow2.changename(text='输入新的图谱名称')
 
         self.childwindow2.my_sign1.connect(self.handle_my_sign2)
         print(3)
