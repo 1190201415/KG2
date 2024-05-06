@@ -944,7 +944,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.class_ = 'KA'
         self.get_class(entity.class_name)
         self.attachment = []
-        font_text2 = QFont("Arial", 14, QFont.Bold)
+        font_text2 = QFont("Arial", 18, QFont.Bold)
         #font.setFamily("SimHei")
         self.start_heightth = 18
         self.start_width = 10
@@ -954,7 +954,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
             self.GraphicText2.setBrush(QColor(189,53,61))
             self.GraphicText2.setFont(font_text2)
-            self.GraphicText2.setPos(self.start_width, self.start_heightth + 3)
+            self.GraphicText2.setPos(self.start_width, self.start_heightth)
         else:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type2')
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
@@ -1029,13 +1029,13 @@ class GraphicItemGroup(QGraphicsItemGroup):
 
     def reinitattach(self):
         num = 0
-        heoght = 50
+        heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
         for i in self.attach.restrlist():
             print(i)
             atta = myGraphicItemGroup_2(text=i, group=self)
             self.attachment.append(atta)
             self.addToGroup(atta)
-            atta.setPos(5+num * 21, heoght)
+            atta.setPos(5+num * 20, heoght)
             num = num +1
             if num==2:
                 num = 0
