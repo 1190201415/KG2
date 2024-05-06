@@ -394,6 +394,9 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.ktsqepType_dict["NodeType5"] = Myclass.entityType(class_name='练习 P', classification='附加节点',
                                                                   identity='练习',
                                                                   level='三级', opentool='无')
+        Myclass.ktsqepType_dict["NodeType6"] = Myclass.entityType(class_name='思政 Z', classification='附加节点',
+                                                                  identity='思政',
+                                                                  level='三级', opentool='无')
     def clickaction1_1(self):
         self.childwindow = childwindow_1()
 
