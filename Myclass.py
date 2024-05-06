@@ -470,6 +470,7 @@ class GraphicScene(QGraphicsScene):
         # 设置画背景的画笔
         self.setBackgroundBrush(self._color_background)
         self.setSceneRect(0, 0, 500, 500)
+        self.is_kg_changed = False
 
     def P_deep_search(self, start_node: GraphNode, notgetlist: list, deep: float, length: float,
                       id_dict: Dict[int, 'GraphicItemGroup']):
@@ -800,6 +801,7 @@ class GraphicView(QGraphicsView):
             self.entityDropped.emit(entity_name)
 
     def handleDropOnEntity(self, item, text):
+        self.is_kg_changed = True
         # 根据text确定需要更新的属性
         if '知识 K' in text:
             item.entity.attach.K = not item.entity.attach.K
