@@ -816,6 +816,9 @@ class GraphicView(QGraphicsView):
         elif '练习 P' in text:
             item.entity.attach.P = not item.entity.attach.P
             self.updateRequest.emit()
+        elif '思政 Z' in text:
+            item.entity.attach.Z = not item.entity.attach.Z
+            self.updateRequest.emit()
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
 
