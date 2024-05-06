@@ -1287,12 +1287,12 @@ class GraphicEdge(QGraphicsPathItem):
         super().__init__(parent)
         # 这个参数是GraphicEdge的包装类，见下文
         self.edge = edge_wrap
-        self.width = 1.2  # 线条的宽度
+        self.width = 2  # 线条的宽度
         self.pos_src = [0, 0]  # 线条起始位置 x，y坐标
         self.pos_dst = [0, 0]  # 线条结束位置
         self.id = relation_id
         self._mark_pen = QPen(Qt.black)
-        self._mark_pen.setWidthF(self.width)
+        self._mark_pen.setWidthF(1.2)
         self._mark_brush = QBrush()
         self._mark_brush.setColor(Qt.black)
         self._mark_brush.setStyle(Qt.SolidPattern)
@@ -1311,6 +1311,7 @@ class GraphicEdge(QGraphicsPathItem):
         if self.edge.flag == 3:
             self._pen = QPen(QColor(0, 196, 0))  # 画线条的
             self._pen.setWidthF(self.width)
+            self._pen.setStyle(Qt.DashDotLine)
             self._mark_pen = QPen(QColor(0, 196, 0))
 
         self._pen_dragging = QPen(QColor("#000"))  # 画拖拽线条时线条的
@@ -1352,19 +1353,11 @@ class GraphicEdge(QGraphicsPathItem):
         else:
             return a2
 
-    def paint_angle(self, painter):
-        self._mark_pen.setWidthF(1.2)
-        x1, y1 = self.pos_src
-        x2, y2 = self.pos_dst
-        a = x2 - x1
-        b = y2 - y1
-        k = math.atan2(y2 - y1, x2 - x1)  # theta
-        length = self.get_distance(self.edge.end_item.boundingRect().width(),
-                                   self.edge.end_item.boundingRect().height(), k)  # 圆点距离终点图元的距离
-        point1 = self.path().pointAtPercent(self.path().percentAtLength(math.sqrt(a * a + b * b) - length))
+    def draw_arrow(self, length, point, painter, k):
+        point1 = point
         new_x = point1.x()
         new_y = point1.y()
-        length_arrow = 10
+        length_arrow = length
         new_x1 = new_x - length_arrow * math.cos(k - np.pi / 8)
         new_y1 = new_y - length_arrow * math.sin(k - np.pi / 8)
         new_x2 = new_x - length_arrow * math.cos(k + np.pi / 8)
@@ -1378,6 +1371,25 @@ class GraphicEdge(QGraphicsPathItem):
         points.append(point1)
         points.append(point3)
         painter.drawPolyline(point2, point1, point3)
+
+    def paint_angle(self, painter):
+        self._mark_pen.setWidthF(1.2)
+        x1, y1 = self.pos_src
+        x2, y2 = self.pos_dst
+        a = x2 - x1
+        b = y2 - y1
+        k = math.atan2(y2 - y1, x2 - x1)  # theta
+        length = self.get_distance(self.edge.end_item.boundingRect().width(),
+                                   self.edge.end_item.boundingRect().height(), k)  # 圆点距离终点图元的距离
+        point1 = self.path().pointAtPercent(self.path().percentAtLength(math.sqrt(a * a + b * b) - length))
+        if self.edge.flag == 1:
+            point2 = self.path().pointAtPercent(0.5)
+            self.draw_arrow(length=10, point=point2, painter=painter, k=k)
+            point3 = self.path().pointAtPercent(self.path().percentAtLength(0.5*math.sqrt(a * a + b * b) + 10))
+            self.draw_arrow(length=10, point=point3, painter=painter, k=k)
+        else:
+            self.draw_arrow(length=10, point=point1, painter=painter, k=k)
+
 
     # override
     def paint(self, painter, graphics_item, widget=None):
