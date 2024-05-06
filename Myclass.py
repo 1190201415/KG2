@@ -36,6 +36,18 @@ knowledge_graphs_class = {
 current_kg_name = '知识图谱1'
 node_id = 0
 
+def deepcopyentities(entities:list)->list:
+    pass
+
+def deepcopyrelations(relations:list)->list:
+    pass
+
+def copy_kg(na1,na2):
+    entities = deepcopyentities(knowledge_graphs_class[na1]["entities"])
+    relations = deepcopyrelations(knowledge_graphs_class[na2]["relations"])
+    if na2 not in knowledge_graphs_class.keys():
+        knowledge_graphs_class[na2] = {"entities": entities, "relations": relations}
+
 
 def save_kg(name, kg):
     root = ET.Element('KG')
@@ -939,7 +951,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
             self.GraphicText2.setBrush(QColor(189,53,61))
             self.GraphicText2.setFont(font_text2)
-            self.GraphicText2.setPos(self.start_width, self.start_heightth)
+            self.GraphicText2.setPos(self.start_width, self.start_heightth + 3)
         else:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type2')
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
@@ -1144,7 +1156,7 @@ class myGraphicItem(QGraphicsItem):
         painter.setPen(QPen(QColor(0, 139, 139), self.paintwidth))
         painter.drawRoundedRect(0, 0, self.width, self.length, 30, 30, Qt.RelativeSize)  # z坐标位置 长 宽
         painter.setPen(QPen(QColor(255, 204, 0), Qt.SolidLine))
-        painter.drawLine(0, 30, self.width, 30)
+        painter.drawLine(0, 20, self.width, 20)
 
     def paint(self, painter: QtGui.QPainter, option: 'QStyleOptionGraphicsItem',
               widget: typing.Optional[QWidget] = ...):

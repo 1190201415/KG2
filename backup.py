@@ -8,6 +8,7 @@
 # Copyright 2021 Youcans, XUPT
 # Crated：2021-10-06
 # encoding=utf-8
+import copy
 import sys
 
 
@@ -92,6 +93,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action1_1.triggered.connect(self.clickaction1_1)
         self.action1_2.triggered.connect(self.csave_kgs)
         self.action2_1.triggered.connect(self.confirm_auto_layout)
+        self.action2_2.triggered.connect(self.copy_kg)
+        self.action2_3.triggered.connect(self.set_mouse)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
         # self.initLayouts()
         #self.showMaximized()
@@ -99,6 +102,24 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView_kg.initxml()
         self.comboBox_2.addItems(["教学知识图谱", "能力知识图谱", "术语知识图谱"])
         self.comboBox.addItems(["计算思维（计算机科学导论）"])
+
+    def copy_kg(self):
+        print(1)
+        self.childwindow2 = childwindow_1()
+        print(2)
+        self.childwindow2.changename(text='输入新的kg名称')
+
+        self.childwindow2.my_sign1.connect(self.handle_my_sign2)
+        print(3)
+        self.childwindow2.show()
+        print(4)
+
+    def set_mouse(self):
+        self.graphicsView.draw_link_flag = 0
+        if self.graphicsView.drag_link is not None:
+            self.graphicsView.drag_link.remove()
+            self.graphicsView.drag_link = None
+        self.graphicsView.setCursor(Qt.ArrowCursor)
 
     def initLayouts(self):
         # 创建主布局容器
@@ -162,12 +183,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if text == '连接资源':
             self.graphicsView.draw_link_flag = 3
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '鼠标':
-            self.graphicsView.draw_link_flag = 0
-            if self.graphicsView.drag_link is not None:
-                self.graphicsView.drag_link.remove()
-                self.graphicsView.drag_link = None
-            self.graphicsView.setCursor(Qt.ArrowCursor)
 
     def clicked_treeView(self):
         index = self.treeView.currentIndex()
@@ -353,9 +368,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.relationType_dict["LineType3"] = Myclass.relationType(class_name='连接资源', mask='知识—资源连线',
                                                                       classification='连接资源',
                                                                       head_need='内容方法型节点', tail_need='资源型节点')
-        Myclass.relationType_dict["LineType4"] = Myclass.relationType(class_name='鼠标', mask='无',
-                                                                      classification='无',
-                                                                      head_need='无', tail_need='无')
+
 
     def initentityType(self):
         Myclass.entityType_dict["NodeType1"] = Myclass.entityType(class_name='知识领域', classification='内容方法型节点',
@@ -411,6 +424,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def handle_my_sign1(self, name):
         if name not in Myclass.knowledge_graphs_class.keys():
             Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": []}
+            self.update_kg_treeview()
+
+    def handle_my_sign2(self, name):
+        entities = copy.deepcopy(Myclass.knowledge_graphs_class[Myclass.current_kg_name]["entities"])
+        relations = copy.deepcopy(Myclass.knowledge_graphs_class[Myclass.current_kg_name]["relations"])
+        if name not in Myclass.knowledge_graphs_class.keys():
+            Myclass.knowledge_graphs_class[name] = {"entities": entities, "relations": relations}
             self.update_kg_treeview()
 
     def deleteAll(self, thisLayout):
@@ -573,9 +593,11 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     # gc.enable()
-    app = QtWidgets.QApplication(sys.argv)  # 初始化界面
-    app.setAttribute(Qt.AA_EnableHighDpiScaling)
-    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    app = QtWidgets.QApplication(sys.argv)
     MainWindow = my_MainWindow()
 
     desktop = QApplication.desktop()

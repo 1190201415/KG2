@@ -154,6 +154,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.action1_2)
         self.toolBar.addAction(self.action2_1)
         self.toolBar.addAction(self.action2_2)
+        self.toolBar.addAction(self.action2_3)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -166,5 +167,5 @@ class Ui_MainWindow(object):
         self.action1_1.setText(_translate("MainWindow", "新建kg"))
         self.action1_2.setText(_translate("MainWindow", "保存"))
         self.action2_1.setText(_translate("MainWindow", "自动布局"))
-        #self.action2_2.setText(_translate("MainWindow", "导入关系类型"))
-        #self.action2_3.setText(_translate("MainWindow", "导入知识图谱"))
+        self.action2_2.setText(_translate("MainWindow", "复制知识图谱"))
+        self.action2_3.setText(_translate("MainWindow", "鼠标"))
