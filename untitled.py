@@ -164,7 +164,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.menu.setTitle(_translate("MainWindow", "文件"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
-        self.action1_1.setText(_translate("MainWindow", "新建kg"))
+        self.action1_1.setText(_translate("MainWindow", "新建图谱"))
         self.action1_2.setText(_translate("MainWindow", "保存"))
         self.action2_1.setText(_translate("MainWindow", "自动布局"))
         self.action2_2.setText(_translate("MainWindow", "复制知识图谱"))

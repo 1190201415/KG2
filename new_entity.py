@@ -38,9 +38,9 @@ class Ui_Form(object):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def retranslateUi(self,Form, text = "输入kg名称"):
+    def retranslateUi(self,Form, text = "输入图谱名称"):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "新建图谱"))
         self.pushButton.setText(_translate("Form", "保存"))
         self.pushButton_2.setText(_translate("Form", "取消"))
         self.label.setText(_translate("Form",text))
