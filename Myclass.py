@@ -19,7 +19,6 @@ from PyQt5.QtCore import Qt, QLine, QPointF, QPoint, pyqtSignal, QRectF
 from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform
 from typing import List, Dict
 
-
 import pretty_xml
 from entity1 import Ui_Dialog
 import xml.etree.ElementTree as ET
@@ -119,6 +118,14 @@ class attachment(object):
             if v:
                 list1.append(a)
         return list1
+
+    def restrlist2(self):
+        list1 = []
+        attri = vars(self)
+        for a, v in attri.items():
+                list1.append([v,a])
+        return list1
+
 
     def tobool(self, str):
         if str == '0':
@@ -331,7 +338,7 @@ class my_treeview(QTreeView):
         else:
             e.ignore()
 
-    def copy_kg(self,name1,name2):
+    def copy_kg(self, name1, name2):
         global current_kg_name
         knowledge_graphs_class[name2] = {"entities": [], "relations": []}
         entities = knowledge_graphs_class[name1]['entities']
@@ -458,6 +465,7 @@ class my_Ui_Dialog(QDialog, Ui_Dialog):
 class GraphicScene(QGraphicsScene):
     entityRemove = pyqtSignal(str)
     is_kg_changed = False
+
     def __init__(self, parent=None, ):
         super().__init__(parent)
         self.nodes = []
@@ -618,7 +626,6 @@ class GraphicScene(QGraphicsScene):
             knowledge_graphs_class[current_kg_name]['relations'].append(link.edge)
             self.is_kg_changed = True
 
-
     def remove_node(self, node):
         for i in self.links:
             if i.edge.start_item == node or i.edge.end_item == node:
@@ -642,7 +649,6 @@ class GraphicScene(QGraphicsScene):
             # link.deleteLater()
             save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
             self.is_kg_changed = True
-
 
     def get_all_item(self):
         for item in self.nodes:
@@ -956,14 +962,14 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.get_class(entity.class_name)
         self.attachment = []
         font_text2 = QFont("Arial", 18, QFont.Bold)
-        #font.setFamily("SimHei")
+        # font.setFamily("SimHei")
         self.start_heightth = 18
         self.start_width = 10
         font_text2.setBold(True)
         if self.classtype == 1:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type1')
             self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
-            self.GraphicText2.setBrush(QColor(189,53,61))
+            self.GraphicText2.setBrush(QColor(189, 53, 61))
             self.GraphicText2.setFont(font_text2)
             self.GraphicText2.setPos(self.start_width, self.start_heightth)
         else:
@@ -976,8 +982,9 @@ class GraphicItemGroup(QGraphicsItemGroup):
         font_text1 = QFont("微软雅黑", 12, QFont.Bold)
         self.GraphicText1 = QGraphicsTextItem("请输入内容")
         self.GraphicText1.setFont(font_text1)
-        self.GraphicText1.setTextWidth(self.GraphicItem1.boundingRect().width()-self.GraphicText2.boundingRect().width()-self.start_width)
-        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width()+self.start_width,
+        self.GraphicText1.setTextWidth(
+            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width)
+        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width,
                                  self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
         self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
         self.addToGroup(self.GraphicItem1)
@@ -1039,22 +1046,33 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.attachment.clear()
 
     def reinitattach(self):
+        # num = 0
+        # heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
+        # for i in self.attach.restrlist():
+        #     print(i)
+        #     atta = myGraphicItemGroup_2(text=i, group=self)
+        #     self.attachment.append(atta)
+        #     self.addToGroup(atta)
+        #     atta.setPos(5 + num * 20, heoght)
+        #     num = num + 1
+        #     if num == 2:
+        #         num = 0
+        #         heoght = heoght + 20
+        # if len(self.attachment) % 2 == 1:
+        #     self.attachment[len(self.attachment) - 1].setPos(15.5, heoght)
         num = 0
         heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
-        for i in self.attach.restrlist():
+        for i in self.attach.restrlist2():
             print(i)
-            atta = myGraphicItemGroup_2(text=i, group=self)
-            self.attachment.append(atta)
-            self.addToGroup(atta)
-            atta.setPos(5+num * 20, heoght)
-            num = num +1
-            if num==2:
+            if i[0]:
+                atta = myGraphicItemGroup_2(text=i[1], group=self)
+                self.attachment.append(atta)
+                self.addToGroup(atta)
+                atta.setPos(5 + num * 14, heoght)
+            num = num + 1
+            if num == 3:
                 num = 0
                 heoght = heoght + 20
-        if len(self.attachment)%2==1:
-            self.attachment[len(self.attachment)-1].setPos(15.5, heoght)
-
-
     def re_init(self, entity: entity):
         self.clearlist()
         self.entity.class_name = entity.class_name
@@ -1132,7 +1150,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
         #     self.removeFromGroup(self.itemP)
         #     self.scene.removeItem(self.itemP)
         #     self.attachment.remove('P')
-        if self.GraphicText1.boundingRect().height() +self.start_heightth > self.GraphicItem1.boundingRect().height():
+        if self.GraphicText1.boundingRect().height() + self.start_heightth > self.GraphicItem1.boundingRect().height():
             self.GraphicItem1.length = self.GraphicText1.boundingRect().height() + 30
             self.GraphicItem1.update()
 
@@ -1150,9 +1168,9 @@ class myGraphicItem(QGraphicsItem):
         self.Group = group
         self.scene = scene
         self.paintwidth = 3
-        #self.line_distance = 30
+        # self.line_distance = 30
         self.width = 200
-        self.length = 200*0.62
+        self.length = 200 * 0.62
         self.type = type
 
     def boundingRect(self):
@@ -1161,9 +1179,9 @@ class myGraphicItem(QGraphicsItem):
 
     def paint1(self, painter, Q=QColor(255, 255, 255)):
         painter.setBrush(Q)
-        painter.setPen(QPen(QColor(54,131,248),self.paintwidth))
+        painter.setPen(QPen(QColor(54, 131, 248), self.paintwidth))
         painter.drawRoundedRect(0, 0, self.width, self.length, 30, 30, Qt.RelativeSize)  # z坐标位置 长 宽
-        #painter.drawLine(0, self.line_distance, self.width, self.line_distance)
+        # painter.drawLine(0, self.line_distance, self.width, self.line_distance)
 
     def paint2(self, painter):
         painter.setBrush(QColor(128, 128, 128))
@@ -1182,7 +1200,7 @@ class myGraphicItem(QGraphicsItem):
         if self.Group.class_ == 'KP':
             Q = QColor(189, 181, 225)
         if self.Group.class_ == 'KD':
-            Q = QColor(182,215,232)
+            Q = QColor(182, 215, 232)
         if self.type == 'type1':
             self.paint1(painter, Q=Q)
         elif self.type == 'type2':
@@ -1197,22 +1215,21 @@ class myGraphicItemGroup_2(QGraphicsItemGroup):
                  parent=None):
         super(myGraphicItemGroup_2, self).__init__(parent)
         self.group = group
-        self.repaint(True,text=text)
+        self.repaint(True, text=text)
 
-
-    def repaint(self,flag:bool,text = ''):
+    def repaint(self, flag: bool, text=''):
         if flag:
-            self.item = QGraphicsEllipseItem(0, 0, 20, 20)
-            self.item.setBrush(QColor(255,192,0))
-            self.item.setPen(QColor(180,199,231))
+            self.item = QGraphicsEllipseItem(0, 0, 14, 14)
+            self.item.setBrush(QColor(255, 192, 0))
+            self.item.setPen(QColor(180, 199, 231))
             font = QFont()
             font.setFamily("微软雅黑")
             font.setBold(True)
             self.GraphicText = QGraphicsSimpleTextItem(text)
-            self.GraphicText.setBrush(QColor(192,0,0))
+            self.GraphicText.setBrush(QColor(192, 0, 0))
             self.GraphicText.setFont(font)
-            self.GraphicText.setPos(10 - 0.5 * self.GraphicText.boundingRect().width(),
-                                    10 - 0.5 * self.GraphicText.boundingRect().height())
+            self.GraphicText.setPos(7 - 0.5 * self.GraphicText.boundingRect().width(),
+                                    7 - 0.5 * self.GraphicText.boundingRect().height())
             self.addToGroup(self.item)
             self.addToGroup(self.GraphicText)
             self.setPos(self.group.pos())
@@ -1398,6 +1415,18 @@ class GraphicEdge(QGraphicsPathItem):
         points.append(point3)
         painter.drawPolyline(point2, point1, point3)
 
+    def degreeToDegree(self,k):
+        if k < 0:
+            return  360+k
+        return k
+
+    def draw_arc(self, point:QPointF, painter, k):
+        point1 = point
+        h = 8
+        w = 8
+        k1= -math.degrees(k)-45
+        painter.drawArc(point1.x()-w,point1.y()-h,2*w,2*h,k1*16,90*16)
+
     def paint_angle(self, painter):
         self._mark_pen.setWidthF(1.2)
         x1, y1 = self.pos_src
@@ -1410,12 +1439,12 @@ class GraphicEdge(QGraphicsPathItem):
         point1 = self.path().pointAtPercent(self.path().percentAtLength(math.sqrt(a * a + b * b) - length))
         if self.edge.flag == 1:
             point2 = self.path().pointAtPercent(0.5)
-            self.draw_arrow(length=10, point=point2, painter=painter, k=k)
-            point3 = self.path().pointAtPercent(self.path().percentAtLength(0.5*math.sqrt(a * a + b * b) + 10))
-            self.draw_arrow(length=10, point=point3, painter=painter, k=k)
+            # self.draw_arrow(length=10, point=point2, painter=painter, k=k)
+            # point3 = self.path().pointAtPercent(self.path().percentAtLength(0.5 * math.sqrt(a * a + b * b) + 10))
+            # self.draw_arrow(length=10, point=point3, painter=painter, k=k)
+            self.draw_arc(point=point2,painter=painter,k=k)
         else:
             self.draw_arrow(length=10, point=point1, painter=painter, k=k)
-
 
     # override
     def paint(self, painter, graphics_item, widget=None):
