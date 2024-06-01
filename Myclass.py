@@ -60,6 +60,7 @@ knowledge_graphs_class = {
 current_kg_name = '知识图谱1'
 node_id = 0
 
+
 def save_meta_kg():
     global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id
     kg_dict: meta_kg
@@ -1021,7 +1022,8 @@ class GraphicItemGroup(QGraphicsItemGroup):
         font_text2 = QFont("Arial", 18, QFont.Bold)
         # font.setFamily("SimHei")
         self.start_heightth = 18
-        self.start_width = 10
+        bais = 6
+        self.start_width = 12
         font_text2.setBold(True)
         if self.classtype == 1:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type1')
@@ -1040,8 +1042,8 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.GraphicText1 = QGraphicsTextItem("请输入内容")
         self.GraphicText1.setFont(font_text1)
         self.GraphicText1.setTextWidth(
-            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width)
-        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width,
+            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width-bais)
+        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width+bais,
                                  self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
         self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
         self.addToGroup(self.GraphicItem1)
@@ -1277,7 +1279,8 @@ class myGraphicItemGroup_2(QGraphicsItemGroup):
 
     def repaint(self, flag: bool, text=''):
         if flag:
-            self.item = QGraphicsEllipseItem(0, 0, 14, 14)
+            r = 18
+            self.item = QGraphicsEllipseItem(0, 0, r, r)
             self.item.setBrush(QColor(255, 192, 0))
             self.item.setPen(QColor(180, 199, 231))
             font = QFont()
@@ -1286,8 +1289,8 @@ class myGraphicItemGroup_2(QGraphicsItemGroup):
             self.GraphicText = QGraphicsSimpleTextItem(text)
             self.GraphicText.setBrush(QColor(192, 0, 0))
             self.GraphicText.setFont(font)
-            self.GraphicText.setPos(7 - 0.5 * self.GraphicText.boundingRect().width(),
-                                    7 - 0.5 * self.GraphicText.boundingRect().height())
+            self.GraphicText.setPos(0.5 * r - 0.5 * self.GraphicText.boundingRect().width(),
+                                    0.5 * r - 0.5 * self.GraphicText.boundingRect().height())
             self.addToGroup(self.item)
             self.addToGroup(self.GraphicText)
             self.setPos(self.group.pos())
