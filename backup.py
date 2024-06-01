@@ -15,7 +15,7 @@ import sys
 from PyQt5 import QtWidgets
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize
+from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize, QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
     QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
@@ -56,6 +56,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     is_kg_changed = False
     def __init__(self, parent=None):
         super(my_MainWindow, self).__init__(parent)
+        Myclass.init_meta_kg_dict()
+        Myclass.change_meta_kg()#这两句放在最前面
 
         self.now_entity_type = None
         self.now_relation_type = None
@@ -100,8 +102,29 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         #self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
         self.treeView_kg.initxml()
-        self.comboBox_2.addItems(["教学知识图谱"])
+        self.init_comboBox_2()
+
         self.comboBox.addItems(["计算思维（计算机科学导论）"])
+
+
+    def comboBox_2_changed(self):
+        name = self.comboBox_2.currentText()
+        Myclass.save_meta_kg()
+        Myclass.current_meta_kg_dict = name
+        Myclass.change_meta_kg()
+        self.cleartreeview(self.treeView)
+        self.cleartreeview(self.treeView_3)
+        self.init_treeview_1(self.treeView, Myclass.entityType_dict, Myclass.ktsqepType_dict, name='独立实体类型',
+                             name2='附加实体类型')
+        self.update_kg_treeview()
+        self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
+        self.graphicsSence.update_kg()
+        print(name)
+
+    def init_comboBox_2(self):
+        self.comboBox_2.currentIndexChanged.connect(self.comboBox_2_changed)
+        for i in Myclass.meta_dict.keys():
+            self.comboBox_2.addItems([i])
 
     def copy_kg(self):
         print(1)
@@ -272,13 +295,21 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
 
 
-    def update_kg_treeview(self):
+    def cleartreeview(self,treeview):
+        model = treeview.model()
+
+        for i in range(model.rowCount()):
+            # for j in range(model.item(i).rowCount()):
+            #     model.item(i).removeRow(j)
+            model.removeRow(i)
+
+    def update_kg_treeview(self,text = ' 计算思维（计算机科学导论）'):
         for i in range(self.model_kg.rowCount()):
             for j in range(self.model_kg.item(i).rowCount()):
                 self.model_kg.item(i).removeRow(j)
             self.model_kg.removeRow(i)
         # 添加数据示例
-        root_item = QtGui.QStandardItem(" 计算思维（计算机科学导论）")
+        root_item = QtGui.QStandardItem(text)
         self.model_kg.appendRow(root_item)
 
         for i in Myclass.knowledge_graphs_class.keys():

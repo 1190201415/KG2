@@ -16,12 +16,37 @@ from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, 
     QGraphicsTextItem, \
     QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog
 from PyQt5.QtCore import Qt, QLine, QPointF, QPoint, pyqtSignal, QRectF
-from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform
+from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform, QPainterPathStroker
 from typing import List, Dict
 
 import pretty_xml
 from entity1 import Ui_Dialog
 import xml.etree.ElementTree as ET
+
+
+class meta_kg(object):
+    def __init__(self):
+        self.entityType_dict = {}
+        self.ktsqepType_dict = {}
+        self.relationType_dict = {}
+        self.knowledge_graphs_class = {
+            # "知识图谱1": {
+            #     "entities": [],
+            #     "relations": []
+            # },
+        }
+        self.current_kg_name = '知识图谱1'
+        self.node_id = 0
+
+
+meta_dict = {}
+current_meta_kg_dict = '教学知识图谱'
+
+
+def init_meta_kg_dict():
+    meta_dict['教学知识图谱'] = meta_kg()
+    meta_dict['能力知识图谱'] = meta_kg()
+
 
 entityType_dict = {}
 ktsqepType_dict = {}
@@ -35,9 +60,33 @@ knowledge_graphs_class = {
 current_kg_name = '知识图谱1'
 node_id = 0
 
+def save_meta_kg():
+    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id
+    kg_dict: meta_kg
+    kg_dict = meta_dict[current_meta_kg_dict]
+    kg_dict.entityType_dict = entityType_dict
+    kg_dict.ktsqepType_dict = ktsqepType_dict
+    kg_dict.relationType_dict = relationType_dict
+    kg_dict.knowledge_graphs_class = knowledge_graphs_class
+    kg_dict.current_kg_name = current_kg_name
+    kg_dict.node_id = node_id
+
+
+def change_meta_kg():
+    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id
+    kg_dict: meta_kg
+    kg_dict = meta_dict[current_meta_kg_dict]
+    entityType_dict = kg_dict.entityType_dict
+    ktsqepType_dict = kg_dict.ktsqepType_dict
+    relationType_dict = kg_dict.relationType_dict
+    knowledge_graphs_class = kg_dict.knowledge_graphs_class
+    current_kg_name = kg_dict.current_kg_name
+    node_id = kg_dict.node_id
+
 
 def save_kg(name, kg):
     root = ET.Element('KG')
+    root.text = current_meta_kg_dict
     entities = ET.SubElement(root, 'entities')
     relations = ET.SubElement(root, 'relations')
     for i in kg['entities']:
@@ -123,9 +172,8 @@ class attachment(object):
         list1 = []
         attri = vars(self)
         for a, v in attri.items():
-                list1.append([v,a])
+            list1.append([v, a])
         return list1
-
 
     def tobool(self, str):
         if str == '0':
@@ -297,6 +345,13 @@ class my_treeview(QTreeView):
         tree = ET.parse(filePath)  # 解析movies.xml这个文件
         filePath = Path(filePath)
         root = tree.getroot()  # 得到根元素，Element类
+        meta_kg_name = root.text
+        print('名字是', (meta_kg_name))
+        if meta_kg_name is None or meta_kg_name == '\n\t':
+            print('老旧xml')
+            meta_kg_name = '教学知识图谱'
+        if meta_kg_name != current_meta_kg_dict:
+            return
         entities = root.findall('entities')
         relations = root.findall('relations')
         entitys = entities[0].findall('entity')
@@ -596,6 +651,8 @@ class GraphicScene(QGraphicsScene):
         self.clear()
         self.update()
         ax = 0
+        if current_kg_name not in knowledge_graphs_class.keys():
+            return
         entities = knowledge_graphs_class[current_kg_name]['entities']
         relations = knowledge_graphs_class[current_kg_name]['relations']
         for i in entities:
@@ -1073,6 +1130,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             if num == 3:
                 num = 0
                 heoght = heoght + 20
+
     def re_init(self, entity: entity):
         self.clearlist()
         self.entity.class_name = entity.class_name
@@ -1374,15 +1432,20 @@ class GraphicEdge(QGraphicsPathItem):
     def calc_path(self):
         path = QPainterPath(QPointF(self.pos_src[0], self.pos_src[1]))  # 起点
         path.lineTo(self.pos_dst[0], self.pos_dst[1])  # 终点
+        path
         return path
 
     # override
     def boundingRect(self):
+        self.shape().boundingRect()
         return self.shape().boundingRect()
 
     # override
     def shape(self):
-        return self.calc_path()
+        stker = QPainterPathStroker()
+        stker.setWidth(7)
+        stker.createStroke(self.calc_path())
+        return stker.createStroke(self.calc_path())
 
     def get_distance(self, x, y, k):
         if math.sin(k) == 0:
@@ -1415,17 +1478,17 @@ class GraphicEdge(QGraphicsPathItem):
         points.append(point3)
         painter.drawPolyline(point2, point1, point3)
 
-    def degreeToDegree(self,k):
+    def degreeToDegree(self, k):
         if k < 0:
-            return  360+k
+            return 360 + k
         return k
 
-    def draw_arc(self, point:QPointF, painter, k):
+    def draw_arc(self, point: QPointF, painter, k):
         point1 = point
         h = 8
         w = 8
-        k1= -math.degrees(k)-45
-        painter.drawArc(point1.x()-w,point1.y()-h,2*w,2*h,k1*16,90*16)
+        k1 = -math.degrees(k) - 45
+        painter.drawArc(point1.x() - w, point1.y() - h, 2 * w, 2 * h, k1 * 16, 90 * 16)
 
     def paint_angle(self, painter):
         self._mark_pen.setWidthF(1.2)
@@ -1442,7 +1505,7 @@ class GraphicEdge(QGraphicsPathItem):
             # self.draw_arrow(length=10, point=point2, painter=painter, k=k)
             # point3 = self.path().pointAtPercent(self.path().percentAtLength(0.5 * math.sqrt(a * a + b * b) + 10))
             # self.draw_arrow(length=10, point=point3, painter=painter, k=k)
-            self.draw_arc(point=point2,painter=painter,k=k)
+            self.draw_arc(point=point2, painter=painter, k=k)
         else:
             self.draw_arrow(length=10, point=point1, painter=painter, k=k)
 
