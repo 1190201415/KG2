@@ -19,7 +19,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize, QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
     QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
-    QGraphicsScene, QApplication
+    QGraphicsScene, QApplication, QInputDialog, QLineEdit
 
 import Myclass
 from Myclass import current_kg_name
@@ -97,6 +97,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action2_1.triggered.connect(self.confirm_auto_layout)
         self.action2_2.triggered.connect(self.copy_kg)
         self.action2_3.triggered.connect(self.set_mouse)
+        self.action3_1.triggered.connect(self.another_save)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
         # self.initLayouts()
         #self.showMaximized()
@@ -105,6 +106,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.init_comboBox_2()
 
         self.comboBox.addItems(["计算思维（计算机科学导论）"])
+
+
+    def another_save(self):
+        Myclass.other_save_kg(parent=self)
 
 
     def comboBox_2_changed(self):

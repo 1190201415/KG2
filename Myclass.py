@@ -14,7 +14,7 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsEllipseItem, \
     QGraphicsItem, QTreeView, QGraphicsPathItem, QGraphicsItemGroup, QGraphicsSimpleTextItem, QWidget, \
     QGraphicsTextItem, \
-    QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog
+    QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog, QInputDialog, QLineEdit
 from PyQt5.QtCore import Qt, QLine, QPointF, QPoint, pyqtSignal, QRectF
 from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform, QPainterPathStroker
 from typing import List, Dict
@@ -37,6 +37,7 @@ class meta_kg(object):
         }
         self.current_kg_name = '知识图谱1'
         self.node_id = 0
+        self.save_dict = {}
 
 
 meta_dict = {}
@@ -59,6 +60,7 @@ knowledge_graphs_class = {
 }
 current_kg_name = '知识图谱1'
 node_id = 0
+save_dict = {}
 
 
 def save_meta_kg():
@@ -71,10 +73,11 @@ def save_meta_kg():
     kg_dict.knowledge_graphs_class = knowledge_graphs_class
     kg_dict.current_kg_name = current_kg_name
     kg_dict.node_id = node_id
+    kg_dict.save_dict = save_dict
 
 
 def change_meta_kg():
-    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id
+    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id, save_dict
     kg_dict: meta_kg
     kg_dict = meta_dict[current_meta_kg_dict]
     entityType_dict = kg_dict.entityType_dict
@@ -83,9 +86,26 @@ def change_meta_kg():
     knowledge_graphs_class = kg_dict.knowledge_graphs_class
     current_kg_name = kg_dict.current_kg_name
     node_id = kg_dict.node_id
+    save_dict = kg_dict.save_dict
+
+
+def other_save_kg(parent):
+    name = current_kg_name
+    kg = knowledge_graphs_class[name]
+    isexist(name='temp')
+    if name not in save_dict.keys():
+        save_dict[name] = name
+    text1, okPressed = QInputDialog.getText(parent, '另存为', "输入新名字", text=save_dict[name])
+    if not (okPressed and text1 != ''):
+        return
+    save_dict[name] = text1
+    print(save_dict)
+    name = text1
+    save_kg(name=name, kg=kg)
 
 
 def save_kg(name, kg):
+    isexist(name='temp')
     root = ET.Element('KG')
     root.text = current_meta_kg_dict
     entities = ET.SubElement(root, 'entities')
@@ -131,8 +151,74 @@ def save_kg(name, kg):
         head_need.text = i.relation.head_need
         tail_need.text = i.relation.tail_need
     tree = ET.ElementTree(root)
+    tree.write('./temp/' + name + '.xml')
+    pretty_xml.pretty(name='./temp/' + name + ".xml")
+
+
+def save_kg_plus(name, kg):
+    root = ET.Element('KG')
+    root.text = current_meta_kg_dict
+    entities = ET.SubElement(root, 'entities')
+    relations = ET.SubElement(root, 'relations')
+    for i in kg['entities']:
+        entity = ET.SubElement(entities, 'entity')
+
+        id = ET.SubElement(entity, 'id')
+        name1 = ET.SubElement(entity, 'class_name')
+        classification = ET.SubElement(entity, 'classification')
+        identity = ET.SubElement(entity, 'identity')
+        level = ET.SubElement(entity, 'level')
+        attach = ET.SubElement(entity, 'attach')
+        opentool = ET.SubElement(entity, 'opentool')
+        content = ET.SubElement(entity, 'content')
+        x = ET.SubElement(entity, 'x')
+        y = ET.SubElement(entity, 'y')
+        id.text = str(i.entity.id)
+        name1.text = i.entity.class_name
+        classification.text = i.entity.classification
+        identity.text = i.entity.identity
+        level.text = i.entity.level
+        opentool.text = i.entity.opentool
+        content.text = i.entity.content
+        attach.text = i.entity.attach.tostring()
+        x.text = str(i.entity.x)
+        y.text = str(i.entity.y)
+    for i in kg['relations']:
+        relation = ET.SubElement(relations, 'relation')
+        name2 = ET.SubElement(relation, 'name')
+        headnodeid = ET.SubElement(relation, 'headnodeid')
+        tailnodeid = ET.SubElement(relation, 'tailnodeid')
+        class_name = ET.SubElement(relation, 'class_name')
+        mask = ET.SubElement(relation, 'mask')
+        classification = ET.SubElement(relation, 'classification')
+        head_need = ET.SubElement(relation, 'head_need')
+        tail_need = ET.SubElement(relation, 'tail_need')
+        name2.text = i.relation.name
+        headnodeid.text = str(i.relation.headnodeid)
+        tailnodeid.text = str(i.relation.tailnodeid)
+        class_name.text = i.relation.class_name
+        mask.text = i.relation.mask
+        classification.text = i.relation.classification
+        head_need.text = i.relation.head_need
+        tail_need.text = i.relation.tail_need
+    tree = ET.ElementTree(root)
     tree.write(name + '.xml')
     pretty_xml.pretty(name=name + ".xml")
+
+
+def isexist(name, path=None):
+    if path is None:
+        path = os.getcwd()
+    if os.path.exists(path + '/' + name):
+        print("Under the path: " + path + '\n' + name + " is exist")
+        return True
+    else:
+        if (os.path.exists(path)):
+            os.makedirs(path + '/' + name)
+            print("Under the path: " + path + '\n' + name + " is not exist")
+        else:
+            print("This path could not be found: " + path + '\n')
+        return False
 
 
 def save_kgs():
@@ -1042,8 +1128,8 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.GraphicText1 = QGraphicsTextItem("请输入内容")
         self.GraphicText1.setFont(font_text1)
         self.GraphicText1.setTextWidth(
-            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width-bais)
-        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width+bais,
+            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width - bais)
+        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width + bais,
                                  self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
         self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
         self.addToGroup(self.GraphicItem1)
@@ -1213,6 +1299,8 @@ class GraphicItemGroup(QGraphicsItemGroup):
         if self.GraphicText1.boundingRect().height() + self.start_heightth > self.GraphicItem1.boundingRect().height():
             self.GraphicItem1.length = self.GraphicText1.boundingRect().height() + 30
             self.GraphicItem1.update()
+        self.get_class(self.entity.class_name)
+        self.update()
 
     def mouseDoubleClickEvent(self, event: 'QGraphicsSceneMouseEvent'):
         self.window = my_Ui_Dialog(linetext=self.name, content=self.GraphicText1.toPlainText(), attach=self.attach,
@@ -1435,7 +1523,6 @@ class GraphicEdge(QGraphicsPathItem):
     def calc_path(self):
         path = QPainterPath(QPointF(self.pos_src[0], self.pos_src[1]))  # 起点
         path.lineTo(self.pos_dst[0], self.pos_dst[1])  # 终点
-        path
         return path
 
     # override
