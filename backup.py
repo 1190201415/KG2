@@ -11,7 +11,7 @@
 import copy
 import sys
 
-
+import QCandyUi.CandyWindow
 from PyQt5 import QtWidgets
 
 from PyQt5 import QtGui
@@ -19,12 +19,14 @@ from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize, QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
     QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
-    QGraphicsScene, QApplication, QInputDialog, QLineEdit
+    QGraphicsScene, QApplication, QInputDialog, QLineEdit, QHeaderView
 
 import Myclass
 from Myclass import current_kg_name
 from untitled import Ui_MainWindow
 from new_entity import Ui_Form
+
+from QCandyUi.CandyWindow import colorful
 
 
 
@@ -54,18 +56,20 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     }
     num = 1
     is_kg_changed = False
+
     def __init__(self, parent=None):
         super(my_MainWindow, self).__init__(parent)
         Myclass.init_meta_kg_dict()
-        Myclass.change_meta_kg()#这两句放在最前面
+        Myclass.change_meta_kg()  # 这两句放在最前面
 
         self.now_entity_type = None
         self.now_relation_type = None
         self.setupUi(self)
-
+        self.setMinimumSize(0,0)
         self.initentityType()
         self.initrelationType()
-        self.init_treeview_1(self.treeView, Myclass.entityType_dict, Myclass.ktsqepType_dict,name='独立实体类型', name2='附加实体类型')
+        self.init_treeview_1(self.treeView, Myclass.entityType_dict, Myclass.ktsqepType_dict, name='独立实体类型',
+                             name2='附加实体类型')
         # self.init_treeview(self.treeView_2, self.KG_dict, name=' 计算思维（计算机科学导论）')
         # self.graphicsSence = Myclass.GraphicScene(parent=self.centralwidget)
 
@@ -74,8 +78,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # self.graphicsView.setGeometry(QtCore.QRect(225, 51, 661, 611))
         self.graphicsView.setObjectName("graphicsView")
 
-        self.graphicsView.setSceneRect(0, 0, 10000, 10000)  # 设置场景大小
+        self.graphicsView.setSceneRect(0, 0, 5000, 5000)  # 设置场景大小
+        self.graphicsView.setMinimumSize(0,0)
         self.treeView_kg.my_sign_kg.connect(self.update_kg_treeview)
+        self.treeView_kg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.graphicsSence.setItemIndexMethod(QGraphicsScene.NoIndex)
         # self.graphicsView.entityDropped.connect(self.onEntityDropped)
         # self.graphicsSence.entityRemove.connect(self.onEntityRemoved)
@@ -98,19 +104,22 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action2_2.triggered.connect(self.copy_kg)
         self.action2_3.triggered.connect(self.set_mouse)
         self.action3_1.triggered.connect(self.another_save)
+        self.action4_1.triggered.connect(self.start_drag)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
         # self.initLayouts()
-        #self.showMaximized()
+        # self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
         self.treeView_kg.initxml()
         self.init_comboBox_2()
 
         self.comboBox.addItems(["计算思维（计算机科学导论）"])
 
+    def start_drag(self):
+        self.graphicsView.drag_flag = 1
+
 
     def another_save(self):
         Myclass.other_save_kg(parent=self)
-
 
     def comboBox_2_changed(self):
         name = self.comboBox_2.currentText()
@@ -144,6 +153,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def set_mouse(self):
         self.graphicsView.draw_link_flag = 0
+        self.graphicsView.drag_flag = 0
         if self.graphicsView.drag_link is not None:
             self.graphicsView.drag_link.remove()
             self.graphicsView.drag_link = None
@@ -211,15 +221,35 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if text == '连接资源':
             self.graphicsView.draw_link_flag = 3
             self.graphicsView.setCursor(Qt.DragLinkCursor)
+        if text == '关键次序':
+            self.graphicsView.draw_link_flag = 4
+            self.graphicsView.setCursor(Qt.DragLinkCursor)
 
     def clicked_treeView(self):
         index = self.treeView.currentIndex()
         text = self.treeView.model().data(index)
         print(text)
 
+    def init_ab_treeview_1(self,treeView,dict):
+        model = QtGui.QStandardItemModel()
+        entityytpeclass1 = QtGui.QStandardItem('能力知识节点类型')
+        # item1 = QtGui.QStandardItem('内容型')
+        # entityytpeclass1.appendRow(item1)
+        num = 0
+        for i in dict.keys():
+                item = QtGui.QStandardItem(dict[i].class_name)
+                entityytpeclass1.appendRow(item)
+        model.appendRow(entityytpeclass1)
+        treeView.setModel(model)
+        model.setHorizontalHeaderLabels([''])
+        treeView.expandAll()
+        # 03/21：初始化右侧树视图
 
-    def init_treeview_1(self, treeView, dict, dict2, name='', name2 =''):
+    def init_treeview_1(self, treeView, dict, dict2, name='', name2=''):
         treeView.setHeaderHidden(True)
+        if Myclass.current_meta_kg_dict == '能力知识图谱':
+            self.init_ab_treeview_1(treeView,dict)
+            return
         model = QtGui.QStandardItemModel()
         entityytpeclass1 = QtGui.QStandardItem(name)
         entityytpeclass2 = QtGui.QStandardItem(name2)
@@ -240,7 +270,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 item = QtGui.QStandardItem(dict[i].class_name)
                 item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
                 item2.appendRow(item)
-                num = num  + 1
+                num = num + 1
         for i in dict2.keys():
             item = QtGui.QStandardItem(dict2[i].class_name)
             item.setIcon(QIcon('picture/' + dict2[i].class_name + '.png'))
@@ -288,19 +318,18 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         #     root_item.appendRow(kg_item)
         self.treeView_kg.expandAll()
 
-            # # 为每个知识图谱添加实体和关系列表
-            # entities_item = QtGui.QStandardItem("实体列表")
-            # relations_item = QtGui.QStandardItem("关系列表")
-            # kg_item.appendRow(entities_item)
-            # kg_item.appendRow(relations_item)
+        # # 为每个知识图谱添加实体和关系列表
+        # entities_item = QtGui.QStandardItem("实体列表")
+        # relations_item = QtGui.QStandardItem("关系列表")
+        # kg_item.appendRow(entities_item)
+        # kg_item.appendRow(relations_item)
 
-            # 示例：为每个列表添加几个条目
-            # for j in range(1, 3):
-            #     entities_item.appendRow(QtGui.QStandardItem(f"实体{j}"))
-            #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
+        # 示例：为每个列表添加几个条目
+        # for j in range(1, 3):
+        #     entities_item.appendRow(QtGui.QStandardItem(f"实体{j}"))
+        #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
 
-
-    def cleartreeview(self,treeview):
+    def cleartreeview(self, treeview):
         model = treeview.model()
 
         for i in range(model.rowCount()):
@@ -308,7 +337,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             #     model.item(i).removeRow(j)
             model.removeRow(i)
 
-    def update_kg_treeview(self,text = ' 计算思维（计算机科学导论）'):
+    def update_kg_treeview(self, text=' 计算思维（计算机科学导论）'):
         for i in range(self.model_kg.rowCount()):
             for j in range(self.model_kg.item(i).rowCount()):
                 self.model_kg.item(i).removeRow(j)
@@ -322,16 +351,16 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             root_item.appendRow(kg_item)
         self.treeView_kg.expandAll()
 
-            # # 为每个知识图谱添加实体和关系列表
-            # entities_item = QtGui.QStandardItem("实体列表")
-            # relations_item = QtGui.QStandardItem("关系列表")
-            # kg_item.appendRow(entities_item)
-            # kg_item.appendRow(relations_item)
+        # # 为每个知识图谱添加实体和关系列表
+        # entities_item = QtGui.QStandardItem("实体列表")
+        # relations_item = QtGui.QStandardItem("关系列表")
+        # kg_item.appendRow(entities_item)
+        # kg_item.appendRow(relations_item)
 
-            # 示例：为每个列表添加几个条目
-            # for j in range(1, 3):
-            #     entities_item.appendRow(QtGui.QStandardItem(f"实体{j}"))
-            #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
+        # 示例：为每个列表添加几个条目
+        # for j in range(1, 3):
+        #     entities_item.appendRow(QtGui.QStandardItem(f"实体{j}"))
+        #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
 
     def click_kg_treeview_selected(self):
         # 获取当前选中的项
@@ -377,9 +406,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         else:
             a0.ignore()
 
-
-
-
     def csave_kgs(self):
         self.graphicsSence.update()
         Myclass.save_kgs()
@@ -391,8 +417,26 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         )
         if reply == QMessageBox.Yes:
             self.auto_layout()
+
     def auto_layout(self):
         self.graphicsSence.auto_layout()
+
+    def abilityinitrelationType(self):
+        abidict: Myclass.meta_kg
+        abidict = Myclass.meta_dict['能力知识图谱']
+        abidict.relationType_dict['abLineType1'] = Myclass.abilityrelationType(class_name='包含关系')
+        return
+
+    def abilityinitentityType(self):
+        abidict: Myclass.meta_kg
+        abidict = Myclass.meta_dict['能力知识图谱']
+        abidict.entityType_dict['abNodeType1'] = Myclass.abilityentityType(class_name='能力领域', EN='CA')
+        abidict.entityType_dict['abNodeType2'] = Myclass.abilityentityType(class_name='能力单元', EN='CU')
+        abidict.entityType_dict['abNodeType3'] = Myclass.abilityentityType(class_name='能力点', EN='CP')
+        abidict.entityType_dict['abNodeType4'] = Myclass.abilityentityType(class_name='项目', EN='PR')
+        abidict.entityType_dict['abNodeType5'] = Myclass.abilityentityType(class_name='任务', EN='TR')
+        abidict.entityType_dict['abNodeType6'] = Myclass.abilityentityType(class_name='知识细节', EN='KD')
+        return
 
     def initrelationType(self):
         Myclass.relationType_dict["LineType1"] = Myclass.relationType(class_name='包含关系', mask='知识连线',
@@ -404,7 +448,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.relationType_dict["LineType3"] = Myclass.relationType(class_name='连接资源', mask='知识—资源连线',
                                                                       classification='连接资源',
                                                                       head_need='内容方法型节点', tail_need='资源型节点')
-
+        Myclass.relationType_dict["LineType4"] = Myclass.relationType(class_name='关键次序', mask='知识连线',
+                                                                      classification='次序关系',
+                                                                      head_need='内容方法型节点', tail_need='内容方法型节点')
+        self.abilityinitrelationType()
 
     def initentityType(self):
         Myclass.entityType_dict["NodeType1"] = Myclass.entityType(class_name='知识领域', classification='内容方法型节点',
@@ -446,6 +493,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.ktsqepType_dict["NodeType6"] = Myclass.entityType(class_name='思政 Z', classification='附加节点',
                                                                   identity='思政',
                                                                   level='三级', opentool='无')
+        self.abilityinitentityType()
+
     def clickaction1_1(self):
         self.childwindow = childwindow_1()
 
@@ -467,7 +516,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_my_sign2(self, name):
         if name not in Myclass.knowledge_graphs_class.keys():
-            self.treeView_kg.copy_kg(Myclass.current_kg_name,name)
+            self.treeView_kg.copy_kg(Myclass.current_kg_name, name)
 
     def deleteAll(self, thisLayout):
         if thisLayout is None:
@@ -633,16 +682,21 @@ if __name__ == '__main__':
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    app = 0
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = my_MainWindow()
+    # MainWindow = QCandyUi.CandyWindow.createWindow(MainWindow,'blue')
 
     desktop = QApplication.desktop()
+    screen = app.primaryScreen()
+    available_geometry = screen.availableGeometry()
     rect = desktop.frameSize()
-    MainWindow.resize(QSize(rect.width(), rect.height()-80))
+    MainWindow.resize(QSize(available_geometry.width(), available_geometry.height()))
+    #MainWindow.showFullScreen()
     # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True)
-    #MainWindow.showFullScreen()  # 显示主窗口
+    # MainWindow.showFullScreen()  # 显示主窗口
     MainWindow.show()
-    #app.exec_()
+    # app.exec_()
     sys.exit(app.exec_())  # 在主线程中退出
     # 收集所有对象
 #     all_objects = gc.get_objects()
@@ -658,4 +712,3 @@ if __name__ == '__main__':
 #
 #     # 打印未被垃圾回收的对象
 # #        print(unreachable)
-
