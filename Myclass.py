@@ -14,10 +14,11 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsEllipseItem, \
     QGraphicsItem, QTreeView, QGraphicsPathItem, QGraphicsItemGroup, QGraphicsSimpleTextItem, QWidget, \
     QGraphicsTextItem, \
-    QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog, QInputDialog, QLineEdit, QMenu, QAction
+    QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog, QInputDialog, QLineEdit, QMenu, QAction, \
+    QAbstractItemView, QMessageBox
 from PyQt5.QtCore import Qt, QLine, QPointF, QPoint, pyqtSignal, QRectF
 from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform, QPainterPathStroker, \
-    QCursor, QIcon
+    QCursor, QIcon, QImage
 from typing import List, Dict
 from setitem import roll
 import pretty_xml
@@ -102,10 +103,12 @@ def other_save_kg(parent):
     save_dict[name] = text1
     print(save_dict)
     name = text1
-    save_kg(name=name, kg=kg)
+    save_kg(name=name, kg=kg,dir=kg['save_dir'])
 
 
-def save_kg(name, kg):
+def save_kg(name, kg,dir = None):
+    if dir is None:
+        dir = './temp'
     if name in save_dict.keys():
         name = save_dict[name]
     isexist(name='temp')
@@ -154,8 +157,8 @@ def save_kg(name, kg):
         head_need.text = i.relation.head_need
         tail_need.text = i.relation.tail_need
     tree = ET.ElementTree(root)
-    tree.write('./temp/' + name + '.xml')
-    pretty_xml.pretty(name='./temp/' + name + ".xml")
+    tree.write(dir+'/' + name + '.xml')
+    pretty_xml.pretty(name=dir+'/' + name + ".xml")
 
 
 def save_kg_plus(name, kg):
@@ -165,7 +168,6 @@ def save_kg_plus(name, kg):
     relations = ET.SubElement(root, 'relations')
     for i in kg['entities']:
         entity = ET.SubElement(entities, 'entity')
-
         id = ET.SubElement(entity, 'id')
         name1 = ET.SubElement(entity, 'class_name')
         classification = ET.SubElement(entity, 'classification')
@@ -224,11 +226,12 @@ def isexist(name, path=None):
         return False
 
 
-def save_kgs():
+def save_kgs(dir = None):
     global knowledge_graphs_class
     for KG in knowledge_graphs_class.keys():
         print('保存kg：', KG)
-        save_kg(name=KG, kg=knowledge_graphs_class[KG])
+        knowledge_graphs_class[KG]['save_dir'] = dir
+        save_kg(name=KG, kg=knowledge_graphs_class[KG],dir=dir)
 
 
 class abilityentityType(object):
@@ -299,17 +302,17 @@ class attachment(object):
             return True
 
     def stringTo(self, str):
-        attri = vars(self)
-        num = 0
-        for a, v in attri.items():
-            setattr(self, a, self.tobool(str[num]))
-            num = num + 1
-        # self.T = self.tobool(str[0])
-        # self.Z = self.tobool(str[1])
-        # self.Q = self.tobool(str[2])
-        # self.K = self.tobool(str[3])
-        # self.E = self.tobool(str[4])
-        # self.P = self.tobool(str[5])
+        # attri = vars(self)
+        # num = 0
+        # for a, v in attri.items():
+        #     setattr(self, a, self.tobool(str[num]))
+        #     num = num + 1
+        self.T = self.tobool(str[0])
+        self.Z = self.tobool(str[1])
+        self.Q = self.tobool(str[2])
+        self.K = self.tobool(str[3])
+        self.E = self.tobool(str[4])
+        self.P = self.tobool(str[5])
 
 
 class relationType(object):
@@ -444,6 +447,9 @@ class entity(object):
         for a, v in attri.items():
             print(a, v)
 
+    def copy_itself(self):
+        return entity(attach=self.attach,x=self.x,y=self.y,content=self.content,class_name=self.class_name,classification=self.classification,identity=self.identity,level=self.level,opentool=self.opentool)
+
 
 class my_treeview(QTreeView):
     my_sign_kg = pyqtSignal()
@@ -453,33 +459,69 @@ class my_treeview(QTreeView):
         self.setAcceptDrops(True)
         self.scence = scence
         self.expandAll()
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)  # 打开右键菜单的策略
+        self.customContextMenuRequested.connect(self.treeWidgetItem_fun)  # 绑定事件
 
-    def initxml(self):
-        cwd = os.getcwd()
-        path = 'xml'
+        # 定义treewidget中item右键界面
+    def treeWidgetItem_fun(self, pos):
+        selected_indexes = self.selectionModel().selectedIndexes()
+        print(selected_indexes)
+        self.groupBox_menu = QMenu(self)
+        self.actionA = QAction(u'删除', self)
+        self.groupBox_menu.addAction(self.actionA)
+        self.actionA.triggered.connect(lambda :self.actionAf(selected_indexes))
+        self.groupBox_menu.show()
+        self.groupBox_menu.popup(QCursor.pos())
+
+    def actionAf(self, listitem):
+        reply = QMessageBox.question(self, 'Message', '确定删除？',
+                                     QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            for i in listitem:
+                print(self.model().data(i))
+
+
+
+    def initxml(self,path = None):
+        if path is None:
+            cwd = os.getcwd()
+            path = os.path.join(cwd, 'xml')
         xmllist = os.listdir(path)
         for i in xmllist:
-            i = os.path.join(cwd, path, i)
+            i = os.path.join(path, i)
             self.readfile(path=i)
 
     def readfile(self, path=''):
         global current_kg_name
-        filePath = path
-        tree = ET.parse(filePath)  # 解析movies.xml这个文件
-        filePath = Path(filePath)
-        root = tree.getroot()  # 得到根元素，Element类
-        meta_kg_name = root.text
-        print('名字是', (meta_kg_name))
-        if meta_kg_name is None or meta_kg_name == '\n\t':
-            print('老旧xml')
-            meta_kg_name = '教学知识图谱'
-        if meta_kg_name.replace('\n\t', '') != current_meta_kg_dict:
-            print(meta_kg_name, current_meta_kg_dict)
+        print()
+        try:
+            filePath = path
+            dirname, full_name = os.path.split(filePath)
+            filname, file_ext = os.path.splitext(full_name)
+            if file_ext != '.xml':
+                print('不是xml文件')
+                return
+            tree = ET.parse(filePath)  # 解析movies.xml这个文件
+            filePath = Path(filePath)
+            root = tree.getroot()  # 得到根元素，Element类
+            meta_kg_name = root.text
+            print('名字是', (meta_kg_name))
+            if meta_kg_name is None or meta_kg_name == '\n\t':
+                print('老旧xml')
+                meta_kg_name = '教学知识图谱'
+            if meta_kg_name.replace('\n\t', '') != current_meta_kg_dict:
+                print(meta_kg_name, current_meta_kg_dict)
+                return
+            entities = root.findall('entities')
+            relations = root.findall('relations')
+            entitys = entities[0].findall('entity')
+            now_kg_name = os.path.basename(filePath).split('.')[0]
+        except Exception as e:
+            print(e)
+            print('xml文件有误,文件名：',path)
             return
-        entities = root.findall('entities')
-        relations = root.findall('relations')
-        entitys = entities[0].findall('entity')
-        now_kg_name = os.path.basename(filePath).split('.')[0]
         if now_kg_name not in knowledge_graphs_class.keys():
             knowledge_graphs_class[now_kg_name] = {"entities": [], "relations": []}
         relations1 = relations[0].findall('relation')
@@ -506,6 +548,7 @@ class my_treeview(QTreeView):
                                 flag=self.class_nameToflag(relation1.class_name))
             itemrelation.flagToentity()
             knowledge_graphs_class[now_kg_name]['relations'].append(itemrelation)
+        knowledge_graphs_class[now_kg_name]['save_dir'] = path
         current_kg_name = now_kg_name
         self.scence.update_kg()
         self.my_sign_kg.emit()
@@ -533,6 +576,7 @@ class my_treeview(QTreeView):
                                 flag=self.class_nameToflag(relation1.class_name))
             itemrelation.flagToentity()
             knowledge_graphs_class[name2]['relations'].append(itemrelation)
+        knowledge_graphs_class[name2]['save_dir'] = knowledge_graphs_class[name1]['save_dir']
         current_kg_name = name2
         self.scence.update_kg()
         self.my_sign_kg.emit()
@@ -768,7 +812,7 @@ class GraphicScene(QGraphicsScene):
             j.update_positions()
         node_id = ax + 1
         self.update()
-        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name])
+        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],dir=knowledge_graphs_class[current_kg_name]['save_dir'])
 
     def deleall(self):
         for i in self.nodes:
@@ -809,7 +853,7 @@ class GraphicScene(QGraphicsScene):
             self.addItem(node)
             print('添加', node)
             knowledge_graphs_class[current_kg_name]['entities'].append(node)
-            save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+            save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],dir=knowledge_graphs_class[current_kg_name])
             self.is_kg_changed = True
 
     def add_link(self, link):
@@ -833,7 +877,7 @@ class GraphicScene(QGraphicsScene):
         knowledge_graphs_class[current_kg_name]['entities'].remove(node)
         del node
         # node.deleteLater()
-        save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+        save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],dir=knowledge_graphs_class[current_kg_name]['save_dir'])
         self.is_kg_changed = True
 
     def remove_link(self, link):
@@ -844,7 +888,7 @@ class GraphicScene(QGraphicsScene):
             knowledge_graphs_class[current_kg_name]['relations'].remove(link.edge)
             del link
             # link.deleteLater()
-            save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+            save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],dir = knowledge_graphs_class[current_kg_name]['save_dir'])
             self.is_kg_changed = True
 
     def get_all_item(self):
@@ -942,6 +986,30 @@ class GraphicView(QGraphicsView):
         self.setDragMode(self.RubberBandDrag)
         self.setAcceptDrops(True)
 
+    def save_as_picture(self, path):
+        if not os.path.exists(path):
+            try:
+                os.makedirs(path)
+            except OSError as e:
+                QMessageBox.critical(self, "错误", f"无法创建文件夹: {e}")
+                return
+        items_rect = self.gr_scene.itemsBoundingRect()
+        base_file_path = os.path.join(path, "scene.png")
+        file_path = base_file_path
+        counter = 1
+        while os.path.exists(file_path):
+            file_path = os.path.join(path, f"scene_{counter}.png")
+            counter += 1
+        image = QImage(items_rect.size().toSize(), QImage.Format_ARGB32)
+        image.fill(Qt.white)  # 设置背景为白色
+
+        # 使用QPainter将场景绘制到QImage上
+        painter = QPainter(image)
+        self.gr_scene.render(painter, target=QRectF(image.rect()), source=items_rect)
+        painter.end()
+
+        # 保存QImage到文件
+        image.save(file_path)
     # 03/23
     def wheelEvent(self, event):
         zoomInFactor = 1.25  # 定义放大的比例因子
@@ -1094,6 +1162,7 @@ class GraphicView(QGraphicsView):
     def create_rightmenu(self, pos):
         print(pos)
         item_list = self.scene().selectedItems()
+        print('1111',item_list)
         # item_list.append(self.getparent(self.itemAt(pos)))
         if len(item_list) < 1 and isinstance(self.itemAt(pos), GraphicEdge):
             i = self.itemAt(pos)
@@ -1226,7 +1295,7 @@ class GraphicView(QGraphicsView):
                 i.store(self.flagToentity(reflag=i.flag, id1=i.start_item.entity.id,
                                           id2=i.end_item.entity.id))  # 保存最终产生的连接线
                 i.update_positions()
-        save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+        save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],dir = knowledge_graphs_class[current_kg_name]['save_dir'])
         self.gr_scene.update_kg()
 
     def button_1(self, select_item_list, pos):
@@ -1238,9 +1307,11 @@ class GraphicView(QGraphicsView):
         pass
 
     def button_2(self, item_list):
+        print('2222',item_list)
         for i in item_list:
+            print('3',i)
             if isinstance(i, GraphicEdge):
-                return
+                continue
             if isinstance(i, GraphicItemGroup):
                 self.gr_scene.remove_node(i)
 
@@ -1344,7 +1415,7 @@ class GraphicView(QGraphicsView):
         new_edge.scene.add_link(new_edge.gr_edge)
         new_edge.store(self.flagToentity(reflag=new_edge.flag, id1=new_edge.start_item.entity.id,
                                          id2=new_edge.end_item.entity.id))  # 保存最终产生的连接线
-        save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name])
+        save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],dir=knowledge_graphs_class[current_kg_name]['save_dir'])
         print('关系保存结束')
         # self.relationAdded.emit(new_edge.head_entity, new_edge.tail_entity)
 
@@ -1470,14 +1541,14 @@ class GraphicItemGroup(QGraphicsItemGroup):
                 atta = myGraphicItemGroup_2(text=i[1], group=self)
                 self.attachment.append(atta)
                 self.addToGroup(atta)
-                atta.setPos(5 + num * (atta.r + 6), heoght)
+                atta.setPos(5 + num * (atta.r + 0), heoght)
             num = num + 1
             if num == 2:
                 num = 0
-                heoght = heoght + 20
+                heoght = heoght + 26
 
     def copy_itself(self):
-        return GraphicItemGroup(scene=self.scene, x=self.pos().x(), y=self.pos().y(), entity=copy.deepcopy(self.entity))
+        return GraphicItemGroup(scene=self.scene, x=self.pos().x(), y=self.pos().y(), entity=self.entity.copy_itself())
 
     def re_init(self, entity: entity):
         self.clearlist()
@@ -1638,6 +1709,7 @@ class myGraphicItemGroup_2(QGraphicsItemGroup):
             font = QFont()
             font.setFamily("微软雅黑")
             font.setBold(True)
+            font.setPointSizeF(10)
             self.GraphicText = QGraphicsSimpleTextItem(text)
             self.GraphicText.setBrush(QColor(192, 0, 0))
             self.GraphicText.setFont(font)
@@ -1774,6 +1846,7 @@ class GraphicEdge(QGraphicsPathItem):
             self._pen = QPen(QColor(0, 0, 0))  # 画线条的
             self._pen.setWidthF(self.width * 3)
             self._mark_pen = QPen(QColor(0, 0, 0))
+            self._mark_pen.setWidthF(3.6)
 
         self._pen_dragging = QPen(QColor("#000"))  # 画拖拽线条时线条的
         self._pen_dragging.setStyle(Qt.DashDotLine)

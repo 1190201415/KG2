@@ -98,13 +98,20 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         self.treeView.clicked.connect(self.clicked_treeView)
         self.treeView_3.clicked.connect(self.clicked_treeView3)
+
         self.action1_1.triggered.connect(self.clickaction1_1)
         self.action1_2.triggered.connect(self.csave_kgs)
+        self.action1_3.triggered.connect(self.copy_kg)
+        self.action1_4.triggered.connect(self.another_save)
+        self.action1_5.triggered.connect(self.choosedir)
+        self.action1_6.triggered.connect(self.openfile)
+
+
         self.action2_1.triggered.connect(self.confirm_auto_layout)
-        self.action2_2.triggered.connect(self.copy_kg)
-        self.action2_3.triggered.connect(self.set_mouse)
-        self.action3_1.triggered.connect(self.another_save)
-        self.action4_1.triggered.connect(self.start_drag)
+        self.action2_2.triggered.connect(self.save_as_picture)
+
+        self.action3_1.triggered.connect(self.set_mouse)
+        self.action3_2.triggered.connect(self.start_drag)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
         # self.initLayouts()
         # self.showMaximized()
@@ -113,6 +120,23 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.init_comboBox_2()
 
         self.comboBox.addItems(["计算思维（计算机科学导论）"])
+
+    def save_as_picture(self):
+        self.graphicsView.save_as_picture(path='./Screenshot')
+
+    def openfile(self):
+        m = QtWidgets.QFileDialog.getOpenFileName(None, "文件读取",'','xml 文件(*.xml)', )  # 起始路径
+        self.treeView_kg.readfile(m[0])
+
+    def opendir(self):#这个是读到当前目录还是新建一个目录？
+        m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件读取",'')  # 起始路径
+        self.treeView_kg.initxml(m[0])
+
+
+    def choosedir(self):
+        m = QtWidgets.QFileDialog.getExistingDirectory(None, "选取文件夹或新建文件夹保存",)  # 起始路径
+
+        Myclass.save_kgs(dir=m)
 
     def start_drag(self):
         self.graphicsView.drag_flag = 1
@@ -408,7 +432,9 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def csave_kgs(self):
         self.graphicsSence.update()
-        Myclass.save_kgs()
+        for KG in Myclass.knowledge_graphs_class.keys():
+            print('保存kg：', KG)
+            Myclass.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG], dir='./temp')
 
     def confirm_auto_layout(self):
         reply = QMessageBox.question(
@@ -424,18 +450,32 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def abilityinitrelationType(self):
         abidict: Myclass.meta_kg
         abidict = Myclass.meta_dict['能力知识图谱']
-        abidict.relationType_dict['abLineType1'] = Myclass.abilityrelationType(class_name='包含关系')
+        abidict.relationType_dict['abLineType1'] = Myclass.relationType(class_name='包含关系', mask='知识连线',
+                                                                      classification='包含关系',
+                                                                      head_need='内容方法型节点', tail_need='内容方法型节点')
         return
 
     def abilityinitentityType(self):
         abidict: Myclass.meta_kg
         abidict = Myclass.meta_dict['能力知识图谱']
-        abidict.entityType_dict['abNodeType1'] = Myclass.abilityentityType(class_name='能力领域', EN='CA')
-        abidict.entityType_dict['abNodeType2'] = Myclass.abilityentityType(class_name='能力单元', EN='CU')
-        abidict.entityType_dict['abNodeType3'] = Myclass.abilityentityType(class_name='能力点', EN='CP')
-        abidict.entityType_dict['abNodeType4'] = Myclass.abilityentityType(class_name='项目', EN='PR')
-        abidict.entityType_dict['abNodeType5'] = Myclass.abilityentityType(class_name='任务', EN='TR')
-        abidict.entityType_dict['abNodeType6'] = Myclass.abilityentityType(class_name='知识细节', EN='KD')
+        abidict.entityType_dict['abNodeType1'] = Myclass.entityType(class_name='能力领域', classification='内容方法型节点',
+                                                                  identity='知识',
+                                                                  level='一级', opentool='无')
+        abidict.entityType_dict['abNodeType2'] = Myclass.entityType(class_name='能力单元', classification='内容方法型节点',
+                                                                  identity='知识',
+                                                                  level='二级', opentool='无')
+        abidict.entityType_dict['abNodeType3'] = Myclass.entityType(class_name='能力点', classification='内容方法型节点',
+                                                                  identity='知识',
+                                                                  level='归纳级', opentool='无')
+        abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='项目', classification='内容方法型节点',
+                                                                  identity='知识',
+                                                                  level='内容级', opentool='无')
+        abidict.entityType_dict['abNodeType5'] = Myclass.entityType(class_name='任务', classification='内容方法型节点',
+                                                                  identity='知识',
+                                                                  level='内容级', opentool='无')
+        abidict.entityType_dict['abNodeType6'] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
+                                                                  identity='知识',
+                                                                  level='内容级', opentool='无')
         return
 
     def initrelationType(self):
@@ -511,7 +551,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_my_sign1(self, name):
         if name not in Myclass.knowledge_graphs_class.keys():
-            Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": []}
+            Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": [],'save_dir':"./temp"}
             self.update_kg_treeview()
 
     def handle_my_sign2(self, name):

@@ -27,6 +27,9 @@
        <string notr="true">border: none;</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <property name="topMargin">
         <number>0</number>
        </property>
@@ -50,7 +53,7 @@
             <x>0</x>
             <y>0</y>
             <width>157</width>
-            <height>391</height>
+            <height>394</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -88,7 +91,7 @@
             <x>0</x>
             <y>0</y>
             <width>157</width>
-            <height>390</height>
+            <height>394</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
