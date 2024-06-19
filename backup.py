@@ -105,6 +105,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action1_4.triggered.connect(self.another_save)
         self.action1_5.triggered.connect(self.choosedir)
         self.action1_6.triggered.connect(self.openfile)
+        self.action1_7.triggered.connect(self.opendir)
 
 
         self.action2_1.triggered.connect(self.confirm_auto_layout)
@@ -126,16 +127,22 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def openfile(self):
         m = QtWidgets.QFileDialog.getOpenFileName(None, "文件读取",'','xml 文件(*.xml)', )  # 起始路径
+        if m=='':
+            return
         self.treeView_kg.readfile(m[0])
 
     def opendir(self):#这个是读到当前目录还是新建一个目录？
-        m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件读取",'')  # 起始路径
-        self.treeView_kg.initxml(m[0])
+        m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件夹读取",)  # 起始路径
+        if m == '':
+            return
+        self.treeView_kg.initxml(m)
 
 
     def choosedir(self):
         m = QtWidgets.QFileDialog.getExistingDirectory(None, "选取文件夹或新建文件夹保存",)  # 起始路径
-
+        if m == '':
+            print("没选，返回")
+            return
         Myclass.save_kgs(dir=m)
 
     def start_drag(self):
