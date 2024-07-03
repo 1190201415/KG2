@@ -213,17 +213,17 @@ class Ui_MainWindow(object):
         self.menu_2.setTitle(_translate("MainWindow", "编辑"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.action1_1.setText(_translate("MainWindow", "新建图谱"))
-        self.action1_2.setText(_translate("MainWindow", "保存(保存整个图谱至temp文件夹)"))
+        self.action1_2.setText(_translate("MainWindow", "保存图谱"))#(保存单个图谱至temp文件夹)
         self.action1_3.setText(_translate("MainWindow", "复制至新图谱"))
-        self.action1_4.setText(_translate("MainWindow", "另存为（换一个名字保存至选定文件夹下，以后也保存为改名字）"))
-        self.action1_5.setText(_translate("MainWindow", "新建课程(保存整个图谱至选定文件夹)"))
+        self.action1_4.setText(_translate("MainWindow", "另存为"))#（图谱换个目录保存）
+        self.action1_5.setText(_translate("MainWindow", "保存课程"))#(保存整个图谱至选定文件夹)
         self.action1_6.setText(_translate("MainWindow", "打开文件"))
         self.action1_7.setText(_translate("MainWindow", "打开文件夹"))
 
 
 
         self.action2_1.setText(_translate("MainWindow", "自动布局"))
-        self.action2_2.setText(_translate("MainWindow", "保存至图片（无法读取）"))
+        self.action2_2.setText(_translate("MainWindow", "保存至图片"))#（无法读取）
 
 
         self.action3_1.setText(_translate("MainWindow", "鼠标"))

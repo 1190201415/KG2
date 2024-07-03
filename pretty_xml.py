@@ -4,8 +4,7 @@
 # @File : pretty_xml.py.py
 # @Software: PyCharm
 from xml.etree import ElementTree
-import xml.etree.ElementTree as ET
-import xml.dom.minidom
+
 
 
 

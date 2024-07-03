@@ -8,25 +8,22 @@
 # Copyright 2021 Youcans, XUPT
 # Crated：2021-10-06
 # encoding=utf-8
-import copy
+
 import sys
 
-import QCandyUi.CandyWindow
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize, QObject
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize
+from PyQt5.QtGui import QIcon, QPixmap, QPainter
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
     QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
-    QGraphicsScene, QApplication, QInputDialog, QLineEdit, QHeaderView
+    QGraphicsScene, QApplication
 
 import Myclass
 from Myclass import current_kg_name
 from untitled import Ui_MainWindow
 from new_entity import Ui_Form
-
-from QCandyUi.CandyWindow import colorful
 
 
 
@@ -42,6 +39,7 @@ class childwindow_1(QtWidgets.QWidget, Ui_Form):
     def clickpushbutton(self):
         name = self.lineEdit.text()
         self.my_sign1.emit(name)
+        self.close()
 
     def clickpushbutton_2(self):
         self.close()
@@ -83,10 +81,12 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView_kg.my_sign_kg.connect(self.update_kg_treeview)
         self.treeView_kg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.graphicsSence.setItemIndexMethod(QGraphicsScene.NoIndex)
-        # self.graphicsView.entityDropped.connect(self.onEntityDropped)
-        # self.graphicsSence.entityRemove.connect(self.onEntityRemoved)
-        # self.graphicsView.relationAdded.connect(self.onRelationAdded)
-        # self.graphicsView.relationRemove.connect(self.onRelationRemoved)
+
+        self.graphicsView.entityDropped.connect(self.setchange)
+        self.graphicsSence.entityRemove.connect(self.setchange)
+        self.graphicsView.relationAdded.connect(self.setchange)
+        self.graphicsView.relationRemove.connect(self.setchange)
+        self.graphicsSence.scenechanged.connect(self.setchange)
 
         self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
         self.treeView.setDragEnabled(True)
@@ -100,9 +100,9 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.treeView_3.clicked.connect(self.clicked_treeView3)
 
         self.action1_1.triggered.connect(self.clickaction1_1)
-        self.action1_2.triggered.connect(self.csave_kgs)
+        self.action1_2.triggered.connect(self.save_file)
         self.action1_3.triggered.connect(self.copy_kg)
-        self.action1_4.triggered.connect(self.another_save)
+        self.action1_4.triggered.connect(self.another_save_file)
         self.action1_5.triggered.connect(self.choosedir)
         self.action1_6.triggered.connect(self.openfile)
         self.action1_7.triggered.connect(self.opendir)
@@ -114,13 +114,25 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action3_1.triggered.connect(self.set_mouse)
         self.action3_2.triggered.connect(self.start_drag)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
+        #self.graphicsSence.changed.connect(self.setchange)
         # self.initLayouts()
         # self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
         self.treeView_kg.initxml()
         self.init_comboBox_2()
 
-        self.comboBox.addItems(["计算思维（计算机科学导论）"])
+        self.comboBox.addItems(["教学知识图谱"])
+
+
+    def setchange(self):
+        if self.treeView_kg.myreadfile:
+            return
+        name = Myclass.current_kg_name
+        if Myclass.knowledge_graphs_class[name]['is_change'] == True:
+            return
+        Myclass.knowledge_graphs_class[name]['is_change']= True
+        self.update_kg_treeview()
+
 
     def save_as_picture(self):
         self.graphicsView.save_as_picture(path='./Screenshot')
@@ -135,7 +147,11 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件夹读取",)  # 起始路径
         if m == '':
             return
+        self.asave_kgs()
+        Myclass.knowledge_graphs_class.clear()
         self.treeView_kg.initxml(m)
+        self.update_kg_treeview(text=m)
+
 
 
     def choosedir(self):
@@ -164,6 +180,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.update_kg_treeview()
         self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
         self.graphicsSence.update_kg()
+        if Myclass.current_kg_name == '知识图谱1' and Myclass.current_kg_name not in Myclass.knowledge_graphs_class.keys():
+            self.clickaction1_1()
         print(name)
 
     def init_comboBox_2(self):
@@ -380,6 +398,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         for i in Myclass.knowledge_graphs_class.keys():
             kg_item = QtGui.QStandardItem(i)
             root_item.appendRow(kg_item)
+            if Myclass.knowledge_graphs_class[i]['is_change']:
+                kg_item.setIcon(self.create_dot_icon())
         self.treeView_kg.expandAll()
 
         # # 为每个知识图谱添加实体和关系列表
@@ -392,6 +412,19 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # for j in range(1, 3):
         #     entities_item.appendRow(QtGui.QStandardItem(f"实体{j}"))
         #     relations_item.appendRow(QtGui.QStandardItem(f"关系{j}"))
+
+    def create_dot_icon(self):
+        # 创建一个带点的图标
+        pixmap = QPixmap(10, 10)
+        pixmap.fill(Qt.transparent)
+
+        painter = QPainter(pixmap)
+        painter.setBrush(Qt.red)
+        painter.drawEllipse(0, 0, 10, 10)
+        painter.end()
+
+        return QIcon(pixmap)
+
 
     def click_kg_treeview_selected(self):
         # 获取当前选中的项
@@ -406,30 +439,21 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.graphicsSence.update()
 
     def closeEvent(self, a0: QtGui.QCloseEvent):
-        if self.graphicsSence.is_kg_changed:
-            reply = QMessageBox.question(self, '保存更改', '是否保存图谱更新?', QMessageBox.Yes | QMessageBox.No,
-                                         QMessageBox.Yes)
-            if reply == QMessageBox.Yes:
-                NUM_FUN = 5
-                # self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
-                # self.progressDialog.setWindowTitle("退出中")
-                # self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
-                # self.progressDialog.show()
-                #
-                # #self.save_entityType()
-                # self.progressDialog.setValue(1)
-                # QCoreApplication.processEvents()
-                #
-                # #self.save_relationType()
-                # self.progressDialog.setValue(2)
-                # QCoreApplication.processEvents()
-                #
-                # #self.save_relationType()
-                # self.progressDialog.setValue(3)
-                # QCoreApplication.processEvents()
-
-                self.csave_kgs()
-                # self.progressDialog.setValue(NUM_FUN)
+        # if self.graphicsSence.is_kg_changed:
+        # for i in Myclass.knowledge_graphs_class.keys():
+        #     if Myclass.knowledge_graphs_class[i]['is_change']:
+        #         reply = QMessageBox.question(self, '保存更改', '是否保存  '+i+'   更新?', QMessageBox.Yes | QMessageBox.No,
+        #                                      QMessageBox.Yes)
+        #         if reply == QMessageBox.Yes:
+        #             NUM_FUN = 5
+        #             self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
+        #             self.progressDialog.setWindowTitle("退出中")
+        #             self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
+        #             self.progressDialog.show()
+        #             self.save_file(name=i)
+        #             self.progressDialog.setValue(NUM_FUN)
+        self.asave_kgs()
+        # self.csave_kgs()
         reply = QMessageBox.question(self, '退出', '确认退出？', QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             a0.accept()
@@ -437,11 +461,48 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         else:
             a0.ignore()
 
+
+    def save_file(self,name = None):
+        self.graphicsSence.update()
+        if name is None:
+            KG = Myclass.current_kg_name
+        else:
+            KG = name
+        Myclass.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG], dir=Myclass.knowledge_graphs_class[KG]['save_dir'])
+        Myclass.knowledge_graphs_class[KG]['is_change']  = False
+        self.update_kg_treeview()
+
+    def another_save_file(self):
+        m = QtWidgets.QFileDialog.getExistingDirectory(None, "选取文件夹或新建文件夹保存", )  # 起始路径
+        if m == '':
+            print("没选，返回")
+            return
+        KG = Myclass.current_kg_name
+        Myclass.knowledge_graphs_class[KG]['save_dir'] = m
+        Myclass.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG], dir=m)
+        Myclass.knowledge_graphs_class[KG]['is_change'] = False
+        self.update_kg_treeview()
+
+    def asave_kgs(self):
+        for i in Myclass.knowledge_graphs_class.keys():
+            if Myclass.knowledge_graphs_class[i]['is_change']:
+                reply = QMessageBox.question(self, '保存更改', '是否保存  ' + i + '   更新?', QMessageBox.Yes | QMessageBox.No,
+                                             QMessageBox.Yes)
+                if reply == QMessageBox.Yes:
+                    NUM_FUN = 5
+                    self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
+                    self.progressDialog.setWindowTitle("退出中")
+                    self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
+                    self.progressDialog.show()
+                    self.save_file(name=i)
+                    self.progressDialog.setValue(NUM_FUN)
+
     def csave_kgs(self):
         self.graphicsSence.update()
         for KG in Myclass.knowledge_graphs_class.keys():
             print('保存kg：', KG)
             Myclass.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG], dir='./temp')
+            pass
 
     def confirm_auto_layout(self):
         reply = QMessageBox.question(
@@ -452,7 +513,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             self.auto_layout()
 
     def auto_layout(self):
-        self.graphicsSence.auto_layout()
+        point = self.graphicsView.get_view_left_middle()
+        self.graphicsSence.auto_layout(point)
 
     def abilityinitrelationType(self):
         abidict: Myclass.meta_kg
@@ -558,8 +620,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_my_sign1(self, name):
         if name not in Myclass.knowledge_graphs_class.keys():
-            Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": [],'save_dir':"./temp"}
+            Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": [],'save_dir':"./temp",'is_change':False}
+            Myclass.current_kg_name = name
             self.update_kg_treeview()
+            self.treeView_kg.setselect(name)
 
     def handle_my_sign2(self, name):
         if name not in Myclass.knowledge_graphs_class.keys():
@@ -731,6 +795,7 @@ if __name__ == '__main__':
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = 0
     app = QtWidgets.QApplication(sys.argv)
+    QtCore.QResource.registerResource('resources.qrc')
     MainWindow = my_MainWindow()
     # MainWindow = QCandyUi.CandyWindow.createWindow(MainWindow,'blue')
 
