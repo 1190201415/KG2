@@ -10,16 +10,18 @@ import typing
 from pathlib import Path
 
 import numpy as np
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsEllipseItem, \
     QGraphicsItem, QTreeView, QGraphicsPathItem, QGraphicsItemGroup, QGraphicsSimpleTextItem, QWidget, \
     QGraphicsTextItem, \
     QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent, QDialog, QInputDialog, QMenu, QAction, \
-    QAbstractItemView, QMessageBox
+    QAbstractItemView, QMessageBox, QComboBox, QCheckBox
 from PyQt5.QtCore import Qt, QPointF, QPoint, pyqtSignal, QRectF, QModelIndex, QSize
 from PyQt5.QtGui import QColor, QPen, QPainter, QPixmap, QPainterPath, QBrush, QFont, QTransform, QPainterPathStroker, \
-    QCursor, QImage
+    QCursor, QImage, QWheelEvent
 from typing import List, Dict
+
+from entity2 import Ui_Dialog_2
 from setitem import roll
 import pretty_xml
 from entity1 import Ui_Dialog
@@ -40,10 +42,12 @@ class meta_kg(object):
         self.current_kg_name = '知识图谱1'
         self.node_id = 0
         self.save_dict = {}
+        self.readfilepath = './xml'
 
 
 meta_dict = {}
 current_meta_kg_dict = '教学知识图谱'
+readfilepath = './xml'
 
 
 def init_meta_kg_dict():
@@ -66,7 +70,7 @@ save_dict = {}
 
 
 def save_meta_kg():
-    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id
+    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id, readfilepath
     kg_dict: meta_kg
     kg_dict = meta_dict[current_meta_kg_dict]
     kg_dict.entityType_dict = entityType_dict
@@ -75,11 +79,12 @@ def save_meta_kg():
     kg_dict.knowledge_graphs_class = knowledge_graphs_class
     kg_dict.current_kg_name = current_kg_name
     kg_dict.node_id = node_id
+    kg_dict.readfilepath = readfilepath
     kg_dict.save_dict = save_dict
 
 
 def change_meta_kg():
-    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id, save_dict
+    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id, save_dict, readfilepath
     kg_dict: meta_kg
     kg_dict = meta_dict[current_meta_kg_dict]
     entityType_dict = kg_dict.entityType_dict
@@ -88,6 +93,7 @@ def change_meta_kg():
     knowledge_graphs_class = kg_dict.knowledge_graphs_class
     current_kg_name = kg_dict.current_kg_name
     node_id = kg_dict.node_id
+    readfilepath = kg_dict.readfilepath
     save_dict = kg_dict.save_dict
 
 
@@ -157,58 +163,10 @@ def save_kg(name, kg, dir=None):
         head_need.text = i.relation.head_need
         tail_need.text = i.relation.tail_need
     tree = ET.ElementTree(root)
+    print(dir)
+    print(name)
     tree.write(os.path.join(dir, name) + '.xml')
     pretty_xml.pretty(name=os.path.join(dir, name) + ".xml")
-
-
-def save_kg_plus(name, kg):
-    root = ET.Element('KG')
-    root.text = current_meta_kg_dict
-    entities = ET.SubElement(root, 'entities')
-    relations = ET.SubElement(root, 'relations')
-    for i in kg['entities']:
-        entity = ET.SubElement(entities, 'entity')
-        id = ET.SubElement(entity, 'id')
-        name1 = ET.SubElement(entity, 'class_name')
-        classification = ET.SubElement(entity, 'classification')
-        identity = ET.SubElement(entity, 'identity')
-        level = ET.SubElement(entity, 'level')
-        attach = ET.SubElement(entity, 'attach')
-        opentool = ET.SubElement(entity, 'opentool')
-        content = ET.SubElement(entity, 'content')
-        x = ET.SubElement(entity, 'x')
-        y = ET.SubElement(entity, 'y')
-        id.text = str(i.entity.id)
-        name1.text = i.entity.class_name
-        classification.text = i.entity.classification
-        identity.text = i.entity.identity
-        level.text = i.entity.level
-        opentool.text = i.entity.opentool
-        content.text = i.entity.content
-        attach.text = i.entity.attach.tostring()
-        x.text = str(i.entity.x)
-        y.text = str(i.entity.y)
-    for i in kg['relations']:
-        relation = ET.SubElement(relations, 'relation')
-        name2 = ET.SubElement(relation, 'name')
-        headnodeid = ET.SubElement(relation, 'headnodeid')
-        tailnodeid = ET.SubElement(relation, 'tailnodeid')
-        class_name = ET.SubElement(relation, 'class_name')
-        mask = ET.SubElement(relation, 'mask')
-        classification = ET.SubElement(relation, 'classification')
-        head_need = ET.SubElement(relation, 'head_need')
-        tail_need = ET.SubElement(relation, 'tail_need')
-        name2.text = i.relation.name
-        headnodeid.text = str(i.relation.headnodeid)
-        tailnodeid.text = str(i.relation.tailnodeid)
-        class_name.text = i.relation.class_name
-        mask.text = i.relation.mask
-        classification.text = i.relation.classification
-        head_need.text = i.relation.head_need
-        tail_need.text = i.relation.tail_need
-    tree = ET.ElementTree(root)
-    tree.write(name + '.xml')
-    pretty_xml.pretty(name=name + ".xml")
 
 
 def isexist(name, path=None):
@@ -255,6 +213,151 @@ class abilityrelation(abilityrelationType):
         super().__init__(class_name)
 
 
+class ABattachment(object):
+    def __init__(self, L1=False, L2=False, L3=False, L4=False, L5=False, L6=False, L7=False, L8=False, L9=False,
+                 Pj=False, Tk=False):
+        self.L1 = L1
+        self.L2 = L2
+        self.L3 = L3
+        self.L4 = L4
+        self.L5 = L5
+        self.L6 = L6
+        self.L7 = L7
+        self.L8 = L8
+        self.L9 = L9
+        self.Pj = Pj
+        self.Tk = Tk
+
+    def string(self):
+        str1 = ''
+        attri = vars(self)
+        for a, v in attri.items():
+            str1 = str1 + a
+        return str1
+
+    def tostring(self):
+        str1 = ''
+        # attri = vars(self)
+        # for a, v in attri.items():
+        #     if v:
+        #         str1 = str1 + '1'
+        #     else:
+        #         str1 = str1 + '0'
+        if self.L1:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L2:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L3:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L4:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L5:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L6:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L7:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L8:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.L9:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.Pj:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        if self.Tk:
+            str1 = str1 + '1'
+        else:
+            str1 = str1 + '0'
+        # self.T = self.tobool(str[0])
+        # self.Z = self.tobool(str[1])
+        # self.Q = self.tobool(str[2])
+        # self.K = self.tobool(str[3])
+        # self.E = self.tobool(str[4])
+        # self.P = self.tobool(str[5])
+
+        return str1
+
+    def restrlist(self):
+        list1 = []
+        attri = vars(self)
+        for a, v in attri.items():
+            if v:
+                list1.append(a)
+
+        return list1
+
+    def currentTrue(self):
+        attri = vars(self)
+        for a, v in attri.items():
+            if v:
+                return a
+        return ''
+
+    def restrlist2(self):
+        list1 = []
+        attri = vars(self)
+        for a, v in attri.items():
+            list1.append([v, a])
+        return list1
+
+    def tobool(self, str):
+        if str == '0':
+            return False
+        if str == '1':
+            return True
+
+    def allfalse(self):
+        attri = vars(self)
+        for a, v in attri.items():
+            setattr(self, a, False)
+
+    def getbool(self, text):
+        if hasattr(self, text):
+            return getattr(self, text)
+
+    def textto(self, text, f):
+        self.allfalse()
+        if hasattr(self, text):
+            setattr(self, text, f)
+
+    def stringTo(self, str):
+        # attri = vars(self)
+        # num = 0
+        # for a, v in attri.items():
+        #     setattr(self, a, self.tobool(str[num]))
+        #     num = num + 1
+        self.L1 = self.tobool(str[0])
+        self.L2 = self.tobool(str[1])
+        self.L3 = self.tobool(str[2])
+        self.L4 = self.tobool(str[3])
+        self.L5 = self.tobool(str[4])
+        self.L6 = self.tobool(str[5])
+        self.L7 = self.tobool(str[6])
+        self.L8 = self.tobool(str[7])
+        self.L9 = self.tobool(str[8])
+        self.Pj = self.tobool(str[9])
+        self.Tk = self.tobool(str[10])
+
+
 class attachment(object):
     def __init__(self, K=False, T=False, Z=False, E=False, Q=False, P=False):
         # self.T = T
@@ -271,7 +374,7 @@ class attachment(object):
         self.P = P
 
     def string(self):
-        str1= ''
+        str1 = ''
         attri = vars(self)
         for a, v in attri.items():
             str1 = str1 + a
@@ -286,27 +389,27 @@ class attachment(object):
         #     else:
         #         str1 = str1 + '0'
         if self.T:
-            str1  = str1 + '1'
+            str1 = str1 + '1'
         else:
             str1 = str1 + '0'
         if self.Z:
-            str1  = str1 + '1'
+            str1 = str1 + '1'
         else:
             str1 = str1 + '0'
         if self.Q:
-            str1  = str1 + '1'
+            str1 = str1 + '1'
         else:
             str1 = str1 + '0'
         if self.K:
-            str1  = str1 + '1'
+            str1 = str1 + '1'
         else:
             str1 = str1 + '0'
         if self.E:
-            str1  = str1 + '1'
+            str1 = str1 + '1'
         else:
             str1 = str1 + '0'
         if self.P:
-            str1  = str1 + '1'
+            str1 = str1 + '1'
         else:
             str1 = str1 + '0'
         # self.T = self.tobool(str[0])
@@ -465,7 +568,8 @@ class entityType(object):
 
 
 class entity(object):
-    def __init__(self, attach: attachment, x: int, y: int, content='无', class_name='知识单元', classification='内容方法型',
+    def __init__(self, attach: typing.Union[attachment, ABattachment], x: int, y: int, content='无', class_name='知识单元',
+                 classification='内容方法型',
                  identity='知识',
                  level='二级', opentool='无'):
         global node_id
@@ -486,11 +590,12 @@ class entity(object):
         for a, v in attri.items():
             print(a, v)
 
-
     def copy_itself(self):
-        return entity(attach=self.attach, x=self.x, y=self.y, content=self.content, class_name=self.class_name,
-                      classification=self.classification, identity=self.identity, level=self.level,
-                      opentool=self.opentool)
+        return entity(attach=copy.deepcopy(self.attach), x=self.x, y=self.y, content=copy.deepcopy(self.content),
+                      class_name=copy.deepcopy(self.class_name),
+                      classification=copy.deepcopy(self.classification), identity=copy.deepcopy(self.identity),
+                      level=copy.deepcopy(self.level),
+                      opentool=copy.deepcopy(self.opentool))
 
 
 class my_treeview(QTreeView):
@@ -512,7 +617,7 @@ class my_treeview(QTreeView):
         selected_indexes = self.selectionModel().selectedIndexes()
         print(selected_indexes)
         self.groupBox_menu = QMenu(self)
-        self.actionA = QAction(u'删除', self)
+        self.actionA = QAction(u'保存至图片', self)
         self.groupBox_menu.addAction(self.actionA)
         self.actionA.triggered.connect(lambda: self.actionAf(selected_indexes))
         self.groupBox_menu.show()
@@ -534,6 +639,7 @@ class my_treeview(QTreeView):
         for i in xmllist:
             i = os.path.join(path, i)
             self.readfile(path=i)
+        return path
 
     def readfile(self, path=''):
         self.myreadfile = True
@@ -564,10 +670,11 @@ class my_treeview(QTreeView):
             print(e)
             print('xml文件有误,文件名：', path)
             return
-        knowledge_graphs_class[now_kg_name] = {"entities": [], "relations": []}  # 直接覆盖掉之前的图谱
+        knowledge_graphs_class[now_kg_name] = {"entities": [], "relations": [], 'save_dir': dirname,
+                                               'is_change': False}  # 直接覆盖掉之前的图谱
         relations1 = relations[0].findall('relation')
         idlist = []
-        if current_meta_kg_dict=='教学知识图谱':
+        if current_meta_kg_dict == '教学知识图谱':
             for i in entitys:
                 entity1 = entity(x=0, y=0, attach=attachment())
                 for j in i:
@@ -586,10 +693,11 @@ class my_treeview(QTreeView):
                 knowledge_graphs_class[now_kg_name]['entities'].append(itemgroup)
         elif current_meta_kg_dict == '能力知识图谱':
             for i in entitys:
-                entity1 = entity(x=0, y=0, attach=attachment())
+                entity1 = entity(x=0, y=0, attach=ABattachment())
                 for j in i:
                     if hasattr(entity1, j.tag):
                         if j.tag == 'attach':
+                            print('attach_adsd',j.text)
                             entity1.attach.stringTo(j.text)
                             continue
                         if j.tag == 'x' or j.tag == 'y' or j.tag == 'id':
@@ -613,7 +721,7 @@ class my_treeview(QTreeView):
                                 flag=self.class_nameToflag(relation1.class_name))
             itemrelation.flagToentity()
             knowledge_graphs_class[now_kg_name]['relations'].append(itemrelation)
-        knowledge_graphs_class[now_kg_name]['save_dir'] = './temp'
+        knowledge_graphs_class[now_kg_name]['save_dir'] = dirname
         knowledge_graphs_class[now_kg_name]['is_change'] = False
         current_kg_name = now_kg_name
         self.scence.update_kg()
@@ -652,7 +760,8 @@ class my_treeview(QTreeView):
 
     def copy_kg(self, name1, name2):
         global current_kg_name
-        knowledge_graphs_class[name2] = {"entities": [], "relations": []}
+        current_kg_name = name2
+        knowledge_graphs_class[name2] = {"entities": [], "relations": [], 'is_change': True}
         entities = knowledge_graphs_class[name1]['entities']
         relations = knowledge_graphs_class[name1]['relations']
         for i in entities:
@@ -667,9 +776,8 @@ class my_treeview(QTreeView):
             itemrelation.flagToentity()
             knowledge_graphs_class[name2]['relations'].append(itemrelation)
         knowledge_graphs_class[name2]['save_dir'] = knowledge_graphs_class[name1]['save_dir']
-        current_kg_name = name2
         self.scence.update_kg()
-        self.my_sign_kg.emit()
+        # self.my_sign_kg.emit()
         self.expandAll()
 
     def dragMoveEvent(self, event: QtGui.QMouseEvent):
@@ -682,7 +790,7 @@ class my_treeview(QTreeView):
                 return i
 
     def class_nameToflag(self, class_name):
-        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4}
+        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4,'样式一':5,'样式二':6}
 
         return dict1[class_name]
 
@@ -808,6 +916,105 @@ class my_Ui_Dialog(QDialog, Ui_Dialog):
         a0.accept()
 
 
+class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
+    my_sign1 = pyqtSignal(entity)
+
+    def __init__(self, parent=None, linetext='', content='', attach=ABattachment(), id=0, class_type=1):
+        super(ABmy_Ui_Dialog, self).__init__(parent)
+        self.setupUi(self)
+        self.label_4.setText(str(id))
+        self.check_boxes = []
+        self.setcombox(class_type=1)
+        self.comboBox.setCurrentText(linetext)
+        self.textEdit.setText(content)
+        # self.check_boxes.append(self.checkBox)
+        # self.check_boxes.append(self.checkBox_2)
+        # self.check_boxes.append(self.checkBox_3)
+        # self.check_boxes.append(self.checkBox_4)
+        # self.check_boxes.append(self.checkBox_5)
+        # self.check_boxes.append(self.checkBox_6)
+        self.class_type = class_type
+        self.pushButton_2.clicked.connect(self.clickpushbutton_2)
+        self.setcombox_2()
+        self.comboBox_2.setCurrentText(attach.currentTrue())
+        self.comboBox.currentIndexChanged.connect(self.setcombox_2)
+
+        self.setWindowFlags(Qt.Popup)
+        self.show()
+        self.activateWindow()
+
+    # def deletecheckbox(self):
+    #     for i in self.check_boxes:
+    #         self.gridLayout.removeWidget(i)
+    #         i.setParent(None)
+    #         i.deleteLater()  # 标记小部件供垃圾回收
+    #
+    #
+    # def newcheckbox(self,list1):
+    #     _translate = QtCore.QCoreApplication.translate
+    #     self.check_boxes = []
+    #     for v,a in list1:
+    #         checkbo = QCheckBox(self)
+    #         checkbo_name = a
+    #         checkbo.setObjectName(checkbo_name)
+    #         checkbo.setText(_translate("Dialog", a))
+    #         checkbo.setChecked(v)
+    #         self.gridLayout.addWidget(checkbo)
+    #         self.check_boxes.append(checkbo)
+
+    def setcombox(self, class_type):
+        list = []
+        if class_type == 1:
+            for i in entityType_dict.keys():
+                if entityType_dict[i].classification == '内容方法型节点':
+                    list.append(entityType_dict[i].class_name)
+        elif class_type == 2:
+            for i in entityType_dict.keys():
+                if entityType_dict[i].classification == '资源型节点':
+                    list.append(entityType_dict[i].class_name)
+        self.comboBox.addItems(list)
+
+    def setcombox_2(self):
+        self.comboBox_2.clear()
+        list = []
+        list.append('')
+        linetext  = self.comboBox.currentText()
+        if linetext == '能力点':
+            for i in ktsqepType_dict.keys():
+                if ktsqepType_dict[i].identity == '能力点':
+                    list.append(ktsqepType_dict[i].class_name)
+        elif linetext == '学生任务':
+            for i in ktsqepType_dict.keys():
+                if ktsqepType_dict[i].identity == '学生任务':
+                    list.append(ktsqepType_dict[i].class_name)
+        self.comboBox_2.addItems(list)
+
+    def setfEnable(self, flag: bool):
+        for i in self.check_boxes:
+            i.setEnabled(flag)
+
+    def clickpushbutton(self):
+        name = self.comboBox.currentText()
+        content = self.textEdit.toPlainText()
+        flag = self.comboBox_2.currentText()
+        a = ABattachment()
+        if name == '能力点' and 'L' in flag:
+            a.textto(flag,True)
+        if name == '学生任务' and flag in ['Pj','Tk']:
+            a.textto(flag,True)
+        entity1 = entity(class_name=name, content=content, x=0, y=0,
+                         attach=a)
+        self.my_sign1.emit(entity1)
+        self.close()
+
+    def clickpushbutton_2(self):
+        self.close()
+
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        self.clickpushbutton()
+        a0.accept()
+
+
 class GraphicScene(QGraphicsScene):
     entityRemove = pyqtSignal(str)
     scenechanged = pyqtSignal(bool)
@@ -840,7 +1047,8 @@ class GraphicScene(QGraphicsScene):
                       id_dict: Dict[int, typing.Union['GraphicItemGroup', 'ABGraphicItemGroup']]):
         node = id_dict[start_node.id]
         deep1 = deep + node.boundingRect().height() + 80
-        node.setPos(length + 0.5 * node.boundingRect().width(), deep - 0.5 * node.boundingRect().height())
+        node.setcentpos(length, deep)
+        # node.setPos(length + 0.5 * node.boundingRect().width(), deep - 0.5 * node.boundingRect().height())
         # print(start_node.id, deep+0.5*node.boundingRect().height(),length + 0.5*node.boundingRect().width())
         for i in start_node.child_list:
             if i in notgetlist:
@@ -851,7 +1059,6 @@ class GraphicScene(QGraphicsScene):
             return deep1
         else:
             return deep
-
 
     def AF_deep_search(self, start_node: GraphNode, notgetlist: list, deep: float, length: float,
                        id_dict: Dict[int, typing.Union['GraphicItemGroup', 'ABGraphicItemGroup']]):
@@ -875,14 +1082,11 @@ class GraphicScene(QGraphicsScene):
         #         all_deep = all_deep + id_dict[i.id].pos().y()
         #     node_deep = all_deep / len(list_child_deep)
 
-
-        if len(list_child_deep) >= 1:#使用理论上在的位置进行平均
+        if len(list_child_deep) >= 1:  # 使用理论上在的位置进行平均
             all_deep = 0
             for i in list_child_deep:
                 all_deep = all_deep + i
             node_deep = all_deep / len(list_child_deep)
-
-
 
         # if len(start_node.child_list) >= 1:
         #     all_deep = 0
@@ -898,10 +1102,13 @@ class GraphicScene(QGraphicsScene):
         else:
             return deep
 
-
-
-    def auto_layout(self,point):
+    def auto_layout(self, point):
         global node_id
+        isexist(name='.produrce')
+        if current_kg_name not in knowledge_graphs_class.keys():
+            return
+        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
+                dir='./.produrce')
         self.deleall()
         self.clear()
         self.update()
@@ -911,13 +1118,21 @@ class GraphicScene(QGraphicsScene):
         id_dict = {}
         node_list = []
         rela_list = []
+        fnode_list = []
+        frela_list = []
         for i in entities:
             i: typing.Union['GraphicItemGroup', 'ABGraphicItemGroup']
             id_dict[i.entity.id] = i
-            node_list.append(i.entity.id)
+            if i.entity.classification =='资源型节点':
+                fnode_list.append(i.entity.id)
+            else:
+                node_list.append(i.entity.id)
         for j in relations:
             j: Link
-            rela_list.append([j.start_item.entity.id, j.end_item.entity.id])
+            if j.start_item.entity.id in node_list and j.end_item.entity.id in node_list:
+                rela_list.append([j.start_item.entity.id, j.end_item.entity.id])
+            else:
+                frela_list.append([j.start_item.entity.id, j.end_item.entity.id])
 
         graph = Graph(node_list=node_list)
         graph.set_Graph(rela_list)
@@ -928,6 +1143,14 @@ class GraphicScene(QGraphicsScene):
         for k in start_list:
             deep = self.AF_deep_search(start_node=k, deep=deep, length=point.x(), notgetlist=graph.get_node_list(),
                                        id_dict=id_dict)
+
+        for i in frela_list:
+            if i[0] in node_list and i[1] in fnode_list:
+                id_dict[i[1]].setcentpos(x=id_dict[i[0]].pos().x(),y=id_dict[i[0]].pos().y()+30)
+                fnode_list.remove(i[1])
+
+        for i in fnode_list:
+            entities.remove(id_dict[i])
 
         for i in entities:
             if i.entity.id > ax:
@@ -941,7 +1164,7 @@ class GraphicScene(QGraphicsScene):
         node_id = ax + 1
         self.update()
         save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
-                dir=knowledge_graphs_class[current_kg_name]['save_dir'])
+                dir='./temp')
 
     def deleall(self):
         for i in self.nodes:
@@ -982,7 +1205,7 @@ class GraphicScene(QGraphicsScene):
             self.addItem(node)
             knowledge_graphs_class[current_kg_name]['entities'].append(node)
             save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],
-                    dir=knowledge_graphs_class[current_kg_name]['save_dir'])
+                    dir='./temp')
             self.is_kg_changed = True
 
     def add_link(self, link):
@@ -1006,7 +1229,7 @@ class GraphicScene(QGraphicsScene):
         del node
         # node.deleteLater()
         save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],
-                dir=knowledge_graphs_class[current_kg_name]['save_dir'])
+                dir='./temp')
         self.is_kg_changed = True
 
     def remove_link(self, link):
@@ -1018,7 +1241,7 @@ class GraphicScene(QGraphicsScene):
             del link
             # link.deleteLater()
             save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],
-                    dir=knowledge_graphs_class[current_kg_name]['save_dir'])
+                    dir='./temp')
             self.is_kg_changed = True
 
     def get_all_item(self):
@@ -1067,6 +1290,7 @@ class GraphicView(QGraphicsView):
     entityDropped = pyqtSignal(str)  # 假设信号传递实体名称和坐标
     relationAdded = pyqtSignal(str, str)
     relationRemove = pyqtSignal(str, str)
+    move = pyqtSignal(bool)
     updateRequest = pyqtSignal()
     list_of_copy = []
 
@@ -1096,6 +1320,10 @@ class GraphicView(QGraphicsView):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.create_rightmenu)
 
+        self._zoom = 0
+        self._maxZoom = 5
+        self._minZoom = -5
+
     def init_ui(self):
         self.setScene(self.gr_scene)
         # 设置渲染属性
@@ -1124,16 +1352,16 @@ class GraphicView(QGraphicsView):
                 QMessageBox.critical(self, "错误", f"无法创建文件夹: {e}")
                 return
         items_rect = self.gr_scene.itemsBoundingRect()
-        base_file_path = os.path.join(path, "scene.png")
+        base_file_path = os.path.join(path, current_kg_name + ".png")
         file_path = base_file_path
         counter = 1
         while os.path.exists(file_path):
-            file_path = os.path.join(path, current_kg_name+f"_{counter}.png")
+            file_path = os.path.join(path, current_kg_name + f"_{counter}.png")
             counter += 1
 
         # 扩展尺寸（例如，增加20像素的边界）
 
-        border_size = (items_rect.size().toSize().height()+items_rect.size().toSize().height())*0.1
+        border_size = (items_rect.size().toSize().height() + items_rect.size().toSize().height()) * 0.2
 
         # 计算扩展后的尺寸
         expanded_size = items_rect.size().toSize() + QSize(border_size * 2, border_size * 2)
@@ -1166,10 +1394,18 @@ class GraphicView(QGraphicsView):
 
         # 滚轮向上滚动，放大
         if event.angleDelta().y() > 0:
-            self.scale(zoomInFactor, zoomInFactor)
+            if self._zoom < self._maxZoom:
+                self._zoom += 1
+                self.scale(zoomInFactor, zoomInFactor)
+            else:
+                return
         # 滚轮向下滚动，缩小
         else:
-            self.scale(zoomOutFactor, zoomOutFactor)
+            if self._zoom > self._minZoom:
+                self._zoom -= 1
+                self.scale(zoomOutFactor, zoomOutFactor)
+            else:
+                return
 
         event.accept()
 
@@ -1187,8 +1423,8 @@ class GraphicView(QGraphicsView):
         rect = self.viewport().rect()
         # 获取视口左中点
         left_middle_point = rect.center()
-        left_middle_point.setX(rect.left()+0.1*(rect.width()))
-        left_middle_point.setY(rect.top()+0.1*(rect.height()))
+        left_middle_point.setX(rect.left() + 0.1 * (rect.width()))
+        left_middle_point.setY(rect.top() + 0.1 * (rect.height()))
         # 将视口左中点映射到场景坐标
         left_middle_scene_point = self.mapToScene(left_middle_point)
         return left_middle_scene_point
@@ -1209,7 +1445,6 @@ class GraphicView(QGraphicsView):
         center_scene_point = self.mapToScene(center_point)
         return center_scene_point
 
-
     def dragLeaveEvent(self, event):
         event.accept()
         # current_item = self.parent.itemAt(pos)  # 获取当前坐标下的item
@@ -1220,8 +1455,12 @@ class GraphicView(QGraphicsView):
         for i in entityType_dict.keys():
             j = entityType_dict[i]
             if name == j.class_name:
-                return entity(class_name=j.class_name, classification=j.classification, identity=j.identity,
-                              level=j.level, opentool=j.opentool, attach=attachment(), x=x, y=y)
+                if current_meta_kg_dict == '教学知识图谱':
+                    return entity(class_name=j.class_name, classification=j.classification, identity=j.identity,
+                                  level=j.level, opentool=j.opentool, attach=attachment(), x=x, y=y)
+                elif current_meta_kg_dict == '能力知识图谱':
+                    return entity(class_name=j.class_name, classification=j.classification, identity=j.identity,
+                                  level=j.level, opentool=j.opentool, attach=ABattachment(), x=x, y=y)
 
     def flagToentity(self, reflag: int, id1, id2):
         if current_meta_kg_dict == '教学知识图谱':
@@ -1235,7 +1474,22 @@ class GraphicView(QGraphicsView):
                             head_need=i.head_need,
                             tail_need=i.tail_need, headnodeid=id1, tailnodeid=id2)
 
+    def charge_child(self, item):
+        if isinstance(item, myGraphicItem) or isinstance(item, QGraphicsTextItem) or \
+                isinstance(item, ABmyGraphicItem) or isinstance(item, QGraphicsSimpleTextItem) or \
+                isinstance(item, GraphicItemGroup) or isinstance(item, ABGraphicItemGroup) or \
+                isinstance(item, myGraphicItemGroup_2):
+            return True
+        return False
+
+    def charge_group(self, item):
+        if isinstance(item, GraphicItemGroup) or isinstance(item, ABGraphicItemGroup):
+            return True
+        return False
+
     def dropEvent(self, event):
+        if current_kg_name not in knowledge_graphs_class.keys():
+            return
         print(event.type())
         event.acceptProposedAction()
         treeView = event.source()
@@ -1250,13 +1504,12 @@ class GraphicView(QGraphicsView):
         # 使用转换后的整数坐标调用itemAt
         item = self.scene().itemAt(item_pos, QTransform())
         # 04/28 方法新节点拖拽事件
-        if isinstance(item, myGraphicItem) or isinstance(item,ABmyGraphicItem):
-
+        if self.charge_child(item):
             # 确定拖拽的对象是从QTreeView中的哪个条目来的
-            group = item.parentItem()  # 获取父项
-            if isinstance(group, GraphicItemGroup) or isinstance(group, ABGraphicItemGroup):
-                self.handleDropOnEntity(group, text)
-                group.re_init(group.entity)
+            while not self.charge_group(item):
+                item = item.parentItem()
+            self.handleDropOnEntity(item, text)
+            item.re_init(item.entity)
         else:
             event.acceptProposedAction()
             entity = self.nameToentity(name=text, x=item_pos.x(), y=item_pos.y())
@@ -1266,6 +1519,9 @@ class GraphicView(QGraphicsView):
                 item = GraphicItemGroup(scene=self.gr_scene, entity=entity, x=item_pos.x(), y=item_pos.y())
             elif current_meta_kg_dict == '能力知识图谱':
                 item = ABGraphicItemGroup(scene=self.gr_scene, entity=entity, x=item_pos.x(), y=item_pos.y())
+            isexist(name='.produrce')
+            save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
+                    dir='./.produrce')
             self.gr_scene.add_node(item)
 
             entity_name = text  # 假定拖拽的文本是实体名称
@@ -1274,24 +1530,55 @@ class GraphicView(QGraphicsView):
     def handleDropOnEntity(self, item, text):
         self.is_kg_changed = True
         # 根据text确定需要更新的属性
-        if '知识 K' in text:
-            item.entity.attach.K = not item.entity.attach.K
-            self.updateRequest.emit()
-        elif '思维 T' in text:
-            item.entity.attach.T = not item.entity.attach.T
-            self.updateRequest.emit()
-        elif '示例 E' in text:
-            item.entity.attach.E = not item.entity.attach.E
-            self.updateRequest.emit()
-        elif '问题 Q' in text:
-            item.entity.attach.Q = not item.entity.attach.Q
-            self.updateRequest.emit()
-        elif '练习 P' in text:
-            item.entity.attach.P = not item.entity.attach.P
-            self.updateRequest.emit()
-        elif '思政 Z' in text:
-            item.entity.attach.Z = not item.entity.attach.Z
-            self.updateRequest.emit()
+        if current_meta_kg_dict == '教学知识图谱':
+            if '知识 K' in text:
+                item.entity.attach.K = not item.entity.attach.K
+                self.updateRequest.emit()
+            elif '思维 T' in text:
+                item.entity.attach.T = not item.entity.attach.T
+                self.updateRequest.emit()
+            elif '示例 E' in text:
+                item.entity.attach.E = not item.entity.attach.E
+                self.updateRequest.emit()
+            elif '问题 Q' in text:
+                item.entity.attach.Q = not item.entity.attach.Q
+                self.updateRequest.emit()
+            elif '练习 P' in text:
+                item.entity.attach.P = not item.entity.attach.P
+                self.updateRequest.emit()
+            elif '思政 Z' in text:
+                item.entity.attach.Z = not item.entity.attach.Z
+                self.updateRequest.emit()
+        if current_meta_kg_dict == '能力知识图谱':
+
+            def getintext(text, name):
+                for i in name:
+                    if i in text:
+                        return True, i
+                return False, None
+
+            name1 = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9']
+            name2 = ['Pj', 'Tk']
+            if item.entity.class_name == '能力点':
+                f, t = getintext(text, name1)
+                if f:
+                    f2 = item.entity.attach.getbool(text=text)
+                    if f2:
+                        item.entity.attach.allfalse()
+                    else:
+                        item.entity.attach.allfalse()
+                        item.entity.attach.textto(text=text, f=True)
+                    self.updateRequest.emit()
+            if item.entity.class_name == '学生任务':
+                f, t = getintext(text, name2)
+                if f:
+                    f2 = item.entity.attach.getbool(text=text)
+                    if f2:
+                        item.entity.attach.allfalse()
+                    else:
+                        item.entity.attach.allfalse()
+                        item.entity.attach.textto(text=text, f=True)
+                    self.updateRequest.emit()
 
     def wash_item(self, list):
         list2 = []
@@ -1352,11 +1639,14 @@ class GraphicView(QGraphicsView):
         # item_list.append(self.getparent(self.itemAt(pos)))
         if len(item_list) < 1 and isinstance(self.itemAt(pos), GraphicEdge):
             i = self.itemAt(pos)
-            self.gr_scene.remove_link(i)
-            self.relationRemove.emit(i.edge.head_entity, i.edge.tail_entity)
             if self.draw_link_flag != 0 and self.drag_link is not None:
                 self.drag_link.remove()
                 self.drag_link = None
+            isexist(name='.produrce')
+            save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
+                    dir='./.produrce')
+            self.gr_scene.remove_link(i)
+            self.relationRemove.emit(i.edge.head_entity, i.edge.tail_entity)
             return
         self.groupBox_menu = QMenu(self)
 
@@ -1422,6 +1712,7 @@ class GraphicView(QGraphicsView):
             num = num + 1
             i[0].update()
         self.gr_scene.update_links()
+        self.move.emit(True)
 
     def button_6(self, list):
         ent, rela = self.wash_item(list)
@@ -1435,6 +1726,7 @@ class GraphicView(QGraphicsView):
             i.setcentpos(x=min, y=i.pos().y())
             i.update()
         self.gr_scene.update_links()
+        self.move.emit(True)
 
     def button_5(self, list):
         ent, rela = self.wash_item(list)
@@ -1450,6 +1742,7 @@ class GraphicView(QGraphicsView):
             num = num + 1
             i[0].update()
         self.gr_scene.update_links()
+        self.move.emit(True)
 
     def button_4(self, list):
         ent, rela = self.wash_item(list)
@@ -1463,8 +1756,12 @@ class GraphicView(QGraphicsView):
             i.setcentpos(x=i.pos().x(), y=min)
             i.update()
         self.gr_scene.update_links()
+        self.move.emit(True)
 
     def button_3(self, pos):
+        isexist(name='.produrce')
+        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
+                dir='./.produrce')
         x = self.mapToScene(pos).x() - self.list_of_copy[0].x()
         y = self.mapToScene(pos).y() - self.list_of_copy[0].y()
         ent, rela = self.copy_2(self.list_of_copy[1], self.list_of_copy[2])
@@ -1480,7 +1777,7 @@ class GraphicView(QGraphicsView):
                                           id2=i.end_item.entity.id))  # 保存最终产生的连接线
                 i.update_positions()
         save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],
-                dir=knowledge_graphs_class[current_kg_name]['save_dir'])
+                dir='./temp')
         self.gr_scene.update_kg()
 
     def button_1(self, select_item_list, pos):
@@ -1492,11 +1789,15 @@ class GraphicView(QGraphicsView):
         pass
 
     def button_2(self, item_list):
+        isexist(name='.produrce')
+        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
+                dir='./.produrce')
         for i in item_list:
             if isinstance(i, GraphicEdge):
                 continue
             if isinstance(i, GraphicItemGroup) or isinstance(i, ABGraphicItemGroup):
                 self.gr_scene.remove_node(i)
+        self.move.emit(True)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
 
@@ -1517,7 +1818,8 @@ class GraphicView(QGraphicsView):
         #     super().mousePressEvent(event)
         if event.button() == Qt.LeftButton:
             if self.draw_link_flag != 0:
-                if isinstance(item, myGraphicItem) or isinstance(item, QGraphicsTextItem) or isinstance(item, ABmyGraphicItem):
+                if isinstance(item, myGraphicItem) or isinstance(item, QGraphicsTextItem) or isinstance(item,
+                                                                                                        ABmyGraphicItem):
                     if self.drag_link is None:
                         self.edge_drag_start(item.group())
                     else:
@@ -1600,11 +1902,14 @@ class GraphicView(QGraphicsView):
         self.drag_link.remove()  # 删除拖拽时画的线
         self.drag_link = None
         # new_edge.store()  # 保存最终产生的连接线
+        isexist(name='.produrce')
+        save_kg(current_kg_name, knowledge_graphs_class[current_kg_name],
+                dir='./.produrce')
         new_edge.scene.add_link(new_edge.gr_edge)
         new_edge.store(self.flagToentity(reflag=new_edge.flag, id1=new_edge.start_item.entity.id,
                                          id2=new_edge.end_item.entity.id))  # 保存最终产生的连接线
         save_kg(name=current_kg_name, kg=knowledge_graphs_class[current_kg_name],
-                dir=knowledge_graphs_class[current_kg_name]['save_dir'])
+                dir='./temp')
         print('关系保存结束')
         self.relationAdded.emit(new_edge.head_entity, new_edge.tail_entity)
 
@@ -1628,36 +1933,40 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.get_class(entity.class_name)
         if self.classtype == 1:
             self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type1')
-            self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
+
+            self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)  # 标记
             self.GraphicText2.setBrush(QColor(189, 53, 61))
             self.GraphicText2.setFont(self.font_text2)
             self.GraphicText2.setPos(self.start_width, self.start_heightth)
-        else:
-            self.GraphicItem1 = myGraphicItem(scene=scene, group=self, type='type2')
-            self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
-            self.GraphicText2.setBrush(QColor(255, 255, 255))
-            self.GraphicText2.setFont(self.font_text2)
-            self.GraphicText2.setPos((self.GraphicItem1.width - self.GraphicText2.boundingRect().width()) * 0.5, (
-                    self.start_heightth - self.GraphicText2.boundingRect().height()) * 0.5)
-        font_text1 = QFont("微软雅黑", 12, QFont.Bold)
-        self.GraphicText1 = QGraphicsTextItem("请输入内容")
-        self.GraphicText1.setFont(font_text1)
-        self.GraphicText1.setTextWidth(
-            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width - self.bais)
-        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width + self.bais,
-                                 self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
-        self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
-        self.GraphicItem1.setZValue(1)
-        self.GraphicText1.setZValue(2)
-        self.GraphicText2.setZValue(3)
-        self.addToGroup(self.GraphicItem1)
-        self.addToGroup(self.GraphicText1)
-        self.addToGroup(self.GraphicText2)
-        self.setFlag(QGraphicsItem.ItemIsSelectable)  # ***设置图元是可以被选择
-        self.setFlag(QGraphicsItem.ItemIsMovable)  # ***设置图元是可以被移动
-        self.re_init(entity)
-        self.setPos(x - self.boundingRect().width() * 0.5, y - self.boundingRect().height() * 0.5)
+            font_text1 = QFont("微软雅黑", 12, QFont.Bold)
 
+            self.GraphicText1 = QGraphicsTextItem("请输入内容")  # 文本内容
+            self.GraphicText1.setFont(font_text1)
+            self.GraphicText1.setTextWidth(
+                self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width - self.bais)
+            self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width + self.bais,
+                                     self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
+            self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
+
+            self.GraphicItem1.setZValue(1)
+            self.GraphicText1.setZValue(2)
+            self.GraphicText2.setZValue(3)
+            self.addToGroup(self.GraphicItem1)
+            self.addToGroup(self.GraphicText1)
+            self.addToGroup(self.GraphicText2)
+
+            self.setFlag(QGraphicsItem.ItemIsSelectable)  # ***设置图元是可以被选择
+            self.setFlag(QGraphicsItem.ItemIsMovable)  # ***设置图元是可以被移动
+            self.re_init(entity)
+            self.setPos(x - self.boundingRect().width() * 0.5, y - self.boundingRect().height() * 0.5)
+        else:
+
+            self.item_2 = myGraphicItemGroup_2(text=self.class_, group=self)
+            self.item_2.setZValue(1)
+            self.addToGroup(self.item_2)
+            self.setPos(x - self.boundingRect().width() * 0.5, y - self.boundingRect().height() * 0.5)
+            self.setFlag(QGraphicsItem.ItemIsSelectable)  # ***设置图元是可以被选择
+            self.setFlag(QGraphicsItem.ItemIsMovable)  # ***设置图元是可以被移动
 
     def repaint(self) -> None:
         self.update()
@@ -1690,13 +1999,13 @@ class GraphicItemGroup(QGraphicsItemGroup):
             self.classtype = 1
         else:
             if name == '视频':
-                self.class_ = 'VedioClass'
+                self.class_ = 'V'
                 pass
             if name == '测试题':
-                self.class_ = 'TestClass'
+                self.class_ = 'TS'
                 pass
             if name == '文档':
-                self.class_ = 'TextClass'
+                self.class_ = 'TX'
                 pass
             self.classtype = 2
 
@@ -1717,20 +2026,6 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.attachment.clear()
 
     def reinitattach(self):
-        # num = 0
-        # heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
-        # for i in self.attach.restrlist():
-        #     print(i)
-        #     atta = myGraphicItemGroup_2(text=i, group=self)
-        #     self.attachment.append(atta)
-        #     self.addToGroup(atta)
-        #     atta.setPos(5 + num * 20, heoght)
-        #     num = num + 1
-        #     if num == 2:
-        #         num = 0
-        #         heoght = heoght + 20
-        # if len(self.attachment) % 2 == 1:
-        #     self.attachment[len(self.attachment) - 1].setPos(15.5, heoght)
         num = 0
         heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
         for i in self.attach.restrlist2():
@@ -1749,6 +2044,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
         return GraphicItemGroup(scene=self.scene, x=self.pos().x(), y=self.pos().y(), entity=self.entity.copy_itself())
 
     def re_init(self, entity: entity):
+        pos = self.pos()
         print(entity)
         print(self.entity)
         self.clearlist()
@@ -1759,74 +2055,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.GraphicText1.setPlainText(entity.content)
         self.attach = entity.attach
         self.reinitattach()
-        #
-        # num = -1
-        # if self.attach.K:
-        #     num = num + 1
-        # if self.attach.K and 'K' not in self.attachment:
-        #     self.itemk = myGraphicItemGroup_2(text='K', group=self)
-        #     self.attachment.append('K')
-        #     self.addToGroup(self.itemk)
-        #     self.itemk.setPos(140 - num * 20, 5)
-        # if 'K' in self.attachment and not self.attach.K:
-        #     self.removeFromGroup(self.itemk)
-        #     self.scene.removeItem(self.itemk)
-        #     self.attachment.remove('K')
-        # if self.attach.T:
-        #     num = num + 1
-        # if self.attach.T and 'T' not in self.attachment:
-        #     self.itemT = myGraphicItemGroup_2(text='T', group=self)
-        #     self.attachment.append('T')
-        #     self.addToGroup(self.itemT)
-        #     self.itemT.setPos(140 - num * 20, 5)
-        # if 'T' in self.attachment and not self.attach.T:
-        #     self.removeFromGroup(self.itemT)
-        #     self.scene.removeItem(self.itemT)
-        #     self.attachment.remove('T')
-        # if self.attach.Z:
-        #     num = num + 1
-        # if self.attach.Z and 'Z' not in self.attachment:
-        #     self.itemZ = myGraphicItemGroup_2(text='Z', group=self)
-        #     self.attachment.append('Z')
-        #     self.addToGroup(self.itemZ)
-        #     self.itemZ.setPos(140 - num * 20, 5)
-        # if 'Z' in self.attachment and not self.attach.Z:
-        #     self.removeFromGroup(self.itemZ)
-        #     self.scene.removeItem(self.itemZ)
-        #     self.attachment.remove('Z')
-        # if self.attach.E:
-        #     num = num + 1
-        # if self.attach.E and 'E' not in self.attachment:
-        #     self.itemE = myGraphicItemGroup_2(text='E', group=self)
-        #     self.attachment.append('E')
-        #     self.addToGroup(self.itemE)
-        #     self.itemE.setPos(140 - num * 20, 5)
-        # if 'E' in self.attachment and not self.attach.E:
-        #     self.removeFromGroup(self.itemE)
-        #     self.scene.removeItem(self.itemE)
-        #     self.attachment.remove('E')
-        # if self.attach.Q:
-        #     num = num + 1
-        # if self.attach.Q and 'Q' not in self.attachment:
-        #     self.itemQ = myGraphicItemGroup_2(text='Q', group=self)
-        #     self.attachment.append('Q')
-        #     self.addToGroup(self.itemQ)
-        #     self.itemQ.setPos(140 - num * 20, 5)
-        # if 'Q' in self.attachment and not self.attach.Q:
-        #     self.removeFromGroup(self.itemQ)
-        #     self.scene.removeItem(self.itemQ)
-        #     self.attachment.remove('Q')
-        # if self.attach.P:
-        #     num = num + 1
-        # if self.attach.P and 'P' not in self.attachment:
-        #     self.itemP = myGraphicItemGroup_2(text='P', group=self)
-        #     self.attachment.append('P')
-        #     self.addToGroup(self.itemP)
-        #     self.itemP.setPos(140 - num * 20, 5)
-        # if 'P' in self.attachment and not self.attach.P:
-        #     self.removeFromGroup(self.itemP)
-        #     self.scene.removeItem(self.itemP)
-        #     self.attachment.remove('P')
+
         self.get_class(self.entity.class_name)
         if self.GraphicText1.boundingRect().height() + self.start_heightth > self.GraphicItem1.boundingRect().height():
             self.GraphicItem1.prepareGeometryChange()
@@ -1847,8 +2076,9 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.repaint()
         self.GraphicItem1.update()
         self.GraphicText2.setText(self.class_)
+        self.setcentpos(pos.x(), pos.y())
+
         self.scene.scenechanged.emit(True)
-        self.prepareGeometryChange()
         self.update()
         self.scene.update()
 
@@ -1967,40 +2197,61 @@ class ABGraphicItemGroup(QGraphicsItemGroup):
     def __init__(self, scene: GraphicScene, x, y, entity: entity, parent=None):
         super(ABGraphicItemGroup, self).__init__(parent)
         self.scene = scene
+        self.classtype = 1
         self.name = entity.class_name
         self.entity = entity
-        self.class_ = '能力领域'
-        self.get_class(entity.class_name)
-        font_text2 = QFont("Arial", 18, QFont.Bold)
+        self.attach = entity.attach
+        self.class_ = 'KA'
+        self.attachment = []
+        self.font_text2 = QFont("Arial", 18, QFont.Bold)
         # font.setFamily("SimHei")
         self.start_heightth = 18
-        bais = 2
+        self.bais = 2
         self.start_width = 12
-        font_text2.setBold(True)
+        self.font_text2.setBold(True)
+        self.get_class(entity.class_name)
         if self.classtype == 1:
             self.GraphicItem1 = ABmyGraphicItem(scene=scene, group=self, type='type1')
-            self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)
-            self.GraphicText2.setBrush(QColor(189, 53, 61))
-            self.GraphicText2.setFont(font_text2)
-            self.GraphicText2.setPos(self.start_width, self.start_heightth)
-        font_text1 = QFont("微软雅黑", 12, QFont.Bold)
-        self.GraphicText1 = QGraphicsTextItem("请输入内容")
-        self.GraphicText1.setFont(font_text1)
-        self.GraphicText1.setTextWidth(
-            self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width - bais)
-        self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width + bais,
-                                 self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
-        self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
-        self.addToGroup(self.GraphicItem1)
-        self.addToGroup(self.GraphicText1)
-        self.addToGroup(self.GraphicText2)
-        self.setFlag(QGraphicsItem.ItemIsSelectable)  # ***设置图元是可以被选择
-        self.setFlag(QGraphicsItem.ItemIsMovable)  # ***设置图元是可以被移动
-        self.re_init(entity)
-        self.setPos(x - self.boundingRect().width() * 0.5, y - self.boundingRect().height() * 0.5)
 
-    def boundingRect(self):
-        return self.GraphicItem1.boundingRect()
+            self.GraphicText2 = QGraphicsSimpleTextItem(self.class_)  # 标记
+            self.GraphicText2.setBrush(QColor(189, 53, 61))
+            self.GraphicText2.setFont(self.font_text2)
+            self.GraphicText2.setPos(self.start_width, self.start_heightth)
+            font_text1 = QFont("微软雅黑", 12, QFont.Bold)
+
+            self.GraphicText1 = QGraphicsTextItem("请输入内容")  # 文本内容
+            self.GraphicText1.setFont(font_text1)
+            self.GraphicText1.setTextWidth(
+                self.GraphicItem1.boundingRect().width() - self.GraphicText2.boundingRect().width() - self.start_width - self.bais)
+            self.GraphicText1.setPos(self.GraphicText2.boundingRect().width() + self.start_width + self.bais,
+                                     self.start_heightth)  # 这里再设置位置，就变成了相对group的位置了
+            self.GraphicText1.setDefaultTextColor(QColor(0, 0, 0))
+
+            self.GraphicItem1.setZValue(1)
+            self.GraphicText1.setZValue(2)
+            self.GraphicText2.setZValue(3)
+            self.addToGroup(self.GraphicItem1)
+            self.addToGroup(self.GraphicText1)
+            self.addToGroup(self.GraphicText2)
+
+            self.setFlag(QGraphicsItem.ItemIsSelectable)  # ***设置图元是可以被选择
+            self.setFlag(QGraphicsItem.ItemIsMovable)  # ***设置图元是可以被移动
+            self.re_init(entity)
+            self.setPos(x - self.boundingRect().width() * 0.5, y - self.boundingRect().height() * 0.5)
+        else:
+
+            self.item_2 = myGraphicItemGroup_2(text=self.class_, group=self)
+            self.item_2.setZValue(1)
+            self.addToGroup(self.item_2)
+            self.setPos(x - self.boundingRect().width() * 0.5, y - self.boundingRect().height() * 0.5)
+            self.setFlag(QGraphicsItem.ItemIsSelectable)  # ***设置图元是可以被选择
+            self.setFlag(QGraphicsItem.ItemIsMovable)  # ***设置图元是可以被移动
+
+    def repaint(self) -> None:
+        self.update()
+
+    # def boundingRect(self):
+    #     return self.GraphicItem1.boundingRect()
 
     def setPos(self, *__args):
         super().setPos(*__args)
@@ -2017,25 +2268,26 @@ class ABGraphicItemGroup(QGraphicsItemGroup):
         return pos
 
     def get_class(self, name):
-        # dict1 = {}
-        # dict1['知识领域'] = 'KA'
-        # dict1['知识单元'] = 'KU'
-        # dict1['知识点'] = 'KP'
-        # dict1['关键知识细节'] = 'KD'
-        # if name in dict1.keys():
-        self.class_ = name
-        self.classtype = 1
-        # else:
-        #     if name == '视频':
-        #         self.class_ = 'VedioClass'
-        #         pass
-        #     if name == '测试题':
-        #         self.class_ = 'TestClass'
-        #         pass
-        #     if name == '文档':
-        #         self.class_ = 'TextClass'
-        #         pass
-        #     self.classtype = 2
+        dict1 = {}
+        dict1['能力领域'] = 'CA'
+        dict1['能力单元'] = 'CU'
+        dict1['能力点'] = 'CP'
+        dict1['学生任务'] = 'SJ'
+        dict1['知识点'] = 'KP'
+        if name in dict1.keys():
+            self.class_ = dict1[name]
+            self.classtype = 1
+        else:
+            if name == '视频':
+                self.class_ = 'V'
+                pass
+            if name == '测试题':
+                self.class_ = 'TS'
+                pass
+            if name == '文档':
+                self.class_ = 'TX'
+                pass
+            self.classtype = 2
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
@@ -2045,137 +2297,79 @@ class ABGraphicItemGroup(QGraphicsItemGroup):
                     gr_edge.edge.update_positions()
         self.entity.x = self.pos().x()
         self.entity.y = self.pos().y()
+        self.scene.scenechanged.emit(True)
 
-    # def clearlist(self):
-    #     for i in self.attachment:
-    #         self.removeFromGroup(i)
-    #         self.scene.removeItem(i)
-    #     self.attachment.clear()
-    #
-    # def reinitattach(self):
-    #     # num = 0
-    #     # heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
-    #     # for i in self.attach.restrlist():
-    #     #     print(i)
-    #     #     atta = myGraphicItemGroup_2(text=i, group=self)
-    #     #     self.attachment.append(atta)
-    #     #     self.addToGroup(atta)
-    #     #     atta.setPos(5 + num * 20, heoght)
-    #     #     num = num + 1
-    #     #     if num == 2:
-    #     #         num = 0
-    #     #         heoght = heoght + 20
-    #     # if len(self.attachment) % 2 == 1:
-    #     #     self.attachment[len(self.attachment) - 1].setPos(15.5, heoght)
-    #     num = 0
-    #     heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
-    #     for i in self.attach.restrlist2():
-    #         if i[0]:
-    #             atta = myGraphicItemGroup_2(text=i[1], group=self)
-    #             self.attachment.append(atta)
-    #             self.addToGroup(atta)
-    #             atta.setPos(5 + num * (atta.r + 0), heoght)
-    #         num = num + 1
-    #         if num == 2:
-    #             num = 0
-    #             heoght = heoght + 26
+    def clearlist(self):
+        for i in self.attachment:
+            self.removeFromGroup(i)
+            self.scene.removeItem(i)
+        self.attachment.clear()
+
+    def reinitattach(self):
+        num = 0
+        heoght = self.start_heightth + self.GraphicText2.boundingRect().height()
+        for i in self.attach.restrlist2():
+            if i[0]:
+                atta = myGraphicItemGroup_2(text=i[1], group=self)
+                atta.setZValue(2)
+                self.attachment.append(atta)
+                self.addToGroup(atta)
+                atta.setPos(5 + num * (atta.r + 0), heoght)
+                num = num + 1
+            if num == 3:
+                num = 0
+                heoght = heoght + 26
 
     def copy_itself(self):
         return ABGraphicItemGroup(scene=self.scene, x=self.pos().x(), y=self.pos().y(),
                                   entity=self.entity.copy_itself())
 
     def re_init(self, entity: entity):
-        # self.clearlist()
+        pos = self.pos()
+        print(entity)
+        print(self.entity)
+        self.clearlist()
         self.entity.class_name = entity.class_name
         self.entity.content = entity.content
-        # self.entity.attach = entity.attach
+        self.entity.attach = entity.attach
         self.name = entity.class_name
         self.GraphicText1.setPlainText(entity.content)
-        # self.attach = entity.attach
-        # self.reinitattach()
-        #
-        # num = -1
-        # if self.attach.K:
-        #     num = num + 1
-        # if self.attach.K and 'K' not in self.attachment:
-        #     self.itemk = myGraphicItemGroup_2(text='K', group=self)
-        #     self.attachment.append('K')
-        #     self.addToGroup(self.itemk)
-        #     self.itemk.setPos(140 - num * 20, 5)
-        # if 'K' in self.attachment and not self.attach.K:
-        #     self.removeFromGroup(self.itemk)
-        #     self.scene.removeItem(self.itemk)
-        #     self.attachment.remove('K')
-        # if self.attach.T:
-        #     num = num + 1
-        # if self.attach.T and 'T' not in self.attachment:
-        #     self.itemT = myGraphicItemGroup_2(text='T', group=self)
-        #     self.attachment.append('T')
-        #     self.addToGroup(self.itemT)
-        #     self.itemT.setPos(140 - num * 20, 5)
-        # if 'T' in self.attachment and not self.attach.T:
-        #     self.removeFromGroup(self.itemT)
-        #     self.scene.removeItem(self.itemT)
-        #     self.attachment.remove('T')
-        # if self.attach.Z:
-        #     num = num + 1
-        # if self.attach.Z and 'Z' not in self.attachment:
-        #     self.itemZ = myGraphicItemGroup_2(text='Z', group=self)
-        #     self.attachment.append('Z')
-        #     self.addToGroup(self.itemZ)
-        #     self.itemZ.setPos(140 - num * 20, 5)
-        # if 'Z' in self.attachment and not self.attach.Z:
-        #     self.removeFromGroup(self.itemZ)
-        #     self.scene.removeItem(self.itemZ)
-        #     self.attachment.remove('Z')
-        # if self.attach.E:
-        #     num = num + 1
-        # if self.attach.E and 'E' not in self.attachment:
-        #     self.itemE = myGraphicItemGroup_2(text='E', group=self)
-        #     self.attachment.append('E')
-        #     self.addToGroup(self.itemE)
-        #     self.itemE.setPos(140 - num * 20, 5)
-        # if 'E' in self.attachment and not self.attach.E:
-        #     self.removeFromGroup(self.itemE)
-        #     self.scene.removeItem(self.itemE)
-        #     self.attachment.remove('E')
-        # if self.attach.Q:
-        #     num = num + 1
-        # if self.attach.Q and 'Q' not in self.attachment:
-        #     self.itemQ = myGraphicItemGroup_2(text='Q', group=self)
-        #     self.attachment.append('Q')
-        #     self.addToGroup(self.itemQ)
-        #     self.itemQ.setPos(140 - num * 20, 5)
-        # if 'Q' in self.attachment and not self.attach.Q:
-        #     self.removeFromGroup(self.itemQ)
-        #     self.scene.removeItem(self.itemQ)
-        #     self.attachment.remove('Q')
-        # if self.attach.P:
-        #     num = num + 1
-        # if self.attach.P and 'P' not in self.attachment:
-        #     self.itemP = myGraphicItemGroup_2(text='P', group=self)
-        #     self.attachment.append('P')
-        #     self.addToGroup(self.itemP)
-        #     self.itemP.setPos(140 - num * 20, 5)
-        # if 'P' in self.attachment and not self.attach.P:
-        #     self.removeFromGroup(self.itemP)
-        #     self.scene.removeItem(self.itemP)
-        #     self.attachment.remove('P')
-        if self.GraphicText1.boundingRect().height() + self.start_heightth > self.GraphicItem1.boundingRect().height():
-            self.GraphicItem1.length = self.GraphicText1.boundingRect().height() + 30
-            self.GraphicItem1.update()
+        self.attach = entity.attach
+        self.reinitattach()
+
         self.get_class(self.entity.class_name)
+        if self.GraphicText1.boundingRect().height() + self.start_heightth > self.GraphicItem1.boundingRect().height():
+            self.GraphicItem1.prepareGeometryChange()
+            self.GraphicItem1.length = self.GraphicText1.boundingRect().height() + self.start_heightth
+            self.removeFromGroup(self.GraphicItem1)
+            self.addToGroup(self.GraphicItem1)
+        if self.GraphicText1.boundingRect().height() + self.start_heightth < self.GraphicItem1.boundingRect().height():
+            if self.GraphicText1.boundingRect().height() + self.start_heightth < 200 * 0.62:
+                self.GraphicItem1.prepareGeometryChange()
+                self.GraphicItem1.length = 200 * 0.62
+                self.removeFromGroup(self.GraphicItem1)
+                self.addToGroup(self.GraphicItem1)
+            else:
+                self.GraphicItem1.prepareGeometryChange()
+                self.GraphicItem1.length = self.GraphicText1.boundingRect().height() + self.start_heightth
+                self.removeFromGroup(self.GraphicItem1)
+                self.addToGroup(self.GraphicItem1)
+        self.repaint()
         self.GraphicItem1.update()
-        self.update()
         self.GraphicText2.setText(self.class_)
+        self.setcentpos(pos.x(), pos.y())
+
+        self.scene.scenechanged.emit(True)
+        self.update()
+        self.scene.update()
 
     def mouseDoubleClickEvent(self, event: 'QGraphicsSceneMouseEvent'):
-        if self.classtype == 2:
-            return
-        self.window = my_Ui_Dialog(linetext=self.name, content=self.GraphicText1.toPlainText(),
-                                   id=self.entity.id, class_type=1)
-        self.window.setfEnable(False)
+        self.window = ABmy_Ui_Dialog(linetext=self.name, content=self.GraphicText1.toPlainText(), attach=self.attach,
+                                     id=self.entity.id, class_type=self.classtype)
+
         self.window.my_sign1.connect(self.re_init)
+        if self.classtype == 2:
+            self.window.setfEnable(False)
         self.window.exec()
 
 
@@ -2211,29 +2405,26 @@ class ABmyGraphicItem(QGraphicsItem):
     def paint(self, painter: QtGui.QPainter, option: 'QStyleOptionGraphicsItem',
               widget: typing.Optional[QWidget] = ...):
         Q = QColor(255, 255, 255)
-        if self.Group.class_ == '能力领域':
+        if self.Group.class_ == 'CA':
             Q = QColor(255, 105, 97)
-        if self.Group.class_ == '能力单元':
+        if self.Group.class_ == 'CU':
             Q = QColor(176, 217, 128)
-        if self.Group.class_ == '能力点':
+        if self.Group.class_ == 'CP':
             Q = QColor(189, 181, 225)
-        if self.Group.class_ == '项目':
+        if self.Group.class_ == 'SJ':
             Q = QColor(182, 215, 232)
-        if self.Group.class_ == '任务':
-            Q = QColor(153, 153, 153)
-        if self.Group.class_ == '知识点':
+        if self.Group.class_ == 'KP':
             Q = QColor(0, 0, 0)
+        # if self.Group.class_ == '任务':
+        #     Q = QColor(153, 153, 153)
+        # if self.Group.class_ == '知识点':
+        #     Q = QColor(0, 0, 0)
         self.paint1(painter, Q=Q)
         # elif self.type == 'type2':
         #     self.paint2(painter)
 
     def pos(self):
         return self.Group.pos()
-
-
-class Treeview(QTreeView):
-    def __init__(self, parent=None):
-        super().__init__(parent)
 
 
 class Link:
@@ -2301,7 +2492,7 @@ class Link:
 
 
 class GraphicEdge(QGraphicsPathItem):
-    def __init__(self, edge_wrap: Link, relation_id=0, parent=None,text = ''):
+    def __init__(self, edge_wrap: Link, relation_id=0, parent=None, text=''):
         super().__init__(parent)
         # 这个参数是GraphicEdge的包装类，见下文
         self.edge = edge_wrap
@@ -2338,6 +2529,18 @@ class GraphicEdge(QGraphicsPathItem):
             self._pen.setWidthF(self.width * 3)
             self._mark_pen = QPen(QColor(0, 0, 0))
             self._mark_pen.setWidthF(3.6)
+
+        if self.edge.flag == 5:
+            self._pen = QPen(QColor(139, 0, 0))  # 画线条的
+            self._pen.setWidthF(self.width)
+            self._pen.setStyle(Qt.DashDotLine)
+            self._mark_pen = QPen(QColor(139, 0, 0))
+
+        if self.edge.flag == 6:
+            self._pen = QPen(QColor(0, 0, 0))  # 画线条的
+            self._pen.setWidthF(self.width)
+            self._pen.setStyle(Qt.DashDotLine)
+            self._mark_pen = QPen(QColor(0, 0, 0))
 
         self._pen_dragging = QPen(QColor("#000"))  # 画拖拽线条时线条的
         self._pen_dragging.setStyle(Qt.DashDotLine)

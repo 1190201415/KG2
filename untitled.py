@@ -156,6 +156,7 @@ class Ui_MainWindow(object):
         self.action2_2.setObjectName("保存为图片")
 
 
+
         self.action3_1 = QtWidgets.QAction(MainWindow)
         self.action3_1.setObjectName("鼠标")
         self.action3_2 = QtWidgets.QAction(MainWindow)
