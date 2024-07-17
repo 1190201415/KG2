@@ -6,6 +6,7 @@
 import copy
 import math
 import os
+import re
 import typing
 from pathlib import Path
 
@@ -123,6 +124,8 @@ def save_kg(name, kg, dir=None):
     entities = ET.SubElement(root, 'entities')
     relations = ET.SubElement(root, 'relations')
     for i in kg['entities']:
+        i.entity.x = i.pos().x()
+        i.entity.y = i.pos().y()
         entity = ET.SubElement(entities, 'entity')
         id = ET.SubElement(entity, 'id')
         name1 = ET.SubElement(entity, 'class_name')
@@ -165,8 +168,13 @@ def save_kg(name, kg, dir=None):
     tree = ET.ElementTree(root)
     print(dir)
     print(name)
-    tree.write(os.path.join(dir, name) + '.xml')
-    pretty_xml.pretty(name=os.path.join(dir, name) + ".xml")
+    tree.write(os.path.join(dir, setFileTitle(name)) + '.xml')
+    pretty_xml.pretty(name=os.path.join(dir, setFileTitle(name)) + ".xml")
+
+def setFileTitle(title):
+    fileName = re.sub('[\r\n/:*?"<>|]', '', title)  # 去掉非法字符
+    return fileName
+
 
 
 def isexist(name, path=None):
@@ -766,7 +774,10 @@ class my_treeview(QTreeView):
         relations = knowledge_graphs_class[name1]['relations']
         for i in entities:
             entity1 = copy.deepcopy(i.entity)
-            entity = GraphicItemGroup(scene=self.scence, entity=entity1, x=entity1.x, y=entity1.y)
+            if current_meta_kg_dict=='教学知识图谱':
+                entity = GraphicItemGroup(scene=self.scence, entity=entity1, x=entity1.x, y=entity1.y)
+            if current_meta_kg_dict=='能力知识图谱':
+                entity = ABGraphicItemGroup(scene=self.scence, entity=entity1, x=entity1.x, y=entity1.y)
             knowledge_graphs_class[name2]['entities'].append(entity)
         for i in relations:
             relation1 = i.relation
@@ -925,7 +936,6 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         self.label_4.setText(str(id))
         self.check_boxes = []
         self.setcombox(class_type=1)
-        self.comboBox.setCurrentText(linetext)
         self.textEdit.setText(content)
         # self.check_boxes.append(self.checkBox)
         # self.check_boxes.append(self.checkBox_2)
@@ -935,6 +945,7 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         # self.check_boxes.append(self.checkBox_6)
         self.class_type = class_type
         self.pushButton_2.clicked.connect(self.clickpushbutton_2)
+        self.comboBox_3.setCurrentText(linetext)
         self.setcombox_2()
         self.comboBox_2.setCurrentText(attach.currentTrue())
         self.comboBox.currentIndexChanged.connect(self.setcombox_2)
@@ -972,7 +983,7 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
             for i in entityType_dict.keys():
                 if entityType_dict[i].classification == '资源型节点':
                     list.append(entityType_dict[i].class_name)
-        self.comboBox.addItems(list)
+        self.comboBox_3.addItems(list)
 
     def setcombox_2(self):
         self.comboBox_2.clear()
@@ -994,7 +1005,7 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
             i.setEnabled(flag)
 
     def clickpushbutton(self):
-        name = self.comboBox.currentText()
+        name = self.comboBox_3.currentText()
         content = self.textEdit.toPlainText()
         flag = self.comboBox_2.currentText()
         a = ABattachment()
@@ -1651,14 +1662,14 @@ class GraphicView(QGraphicsView):
         self.groupBox_menu = QMenu(self)
 
         self.actionA = QAction(u'复制', self)  # 创建菜单选项对象
-        self.actionA.setShortcut('Ctrl+C')  # 设置动作A的快捷键
+        # self.actionA.setShortcut('Ctrl+C')  # 设置动作A的快捷键
         self.groupBox_menu.addAction(self.actionA)  # 把动作A选项对象添加到菜单self.groupBox_menu上
 
         self.actionB = QAction(u'删除节点', self)
         self.groupBox_menu.addAction(self.actionB)
 
         self.actionC = QAction(u'粘贴', self)  # 创建菜单选项对象
-        self.actionC.setShortcut('Ctrl+v')  # 设置动作A的快捷键
+        # self.actionC.setShortcut('Ctrl+v')  # 设置动作A的快捷键
         self.groupBox_menu.addAction(self.actionC)
 
         self.actionD = QAction(u'水平对齐', self)
@@ -2531,15 +2542,13 @@ class GraphicEdge(QGraphicsPathItem):
             self._mark_pen.setWidthF(3.6)
 
         if self.edge.flag == 5:
-            self._pen = QPen(QColor(139, 0, 0))  # 画线条的
+            self._pen = QPen(QColor(225, 0, 0))  # 画线条的
             self._pen.setWidthF(self.width)
-            self._pen.setStyle(Qt.DashDotLine)
-            self._mark_pen = QPen(QColor(139, 0, 0))
+            self._mark_pen = QPen(QColor(225, 0, 0))
 
         if self.edge.flag == 6:
             self._pen = QPen(QColor(0, 0, 0))  # 画线条的
             self._pen.setWidthF(self.width)
-            self._pen.setStyle(Qt.DashDotLine)
             self._mark_pen = QPen(QColor(0, 0, 0))
 
         self._pen_dragging = QPen(QColor("#000"))  # 画拖拽线条时线条的

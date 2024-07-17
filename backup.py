@@ -27,7 +27,6 @@ from untitled import Ui_MainWindow
 from new_entity import Ui_Form
 
 
-
 class childwindow_1(QtWidgets.QWidget, Ui_Form):
     my_sign1 = pyqtSignal(str)
 
@@ -64,7 +63,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.now_entity_type = None
         self.now_relation_type = None
         self.setupUi(self)
-        self.setMinimumSize(0,0)
+        self.setMinimumSize(0, 0)
         self.initentityType()
         self.initrelationType()
         self.init_treeview_1(self.treeView, Myclass.entityType_dict, Myclass.ktsqepType_dict, name='独立实体类型',
@@ -78,7 +77,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.graphicsView.setObjectName("graphicsView")
 
         self.graphicsView.setSceneRect(0, 0, 5000, 5000)  # 设置场景大小
-        self.graphicsView.setMinimumSize(0,0)
+        self.graphicsView.setMinimumSize(0, 0)
         self.treeView_kg.my_sign_kg.connect(self.update_kg_treeview)
         self.treeView_kg.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.graphicsSence.setItemIndexMethod(QGraphicsScene.NoIndex)
@@ -109,14 +108,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action1_6.triggered.connect(self.openfile)
         self.action1_7.triggered.connect(self.opendir)
 
-
         self.action2_1.triggered.connect(self.confirm_auto_layout)
         self.action2_2.triggered.connect(self.save_as_picture)
 
         self.action3_1.triggered.connect(self.set_mouse)
         self.action3_2.triggered.connect(self.start_drag)
         self.graphicsView.updateRequest.connect(self.handle_update_request)
-        #self.graphicsSence.changed.connect(self.setchange)
+        # self.graphicsSence.changed.connect(self.setchange)
         # self.initLayouts()
         # self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
@@ -127,14 +125,14 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.comboBox.addItems(["教学知识图谱"])
 
         self.backbtn = QPushButton(self.graphicsView)
-        self.backbtn.resize(60,35)
+        self.backbtn.resize(60, 35)
         pos = self.graphicsView.pos()
         self.backbtn.setText('回退')
         self.backbtn.move(pos)
         self.backbtn.clicked.connect(self.back)
 
     def back(self):
-        path = os.path.join('./.produrce',Myclass.current_kg_name+'.xml')
+        path = os.path.join('./.produrce', Myclass.current_kg_name + '.xml')
         print(path)
         if (os.path.exists(path)):
             self.treeView_kg.readfile(path)
@@ -148,9 +146,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         name = Myclass.current_kg_name
         if Myclass.knowledge_graphs_class[name]['is_change'] == True:
             return
-        Myclass.knowledge_graphs_class[name]['is_change']= True
+        Myclass.knowledge_graphs_class[name]['is_change'] = True
         self.update_kg_treeview(Myclass.readfilepath)
-
 
     def save_as_picture(self):
         reply = QMessageBox.question(self, '保存为图片', '确认保存？', QMessageBox.Yes, QMessageBox.No)
@@ -160,23 +157,24 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             return
 
     def openfile(self):
-        m = QtWidgets.QFileDialog.getOpenFileName(None, "文件读取",'','xml 文件(*.xml)', )  # 起始路径
-        if m[0]=='':
+        m = QtWidgets.QFileDialog.getOpenFileName(None, "文件读取", '', 'xml 文件(*.xml)', )  # 起始路径
+        if m[0] == '':
             return
-        if m[0] == Myclass.readfilepath:
+        dirname, full_name = os.path.split(m[0])
+        if dirname == Myclass.readfilepath:
             self.treeView_kg.readfile(m[0])
         else:
             self.asave_kgs()
             Myclass.knowledge_graphs_class.clear()
             self.treeView_kg.readfile(m[0])
-            Myclass.readfilepath = m[0]
+            Myclass.readfilepath = dirname
             self.update_kg_treeview(text=m[0])
             self.graphicsSence.update_kg()
-            if len(Myclass.knowledge_graphs_class.keys())==0:
+            if len(Myclass.knowledge_graphs_class.keys()) == 0:
                 self.clickaction1_1()
 
-    def opendir(self):#这个是读到当前目录还是新建一个目录？
-        m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件夹读取",)  # 起始路径
+    def opendir(self):  # 这个是读到当前目录还是新建一个目录？
+        m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件夹读取", )  # 起始路径
         if m == '':
             return
         Myclass.readfilepath = m
@@ -188,10 +186,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if len(Myclass.knowledge_graphs_class.keys()) == 0:
             self.clickaction1_1()
 
-
-
     def choosedir(self):
-        m = QtWidgets.QFileDialog.getExistingDirectory(None, "选取文件夹或新建文件夹保存",)  # 起始路径
+        m = QtWidgets.QFileDialog.getExistingDirectory(None, "选取文件夹或新建文件夹保存", )  # 起始路径
         if m == '':
             print("没选，返回")
             return
@@ -199,7 +195,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def start_drag(self):
         self.graphicsView.drag_flag = 1
-
 
     def another_save(self):
         Myclass.other_save_kg(parent=self)
@@ -309,10 +304,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if text == '关键次序':
             self.graphicsView.draw_link_flag = 4
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '样式1':
+        if text == '样式一':
             self.graphicsView.draw_link_flag = 5
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '样式2':
+        if text == '样式二':
             self.graphicsView.draw_link_flag = 6
             self.graphicsView.setCursor(Qt.DragLinkCursor)
 
@@ -321,46 +316,45 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         text = self.treeView.model().data(index)
         print(text)
 
-    def init_ab_treeview_1(self,treeView,dict,dict2,name,name2):
-            model = QtGui.QStandardItemModel()
-            entityytpeclass1 = QtGui.QStandardItem(name)
-            entityytpeclass2 = QtGui.QStandardItem(name2)
-            item1 = QtGui.QStandardItem('内容型')
-            item2 = QtGui.QStandardItem('资源型')
-            item3 = QtGui.QStandardItem('方法型')
-            entityytpeclass1.appendRow(item1)
-            entityytpeclass1.appendRow(item2)
-            entityytpeclass2.appendRow(item3)
-            num = 0
-            for i in dict.keys():
-                if num < 4:
-                    item = QtGui.QStandardItem(dict[i].class_name)
-                    # item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
-                    item1.appendRow(item)
-                    num = num + 1
-                else:
-                    item = QtGui.QStandardItem(dict[i].class_name)
-                    # item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
-                    item2.appendRow(item)
-                    num = num + 1
-            for i in dict2.keys():
-                item = QtGui.QStandardItem(dict2[i].class_name)
-                # item.setIcon(QIcon('picture/' + dict2[i].class_name + '.png'))
-                item3.appendRow(item)
+    def init_ab_treeview_1(self, treeView, dict, dict2, name, name2):
+        model = QtGui.QStandardItemModel()
+        entityytpeclass1 = QtGui.QStandardItem(name)
+        entityytpeclass2 = QtGui.QStandardItem(name2)
+        item1 = QtGui.QStandardItem('内容型')
+        item2 = QtGui.QStandardItem('资源型')
+        item3 = QtGui.QStandardItem('方法型')
+        entityytpeclass1.appendRow(item1)
+        entityytpeclass1.appendRow(item2)
+        entityytpeclass2.appendRow(item3)
+        num = 0
+        for i in dict.keys():
+            if num < 5:
+                item = QtGui.QStandardItem(dict[i].class_name)
+                # item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
+                item1.appendRow(item)
+                num = num + 1
+            else:
+                item = QtGui.QStandardItem(dict[i].class_name)
+                # item.setIcon(QIcon('picture/' + dict[i].class_name + '.png'))
+                item2.appendRow(item)
+                num = num + 1
+        for i in dict2.keys():
+            item = QtGui.QStandardItem(dict2[i].class_name)
+            # item.setIcon(QIcon('picture/' + dict2[i].class_name + '.png'))
+            item3.appendRow(item)
 
-            model.appendRow(entityytpeclass1)
-            model.appendRow(entityytpeclass2)
+        model.appendRow(entityytpeclass1)
+        model.appendRow(entityytpeclass2)
 
-            treeView.setModel(model)
-            model.setHorizontalHeaderLabels([''])
-            treeView.expandAll()
-            # 03/21：初始化右侧树视图
-
+        treeView.setModel(model)
+        model.setHorizontalHeaderLabels([''])
+        treeView.expandAll()
+        # 03/21：初始化右侧树视图
 
     def init_treeview_1(self, treeView, dict, dict2, name='', name2=''):
         treeView.setHeaderHidden(True)
         if Myclass.current_meta_kg_dict == '能力知识图谱':
-            self.init_ab_treeview_1(treeView,dict,dict2,name,name2)
+            self.init_ab_treeview_1(treeView, dict, dict2, name, name2)
             return
         model = QtGui.QStandardItemModel()
         entityytpeclass1 = QtGui.QStandardItem(name)
@@ -488,7 +482,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
         return QIcon(pixmap)
 
-
     def click_kg_treeview_selected(self):
         # 获取当前选中的项
         index = self.treeView_kg.currentIndex()
@@ -524,18 +517,19 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         else:
             a0.ignore()
 
-
-    def save_file(self,name = None):
+    def save_file(self, name=None):
         self.graphicsSence.update()
         if name is None or type(name) == bool:
             KG = Myclass.current_kg_name
         else:
             KG = name
-        print("KGS"+KG)
+        print("KGS" + KG)
         if KG not in Myclass.knowledge_graphs_class.keys():
             return
-        Myclass.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG], dir=Myclass.knowledge_graphs_class[KG]['save_dir'])
-        Myclass.knowledge_graphs_class[KG]['is_change']  = False
+        self.graphicsSence.update_kg()
+        Myclass.save_kg(name=KG, kg=Myclass.knowledge_graphs_class[KG],
+                        dir=Myclass.knowledge_graphs_class[KG]['save_dir'])
+        Myclass.knowledge_graphs_class[KG]['is_change'] = False
         self.update_kg_treeview()
 
     def another_save_file(self):
@@ -589,10 +583,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def abilityinitrelationType(self):
         abidict: Myclass.meta_kg
         abidict = Myclass.meta_dict['能力知识图谱']
-        abidict.relationType_dict['abLineType1'] = Myclass.relationType(class_name='样式一', mask='知识连线',
-                                                                      classification='包含关系',
-                                                                      head_need='内容方法型节点', tail_need='内容方法型节点')
-        abidict.relationType_dict['abLineType2'] = Myclass.relationType(class_name='样式二', mask='知识连线',
+        abidict.relationType_dict['abLineType5'] = Myclass.relationType(class_name='样式一', mask='知识连线',
+                                                                        classification='包含关系',
+                                                                        head_need='内容方法型节点', tail_need='内容方法型节点')
+        abidict.relationType_dict['abLineType6'] = Myclass.relationType(class_name='样式二', mask='知识连线',
                                                                         classification='包含关系',
                                                                         head_need='内容方法型节点', tail_need='内容方法型节点')
         return
@@ -601,18 +595,18 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         abidict: Myclass.meta_kg
         abidict = Myclass.meta_dict['能力知识图谱']
         abidict.entityType_dict['abNodeType1'] = Myclass.entityType(class_name='能力领域', classification='内容方法型节点',
-                                                                  identity='知识',
-                                                                  level='一级', opentool='无')
+                                                                    identity='知识',
+                                                                    level='一级', opentool='无')
         abidict.entityType_dict['abNodeType2'] = Myclass.entityType(class_name='能力单元', classification='内容方法型节点',
-                                                                  identity='知识',
-                                                                  level='二级', opentool='无')
+                                                                    identity='知识',
+                                                                    level='二级', opentool='无')
         abidict.entityType_dict['abNodeType3'] = Myclass.entityType(class_name='能力点', classification='内容方法型节点',
-                                                                  identity='知识',
-                                                                  level='归纳级', opentool='无')
+                                                                    identity='知识',
+                                                                    level='归纳级', opentool='无')
         abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='学生任务', classification='内容方法型节点',
-                                                                   identity='知识',
-                                                                   level='内容级', opentool='无')
-        abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
+                                                                    identity='知识',
+                                                                    level='内容级', opentool='无')
+        abidict.entityType_dict['abNodeType5'] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='内容级', opentool='无')
         abidict.ktsqepType_dict["NodeType1"] = Myclass.entityType(class_name='L1', classification='附加节点',
@@ -643,11 +637,11 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
         abidict.ktsqepType_dict["NodeType10"] = Myclass.entityType(class_name='Pj', classification='附加节点',
-                                                                  identity='学生任务',
-                                                                  level='三级', opentool='无')
+                                                                   identity='学生任务',
+                                                                   level='三级', opentool='无')
         abidict.ktsqepType_dict["NodeType11"] = Myclass.entityType(class_name='Tk', classification='附加节点',
-                                                                  identity='学生任务',
-                                                                  level='三级', opentool='无')
+                                                                   identity='学生任务',
+                                                                   level='三级', opentool='无')
         # abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='项目', classification='内容方法型节点',
         #                                                           identity='知识',
         #                                                           level='内容级', opentool='无')
@@ -733,7 +727,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_my_sign1(self, name):
         if name not in Myclass.knowledge_graphs_class.keys():
-            Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": [],'save_dir': Myclass.readfilepath,'is_change':False}
+            Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": [], 'save_dir': Myclass.readfilepath,
+                                                    'is_change': False}
             Myclass.current_kg_name = name
             self.update_kg_treeview()
             self.treeView_kg.setselect(name)
@@ -918,7 +913,7 @@ if __name__ == '__main__':
     available_geometry = screen.availableGeometry()
     rect = desktop.frameSize()
     MainWindow.resize(QSize(available_geometry.width(), available_geometry.height()))
-    #MainWindow.showFullScreen()
+    # MainWindow.showFullScreen()
     # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True)
     # MainWindow.showFullScreen()  # 显示主窗口
     MainWindow.show()
