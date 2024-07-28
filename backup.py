@@ -19,7 +19,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon, QPixmap, QPainter
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
     QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
-    QGraphicsScene, QApplication, QPushButton
+    QGraphicsScene, QApplication, QPushButton, QGraphicsView
 
 import Myclass
 from Myclass import current_kg_name
@@ -118,9 +118,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # self.initLayouts()
         # self.showMaximized()
         self.setWindowTitle('KT-SQEP知识图谱工具')
-        Myclass.readfilepath = self.treeView_kg.initxml()
+        Myclass.readfilepath = self.treeView_kg.special_initxml()
         self.update_kg_treeview(text=Myclass.readfilepath)
-        self.init_comboBox_2()
+        #self.init_comboBox_2()
+        self.init_tabwidegt()
 
         self.comboBox.addItems(["教学知识图谱"])
 
@@ -130,6 +131,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.backbtn.setText('回退')
         self.backbtn.move(pos)
         self.backbtn.clicked.connect(self.back)
+        self.graphicsSence.update_kg()
 
     def back(self):
         path = os.path.join('./.produrce', Myclass.current_kg_name + '.xml')
@@ -141,6 +143,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         return
 
     def setchange(self):
+        print('setchange')
         if self.treeView_kg.myreadfile:
             return
         name = Myclass.current_kg_name
@@ -161,14 +164,14 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if m[0] == '':
             return
         dirname, full_name = os.path.split(m[0])
-        if dirname == Myclass.readfilepath:
+        if os.path.samefile(dirname,Myclass.readfilepath):
             self.treeView_kg.readfile(m[0])
         else:
             self.asave_kgs()
             Myclass.knowledge_graphs_class.clear()
             self.treeView_kg.readfile(m[0])
             Myclass.readfilepath = dirname
-            self.update_kg_treeview(text=m[0])
+            self.update_kg_treeview(text=dirname)
             self.graphicsSence.update_kg()
             if len(Myclass.knowledge_graphs_class.keys()) == 0:
                 self.clickaction1_1()
@@ -199,8 +202,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def another_save(self):
         Myclass.other_save_kg(parent=self)
 
-    def comboBox_2_changed(self):
-        name = self.comboBox_2.currentText()
+    def meta_dict_name_changed(self,name):
+        self.graphicsSence.update_kg()
+        self.asave_kgs()
+        self.csave_kgs()
         Myclass.save_meta_kg()
         Myclass.current_meta_kg_dict = name
         Myclass.change_meta_kg()
@@ -215,11 +220,36 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             self.clickaction1_1()
         print(name)
 
-    def init_comboBox_2(self):
-        self.comboBox_2.currentIndexChanged.connect(self.comboBox_2_changed)
-        for i in Myclass.meta_dict.keys():
-            self.comboBox_2.addItems([i])
+    def init_tabwidegt(self):
+        _translate = QtCore.QCoreApplication.translate
+        # self.comboBox_2.currentIndexChanged.connect(self.comboBox_2_changed)
+        # for i in Myclass.meta_dict.keys():
+        #     self.comboBox_2.addItems([i])
+        self.placeholder = QWidget()
+        self.tabWidget.addTab(self.widget, "教学知识图谱")
+        self.tabWidget.addTab(self.placeholder, "能力知识图谱")
+        self.tabWidget.currentChanged.connect(self.on_tab_changed)
 
+        # 初始化显示第一个 tab 的内容
+        #self.on_tab_changed(0)
+        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.widget), _translate("MainWindow", "Tab 1"))
+
+    def on_tab_changed(self, index):
+        self.tabWidget.blockSignals(True)
+        name = self.tabWidget.tabText(index)
+        print(name)
+        for i in range(self.tabWidget.count()):
+            self.tabWidget.removeTab(i)
+        if name == '教学知识图谱':
+            self.tabWidget.addTab(self.widget, "教学知识图谱")
+            self.tabWidget.addTab(self.placeholder, "能力知识图谱")
+        else:
+            self.tabWidget.addTab(self.placeholder, "教学知识图谱")
+            self.tabWidget.addTab(self.widget, "能力知识图谱")
+        self.comboBox.setItemText(0,name)
+        self.meta_dict_name_changed(name)
+        self.tabWidget.setCurrentIndex(index)
+        self.tabWidget.blockSignals(False)
     def copy_kg(self):
         print(1)
         self.childwindow2 = childwindow_1()
@@ -444,6 +474,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             model.removeRow(i)
 
     def update_kg_treeview(self, text=' 计算思维（计算机科学导论）'):
+        text = Myclass.readfilepath
         for i in range(self.model_kg.rowCount()):
             for j in range(self.model_kg.item(i).rowCount()):
                 self.model_kg.item(i).removeRow(j)
@@ -594,6 +625,9 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def abilityinitentityType(self):
         abidict: Myclass.meta_kg
         abidict = Myclass.meta_dict['能力知识图谱']
+        cwd = os.getcwd()
+        path = os.path.join(cwd, 'xml')
+        abidict.readfilepath = path
         abidict.entityType_dict['abNodeType1'] = Myclass.entityType(class_name='能力领域', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='一级', opentool='无')
@@ -654,6 +688,9 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         return
 
     def initrelationType(self):
+        cwd = os.getcwd()
+        path = os.path.join(cwd, 'xml')
+        Myclass.readfilepath = path
         Myclass.relationType_dict["LineType1"] = Myclass.relationType(class_name='包含关系', mask='知识连线',
                                                                       classification='包含关系',
                                                                       head_need='内容方法型节点', tail_need='内容方法型节点')
@@ -685,9 +722,9 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.entityType_dict["NodeType5"] = Myclass.entityType(class_name='视频', classification='资源型节点',
                                                                   identity='Video',
                                                                   level='微课', opentool='Mvideo.exe')
-        Myclass.entityType_dict["NodeType6"] = Myclass.entityType(class_name='测试题', classification='资源型节点',
-                                                                  identity='Exec',
-                                                                  level='练习题', opentool='YUKETANG.exe')
+        Myclass.entityType_dict["NodeType6"] = Myclass.entityType(class_name='PPT', classification='资源型节点',
+                                                                  identity='PPT',
+                                                                  level='练习题', opentool='Powpoint.exe')
         Myclass.entityType_dict["NodeType7"] = Myclass.entityType(class_name='文档', classification='资源型节点',
                                                                   identity='PDF',
                                                                   level='教学素材', opentool='PDFviewer')

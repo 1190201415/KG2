@@ -1,4 +1,5 @@
 <KG>
+	&#25945;&#23398;&#30693;&#35782;&#22270;&#35889;
 	<entities>
 		<entity>
 			<id>0</id>
@@ -11,8 +12,8 @@
 			<content>
 &#20449;&#24687;&#34920;&#31034;
 </content>
-			<x>95</x>
-			<y>489</y>
+			<x>95.0</x>
+			<y>489.0</y>
 		</entity>
 		<entity>
 			<id>1</id>
@@ -23,8 +24,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#25968;&#20540;&#20449;&#24687;&#34920;&#31034;</content>
-			<x>260</x>
-			<y>215</y>
+			<x>260.0</x>
+			<y>215.0</y>
 		</entity>
 		<entity>
 			<id>2</id>
@@ -35,8 +36,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#38750;&#25968;&#20540;&#20449;&#24687;&#34920;&#31034;</content>
-			<x>315</x>
-			<y>532</y>
+			<x>315.0</x>
+			<y>532.0</y>
 		</entity>
 		<entity>
 			<id>3</id>
@@ -47,8 +48,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#19975;&#20107;&#19975;&#29289;&#20449;&#24687;&#34920;&#31034;</content>
-			<x>159</x>
-			<y>827</y>
+			<x>159.0</x>
+			<y>827.0</y>
 		</entity>
 		<entity>
 			<id>4</id>
@@ -59,8 +60,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#36827;&#20301;&#21046;</content>
-			<x>460</x>
-			<y>78</y>
+			<x>460.0</x>
+			<y>78.0</y>
 		</entity>
 		<entity>
 			<id>5</id>
@@ -71,8 +72,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#20108;&#36827;&#21046;/&#21313;&#36827;&#21046;/&#21313;&#20845;&#36827;&#21046;</content>
-			<x>666</x>
-			<y>78</y>
+			<x>666.0</x>
+			<y>78.0</y>
 		</entity>
 		<entity>
 			<id>6</id>
@@ -83,8 +84,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#36827;&#21046;&#36716;&#25442;</content>
-			<x>858</x>
-			<y>77</y>
+			<x>858.0</x>
+			<y>77.0</y>
 		</entity>
 		<entity>
 			<id>7</id>
@@ -95,8 +96,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#26426;&#22120;&#25968;(&#26377;&#31526;&#21495;&#25968;)</content>
-			<x>467</x>
-			<y>217</y>
+			<x>467.0</x>
+			<y>217.0</y>
 		</entity>
 		<entity>
 			<id>8</id>
@@ -107,8 +108,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#26426;&#22120;&#23383;&#38271;</content>
-			<x>663</x>
-			<y>216</y>
+			<x>663.0</x>
+			<y>216.0</y>
 		</entity>
 		<entity>
 			<id>9</id>
@@ -119,8 +120,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#21407;&#30721;&#19982;&#34917;&#30721;</content>
-			<x>860</x>
-			<y>213</y>
+			<x>860.0</x>
+			<y>213.0</y>
 		</entity>
 		<entity>
 			<id>10</id>
@@ -131,8 +132,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#19981;&#21516;&#31867;&#22411;&#25972;&#25968;</content>
-			<x>1060</x>
-			<y>215</y>
+			<x>1060.0</x>
+			<y>215.0</y>
 		</entity>
 		<entity>
 			<id>11</id>
@@ -143,8 +144,8 @@
 			<attach>101000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#26426;&#22120;&#25968;&#30340;&#33539;&#22260;</content>
-			<x>1256</x>
-			<y>211</y>
+			<x>1256.0</x>
+			<y>211.0</y>
 		</entity>
 		<entity>
 			<id>12</id>
@@ -155,8 +156,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#28322;&#20986;&#21450;&#20854;&#36923;&#36753;&#21028;&#26029;</content>
-			<x>1452</x>
-			<y>211</y>
+			<x>1452.0</x>
+			<y>211.0</y>
 		</entity>
 		<entity>
 			<id>13</id>
@@ -167,8 +168,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#26426;&#22120;&#25968;0&#30340;&#32534;&#30721;</content>
-			<x>1066</x>
-			<y>83</y>
+			<x>1066.0</x>
+			<y>83.0</y>
 		</entity>
 		<entity>
 			<id>14</id>
@@ -179,8 +180,8 @@
 			<attach>100011</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#20943;&#27861;&#36716;&#21152;&#27861;</content>
-			<x>1260</x>
-			<y>81</y>
+			<x>1260.0</x>
+			<y>81.0</y>
 		</entity>
 		<entity>
 			<id>15</id>
@@ -191,8 +192,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#28014;&#28857;&#25968;(&#23567;&#25968;)</content>
-			<x>465</x>
-			<y>365</y>
+			<x>465.0</x>
+			<y>365.0</y>
 		</entity>
 		<entity>
 			<id>16</id>
@@ -203,8 +204,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#31526;&#21495;-&#38454;&#30721;-&#23614;&#25968;</content>
-			<x>702</x>
-			<y>368</y>
+			<x>702.0</x>
+			<y>368.0</y>
 		</entity>
 		<entity>
 			<id>17</id>
@@ -215,8 +216,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#21333;&#31934;&#24230;&#19982;&#21452;&#31934;&#24230;</content>
-			<x>950</x>
-			<y>365</y>
+			<x>950.0</x>
+			<y>365.0</y>
 		</entity>
 		<entity>
 			<id>18</id>
@@ -227,8 +228,8 @@
 			<attach>101000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#31934;&#24230;&#19982;&#33539;&#22260;</content>
-			<x>1216</x>
-			<y>363</y>
+			<x>1216.0</x>
+			<y>363.0</y>
 		</entity>
 		<entity>
 			<id>19</id>
@@ -239,8 +240,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#32534;&#30721;</content>
-			<x>507</x>
-			<y>528</y>
+			<x>507.0</x>
+			<y>528.0</y>
 		</entity>
 		<entity>
 			<id>20</id>
@@ -251,8 +252,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#23383;&#31526;&#32534;&#30721;ASCII</content>
-			<x>702</x>
-			<y>528</y>
+			<x>702.0</x>
+			<y>528.0</y>
 		</entity>
 		<entity>
 			<id>21</id>
@@ -263,8 +264,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#27721;&#23383;&#32534;&#30721;</content>
-			<x>897</x>
-			<y>528</y>
+			<x>897.0</x>
+			<y>528.0</y>
 		</entity>
 		<entity>
 			<id>22</id>
@@ -275,8 +276,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>Unicode</content>
-			<x>1087</x>
-			<y>525</y>
+			<x>1087.0</x>
+			<y>525.0</y>
 		</entity>
 		<entity>
 			<id>23</id>
@@ -287,8 +288,8 @@
 			<attach>101000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#19981;&#21516;&#32534;&#30721;&#30340;&#24322;&#21516;</content>
-			<x>1283</x>
-			<y>522</y>
+			<x>1283.0</x>
+			<y>522.0</y>
 		</entity>
 		<entity>
 			<id>24</id>
@@ -299,8 +300,8 @@
 			<attach>001000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#21464;&#38271;&#32534;&#30721;&#30340;&#20248;&#28857;</content>
-			<x>1478</x>
-			<y>516</y>
+			<x>1478.0</x>
+			<y>516.0</y>
 		</entity>
 		<entity>
 			<id>25</id>
@@ -311,8 +312,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#20869;&#30721;(&#23384;&#20648;)</content>
-			<x>897</x>
-			<y>663</y>
+			<x>897.0</x>
+			<y>663.0</y>
 		</entity>
 		<entity>
 			<id>26</id>
@@ -323,8 +324,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#22806;&#30721;(&#36755;&#20837;)</content>
-			<x>1091</x>
-			<y>662</y>
+			<x>1091.0</x>
+			<y>662.0</y>
 		</entity>
 		<entity>
 			<id>27</id>
@@ -335,8 +336,8 @@
 			<attach>000110</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#23383;&#24418;&#30721;(&#36755;&#20986;)</content>
-			<x>1288</x>
-			<y>661</y>
+			<x>1288.0</x>
+			<y>661.0</y>
 		</entity>
 		<entity>
 			<id>28</id>
@@ -347,8 +348,8 @@
 			<attach>100010</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#27721;&#23383;&#22788;&#29702;&#36807;&#31243;</content>
-			<x>1482</x>
-			<y>661</y>
+			<x>1482.0</x>
+			<y>661.0</y>
 		</entity>
 		<entity>
 			<id>29</id>
@@ -359,8 +360,8 @@
 			<attach>100100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#37319;&#26679;-&#37327;&#21270;-&#32534;&#30721;</content>
-			<x>353</x>
-			<y>827</y>
+			<x>353.0</x>
+			<y>827.0</y>
 		</entity>
 		<entity>
 			<id>30</id>
@@ -371,8 +372,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#20301;&#22270;</content>
-			<x>541</x>
-			<y>826</y>
+			<x>541.0</x>
+			<y>826.0</y>
 		</entity>
 		<entity>
 			<id>31</id>
@@ -383,8 +384,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#21387;&#32553;&#32534;&#30721;</content>
-			<x>735</x>
-			<y>825</y>
+			<x>735.0</x>
+			<y>825.0</y>
 		</entity>
 		<entity>
 			<id>32</id>
@@ -395,8 +396,8 @@
 			<attach>000100</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#21387;&#32553;:&#26377;&#25439;&#19982;&#26080;&#25439;</content>
-			<x>933</x>
-			<y>826</y>
+			<x>933.0</x>
+			<y>826.0</y>
 		</entity>
 		<entity>
 			<id>33</id>
@@ -407,8 +408,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#32534;&#30721;&#25928;&#29575;</content>
-			<x>1126</x>
-			<y>826</y>
+			<x>1126.0</x>
+			<y>826.0</y>
 		</entity>
 		<entity>
 			<id>34</id>
@@ -419,8 +420,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#32534;&#30721;(&#21387;&#32553;)-&#35299;&#30721;(&#36824;&#21407;)</content>
-			<x>1321</x>
-			<y>826</y>
+			<x>1321.0</x>
+			<y>826.0</y>
 		</entity>
 		<entity>
 			<id>35</id>
@@ -431,8 +432,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#35821;&#38899;&#20449;&#21495;&#32534;&#30721;</content>
-			<x>461</x>
-			<y>976</y>
+			<x>461.0</x>
+			<y>976.0</y>
 		</entity>
 		<entity>
 			<id>36</id>
@@ -443,8 +444,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#22270;&#20687;&#20449;&#21495;&#32534;&#30721;</content>
-			<x>668</x>
-			<y>978</y>
+			<x>668.0</x>
+			<y>978.0</y>
 		</entity>
 		<entity>
 			<id>37</id>
@@ -455,8 +456,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#35270;&#39057;&#20449;&#21495;&#32534;&#30721;</content>
-			<x>881</x>
-			<y>976</y>
+			<x>881.0</x>
+			<y>976.0</y>
 		</entity>
 		<entity>
 			<id>38</id>
@@ -467,8 +468,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#32534;&#30721;&#22120;(&#24863;&#30693;&#22120;)</content>
-			<x>1075</x>
-			<y>975</y>
+			<x>1075.0</x>
+			<y>975.0</y>
 		</entity>
 		<entity>
 			<id>39</id>
@@ -479,8 +480,8 @@
 			<attach>000000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#20449;&#24687;&#21464;&#25442;(&#31243;&#24207;&#19982;&#31639;&#27861;)</content>
-			<x>1280</x>
-			<y>976</y>
+			<x>1280.0</x>
+			<y>976.0</y>
 		</entity>
 		<entity>
 			<id>40</id>
@@ -491,8 +492,8 @@
 			<attach>100000</attach>
 			<opentool>&#26080;</opentool>
 			<content>&#35299;&#30721;&#22120;(&#26174;&#31034;&amp;&#36755;&#20986;)</content>
-			<x>1481</x>
-			<y>973</y>
+			<x>1481.0</x>
+			<y>973.0</y>
 		</entity>
 	</entities>
 	<relations>
