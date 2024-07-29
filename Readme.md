@@ -3,7 +3,7 @@ DONE:已经近乎完成了一个知识图谱结构的构建
 打包命令：pyinstaller --onefile --windowed   --add-data "picture/*;picture/"  --add-data "xml/*;xml/"  --add-data "setitem/*;setitem/" backup.py
 
 
-
+少一个视频解码器
 另外的打包命令：nuitka --standalone --onefile --enable-plugin=pyqt5 --plugin-enable=numpy --include-package-data=picture --show-memory  --windows-disable-console --show-progress  --output-dir=out --remove-output backup.py
 
 nuitka和项目中的一些库可能存在冲突问题，比如在此次项目中用到PyMuPDF，一开始使用的版本为1.2x.x，发现编译时存在问题无法编译，降低PyMuPDF版本到1.18.0得以解决
@@ -34,3 +34,9 @@ TODO:缩放注意比例(完成)
 
             2024/7/8
                 -song
+TODO:改节点名称
+    -链接名称与顺序
+    -链接样式
+    -界面美化
+    -PPT转图片
+    -视频解码器

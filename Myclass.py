@@ -194,10 +194,12 @@ def isexist(name, path=None):
 
 
 def readPPT(PATH):
-    a = readwps.PptWindow(ppt_path=PATH)
-    a.show()
-    pass
-
+    try:
+        a = readwps.PptWindow(ppt_path=PATH)
+        return True, a
+    except Exception as e:
+        print(e)
+        return False, None
 
 
 def readVedio(PATH):
@@ -205,6 +207,13 @@ def readVedio(PATH):
     a.show()
     pass
 
+def readPDF(PATH):
+    try:
+        a = readwps.createPDFWidget(path=PATH)
+        return True,a
+    except Exception as e:
+        print(e)
+        return  False,None
 
 def save_kgs(dir=None):
     global knowledge_graphs_class
@@ -842,9 +851,10 @@ class my_treeview(QTreeView):
                 return i
 
     def class_nameToflag(self, class_name):
-        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4, '样式一': 5, '样式二': 6}
-
-        return dict1[class_name]
+        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4, '样式一': 1, '样式二': 2,'落实关系':5}
+        for i in dict1.keys():
+            if i in class_name:
+                return dict1[i]
 
     def dropEvent(self, e: QtGui.QDropEvent):
         global current_kg_name
@@ -916,6 +926,7 @@ class re_my_Ui_Dialog(QDialog, resource.Ui_Dialog):
         self.attach = attach
         self.pushButton_2.clicked.connect(self.clickpushbutton_2)
         self.label.setText(self.open)
+        self.label.adjustSize()
         self.pushButton_3.clicked.connect(self.click_open)
         self.pushButton_4.clicked.connect(self.openfile)
         self.setModal(True)
@@ -928,11 +939,14 @@ class re_my_Ui_Dialog(QDialog, resource.Ui_Dialog):
             readVedio(self.open)
         if self.class_type == '文档':
             self.clickpushbutton_2()
-            self.a = readwps.createPDFWidget(self.open)
-            self.a.show()
+            f,self.a = readPDF(self.open)
+            if f:
+                self.a.show()
         if self.class_type == 'PPT':
             self.clickpushbutton_2()
-            readPPT(self.open)
+            f, self.a = readPPT(self.open)
+            if f:
+                self.a.show()
 
     def click_open(self):
         if self.class_type == '视频':
@@ -951,6 +965,7 @@ class re_my_Ui_Dialog(QDialog, resource.Ui_Dialog):
                 return
             self.open = m[0]
         self.label.setText(self.open)
+        self.label.adjustSize()
 
     def clickpushbutton_2(self):
         entity1 = entity(attach=self.attach, x=0, y=0, content=self.open)
@@ -1104,15 +1119,22 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         for i in self.check_boxes:
             i.setEnabled(flag)
 
+    def getattch(self,flag):
+        list = ['L1','L2','L3','L4','L5','L6','L7','L8','L9','Pj','Tk']
+        for i in list:
+            if i in flag:
+                return i
+
     def clickpushbutton(self):
         name = self.comboBox_3.currentText()
         content = self.textEdit.toPlainText()
         flag = self.comboBox_2.currentText()
         a = ABattachment()
-        if name == '能力点' and 'L' in flag:
-            a.textto(flag, True)
-        if name == '学生任务' and flag in ['Pj', 'Tk']:
-            a.textto(flag, True)
+        b= self.getattch(flag)
+        if name == '能力点' and 'L' in b:
+            a.textto(b, True)
+        if name == '学生任务' and b in ['Pj', 'Tk']:
+            a.textto(b, True)
         entity1 = entity(class_name=name, content=content, x=0, y=0,
                          attach=a)
         self.my_sign1.emit(entity1)
@@ -1184,7 +1206,7 @@ class GraphicScene(QGraphicsScene):
                 notgetlist.remove(i)
                 list_child_deep.append(deep)
                 deep = self.AF_deep_search(start_node=i, notgetlist=notgetlist, deep=deep,
-                                           length=length + node.boundingRect().width() + 40, id_dict=id_dict)
+                                           length=length + node.boundingRect().width() + 80, id_dict=id_dict)
                 # list_child_deep.append(deep)
 
         # if len(list_child_deep) >= 1:#使用实际在的位置进行平均
@@ -1248,6 +1270,8 @@ class GraphicScene(QGraphicsScene):
         graph = Graph(node_list=node_list)
         graph.set_Graph(rela_list)
 
+        graph2 = Graph(node_list=node_list + fnode_list)
+        graph2.set_Graph(frela_list)
         start_list, min = graph.get_minInNode()
         print('最小入度', min)
         deep = point.y()
@@ -1255,12 +1279,17 @@ class GraphicScene(QGraphicsScene):
             deep = self.AF_deep_search(start_node=k, deep=deep, length=point.x(), notgetlist=graph.get_node_list(),
                                        id_dict=id_dict)
 
-        for i in frela_list:
-            if i[0] in node_list and i[1] in fnode_list:
-                id_dict[i[1]].setcentpos(x=id_dict[i[0]].pos().x(),
-                                         y=id_dict[i[0]].pos().y() + id_dict[i[0]].boundingRect().height() * 0.5 + 30)
-                fnode_list.remove(i[1])
-
+        for a in graph2.get_node_list():
+            x = id_dict[a.id].pos().x()
+            y = id_dict[a.id].pos().y()
+            num: int = len(a.child_list)
+            a_x = id_dict[a.id].boundingRect().width()
+            a_y = id_dict[a.id].boundingRect().height()
+            num_2 = 0
+            for j in a.child_list:
+                id_dict[j.id].setcentpos(x=x + (num_2 - math.floor(num / 2)) * 60,
+                                      y=y + a_y * 0.5 + 30)
+                num_2 = num_2 + 1
         # for i in fnode_list:
         #     entities.remove(id_dict[i])
 
@@ -1681,22 +1710,22 @@ class GraphicView(QGraphicsView):
             if item.entity.class_name == '能力点':
                 f, t = getintext(text, name1)
                 if f:
-                    f2 = item.entity.attach.getbool(text=text)
+                    f2 = item.entity.attach.getbool(text=t)
                     if f2:
                         item.entity.attach.allfalse()
                     else:
                         item.entity.attach.allfalse()
-                        item.entity.attach.textto(text=text, f=True)
+                        item.entity.attach.textto(text=t, f=True)
                     self.updateRequest.emit()
             if item.entity.class_name == '学生任务':
                 f, t = getintext(text, name2)
                 if f:
-                    f2 = item.entity.attach.getbool(text=text)
+                    f2 = item.entity.attach.getbool(text=t)
                     if f2:
                         item.entity.attach.allfalse()
                     else:
                         item.entity.attach.allfalse()
-                        item.entity.attach.textto(text=text, f=True)
+                        item.entity.attach.textto(text=t, f=True)
                     self.updateRequest.emit()
 
     def wash_item(self, list):
@@ -1767,7 +1796,13 @@ class GraphicView(QGraphicsView):
             self.gr_scene.remove_link(i)
             self.relationRemove.emit(i.edge.head_entity, i.edge.tail_entity)
             return
+
         self.groupBox_menu = QMenu(self)
+
+        if len(item_list) == 1 and isinstance(item_list[0], GraphicItemGroup) and item_list[0].classtype == 2:
+            self.actionH = QAction(u'修改对应资源', self)
+            self.groupBox_menu.addAction(self.actionH)
+            self.actionH.triggered.connect(lambda: self.button_CH_RES(item_list))
 
         self.actionA = QAction(u'复制', self)  # 创建菜单选项对象
         # self.actionA.setShortcut('Ctrl+C')  # 设置动作A的快捷键
@@ -1816,6 +1851,9 @@ class GraphicView(QGraphicsView):
             return sorted(b, key=(lambda b: b[1]))
         if s == 'y':
             return sorted(b, key=(lambda b: b[2]))
+
+    def button_CH_RES(self,item_list):
+        item_list[0].right_button()
 
     def button_7(self, list):
         ent, rela = self.wash_item(list)
@@ -2164,7 +2202,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
     def copy_itself(self):
         return GraphicItemGroup(scene=self.scene, x=self.pos().x(), y=self.pos().y(), entity=self.entity.copy_itself())
 
-    def re_init_2(self,entity:entity):
+    def re_init_2(self, entity: entity):
         pos = self.pos()
         print(entity)
         print(self.entity)
@@ -2217,6 +2255,15 @@ class GraphicItemGroup(QGraphicsItemGroup):
         self.update()
         self.scene.update()
 
+    def right_button(self):
+        if self.classtype == 1:
+            return
+        self.window = re_my_Ui_Dialog(attach=self.attach,
+                                      id=self.entity.id, class_name=self.entity.class_name,
+                                      open=self.entity.content)
+        self.window.my_sign1.connect(self.re_init_2)
+        self.window.exec()
+
     def mouseDoubleClickEvent(self, event: 'QGraphicsSceneMouseEvent'):
         if self.classtype == 1:
             self.window = my_Ui_Dialog(linetext=self.name, content=self.GraphicText1.toPlainText(), attach=self.attach,
@@ -2224,10 +2271,17 @@ class GraphicItemGroup(QGraphicsItemGroup):
 
             self.window.my_sign1.connect(self.re_init)
         if self.classtype == 2:
-            self.window = re_my_Ui_Dialog(attach=self.attach,
-                                          id=self.entity.id, class_name=self.entity.class_name,
-                                          open=self.entity.content)
-            self.window.my_sign1.connect(self.re_init_2)
+            if self.entity.class_name == '视频':
+                self.a = readVedio(self.entity.content)
+            if self.entity.class_name == '文档':
+                f,self.a = readPDF(self.entity.content)
+                if f:
+                    self.a.show()
+            if self.entity.class_name == 'PPT':
+                f, self.a = readPPT(self.entity.content)
+                if f:
+                    self.a.show()
+            return
 
             # self.window.my_sign1.connect(self.re_init)
         self.window.exec()
@@ -2671,9 +2725,11 @@ class GraphicEdge(QGraphicsPathItem):
             self._mark_pen = QPen(QColor(0, 0, 0))
             self._mark_pen.setWidthF(3.6)
 
-        if self.edge.flag == 5:
-            self._pen = QPen(QColor(225, 0, 0))  # 画线条的
-            self._pen.setWidthF(self.width)
+        if self.edge.flag == 8:
+            self._pen = QPen(QColor(0, 0, 0))  # 画线条的
+            self._pen.setWidthF(self.width*3)
+            self.pen_2 = QPen(QColor(255, 255, 255))  # 画线条的
+            self.pen_2.setWidthF(self.width)
             self._mark_pen = QPen(QColor(225, 0, 0))
 
         if self.edge.flag == 6:
@@ -2750,8 +2806,8 @@ class GraphicEdge(QGraphicsPathItem):
 
     def draw_arc(self, point: QPointF, painter, k):
         point1 = point
-        h = 8
-        w = 8
+        h = 12
+        w = 12
         k1 = -math.degrees(k) - 45
         painter.drawArc(point1.x() - w, point1.y() - h, 2 * w, 2 * h, k1 * 16, 90 * 16)
 
@@ -2772,6 +2828,9 @@ class GraphicEdge(QGraphicsPathItem):
             self.draw_arc(point=point2, painter=painter, k=k)
         elif self.edge.flag == 4:
             self.draw_arrow(length=30, point=point1, painter=painter, k=k)
+        elif self.edge.flag == 8:
+            painter.setPen(self.pen_2)
+            painter.drawPath(self.path())
         else:
             self.draw_arrow(length=10, point=point1, painter=painter, k=k)
 

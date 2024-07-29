@@ -174,7 +174,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             self.update_kg_treeview(text=dirname)
             self.graphicsSence.update_kg()
             if len(Myclass.knowledge_graphs_class.keys()) == 0:
-                self.clickaction1_1()
+                self.handle_my_sign1(name='未命名')
 
     def opendir(self):  # 这个是读到当前目录还是新建一个目录？
         m = QtWidgets.QFileDialog.getExistingDirectory(None, "文件夹读取", )  # 起始路径
@@ -187,7 +187,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.update_kg_treeview(text=m)
         self.graphicsSence.update_kg()
         if len(Myclass.knowledge_graphs_class.keys()) == 0:
-            self.clickaction1_1()
+            self.handle_my_sign1(name='未命名')
 
     def choosedir(self):
         m = QtWidgets.QFileDialog.getExistingDirectory(None, "选取文件夹或新建文件夹保存", )  # 起始路径
@@ -217,7 +217,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
         self.graphicsSence.update_kg()
         if Myclass.current_kg_name == '知识图谱1' and Myclass.current_kg_name not in Myclass.knowledge_graphs_class.keys():
-            self.clickaction1_1()
+            self.handle_my_sign1(name='未命名')
         print(name)
 
     def init_tabwidegt(self):
@@ -325,21 +325,19 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if text == '包含关系':
             self.graphicsView.draw_link_flag = 1
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '次序关系':
+        if  '次序关系' in text:
             self.graphicsView.draw_link_flag = 2
             self.graphicsView.setCursor(Qt.DragLinkCursor)
         if text == '连接资源':
             self.graphicsView.draw_link_flag = 3
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '关键次序':
+        if '关键次序' in text:
             self.graphicsView.draw_link_flag = 4
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '样式一':
-            self.graphicsView.draw_link_flag = 5
+        if text == '落实关系':
+            self.graphicsView.draw_link_flag = 8
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if text == '样式二':
-            self.graphicsView.draw_link_flag = 6
-            self.graphicsView.setCursor(Qt.DragLinkCursor)
+
 
     def clicked_treeView(self):
         index = self.treeView.currentIndex()
@@ -614,11 +612,17 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def abilityinitrelationType(self):
         abidict: Myclass.meta_kg
         abidict = Myclass.meta_dict['能力知识图谱']
-        abidict.relationType_dict['abLineType5'] = Myclass.relationType(class_name='样式一', mask='知识连线',
+        abidict.relationType_dict['abLineType1'] = Myclass.relationType(class_name='包含关系', mask='知识连线',
                                                                         classification='包含关系',
                                                                         head_need='内容方法型节点', tail_need='内容方法型节点')
-        abidict.relationType_dict['abLineType6'] = Myclass.relationType(class_name='样式二', mask='知识连线',
-                                                                        classification='包含关系',
+        abidict.relationType_dict['abLineType2'] = Myclass.relationType(class_name='次序关系', mask='知识连线',
+                                                                        classification='次序关系',
+                                                                        head_need='内容方法型节点', tail_need='内容方法型节点')
+        abidict.relationType_dict['abLineType4'] = Myclass.relationType(class_name='关键次序', mask='知识连线',
+                                                                        classification='次序关系',
+                                                                        head_need='内容方法型节点', tail_need='内容方法型节点')
+        abidict.relationType_dict['abLineType8'] = Myclass.relationType(class_name='落实关系', mask='知识连线',
+                                                                        classification='落实关系',
                                                                         head_need='内容方法型节点', tail_need='内容方法型节点')
         return
 
@@ -643,37 +647,37 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         abidict.entityType_dict['abNodeType5'] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='内容级', opentool='无')
-        abidict.ktsqepType_dict["NodeType1"] = Myclass.entityType(class_name='L1', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType1"] = Myclass.entityType(class_name='能力等级L1', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType2"] = Myclass.entityType(class_name='L2', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType2"] = Myclass.entityType(class_name='能力等级L2', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType3"] = Myclass.entityType(class_name='L3', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType3"] = Myclass.entityType(class_name='能力等级L3', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType4"] = Myclass.entityType(class_name='L4', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType4"] = Myclass.entityType(class_name='能力等级L4', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType5"] = Myclass.entityType(class_name='L5', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType5"] = Myclass.entityType(class_name='能力等级L5', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType6"] = Myclass.entityType(class_name='L6', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType6"] = Myclass.entityType(class_name='能力等级L6', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType7"] = Myclass.entityType(class_name='L7', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType7"] = Myclass.entityType(class_name='能力等级L7', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType8"] = Myclass.entityType(class_name='L8', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType8"] = Myclass.entityType(class_name='能力等级L8', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType9"] = Myclass.entityType(class_name='L9', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType9"] = Myclass.entityType(class_name='能力等级L9', classification='附加节点',
                                                                   identity='能力点',
                                                                   level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType10"] = Myclass.entityType(class_name='Pj', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType10"] = Myclass.entityType(class_name='项目级任务Pj', classification='附加节点',
                                                                    identity='学生任务',
                                                                    level='三级', opentool='无')
-        abidict.ktsqepType_dict["NodeType11"] = Myclass.entityType(class_name='Tk', classification='附加节点',
+        abidict.ktsqepType_dict["NodeType11"] = Myclass.entityType(class_name='任务级任务Tk', classification='附加节点',
                                                                    identity='学生任务',
                                                                    level='三级', opentool='无')
         # abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='项目', classification='内容方法型节点',
@@ -694,15 +698,16 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         Myclass.relationType_dict["LineType1"] = Myclass.relationType(class_name='包含关系', mask='知识连线',
                                                                       classification='包含关系',
                                                                       head_need='内容方法型节点', tail_need='内容方法型节点')
-        Myclass.relationType_dict["LineType2"] = Myclass.relationType(class_name='次序关系', mask='知识连线',
+        Myclass.relationType_dict["LineType2"] = Myclass.relationType(class_name='次序：次序关系', mask='知识连线',
+                                                                      classification='次序关系',
+                                                                      head_need='内容方法型节点', tail_need='内容方法型节点')
+        Myclass.relationType_dict["LineType4"] = Myclass.relationType(class_name='次序：关键次序', mask='知识连线',
                                                                       classification='次序关系',
                                                                       head_need='内容方法型节点', tail_need='内容方法型节点')
         Myclass.relationType_dict["LineType3"] = Myclass.relationType(class_name='连接资源', mask='知识—资源连线',
                                                                       classification='连接资源',
                                                                       head_need='内容方法型节点', tail_need='资源型节点')
-        Myclass.relationType_dict["LineType4"] = Myclass.relationType(class_name='关键次序', mask='知识连线',
-                                                                      classification='次序关系',
-                                                                      head_need='内容方法型节点', tail_need='内容方法型节点')
+
 
         self.abilityinitrelationType()
 
@@ -935,10 +940,14 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     # gc.enable()
+    if not os.path.exists(r'./.picture'):
+        os.makedirs(r'./.picture')
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     app = 0
     app = QtWidgets.QApplication(sys.argv)
     QtCore.QResource.registerResource('resources.qrc')
