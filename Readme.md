@@ -7,6 +7,7 @@ DONE:已经近乎完成了一个知识图谱结构的构建
 另外的打包命令：nuitka --standalone --onefile --enable-plugin=pyqt5 --plugin-enable=numpy --include-package-data=picture --show-memory  --windows-disable-console --show-progress  --output-dir=out --remove-output backup.py
 
 nuitka和项目中的一些库可能存在冲突问题，比如在此次项目中用到PyMuPDF，一开始使用的版本为1.2x.x，发现编译时存在问题无法编译，降低PyMuPDF版本到1.18.0得以解决
+nuitka --standalone --onefile --show-memory  --windows-disable-console --show-progress  --output-dir= --remove-output runbat.py
 
 TODO:下一个不同样式的知识图谱模式，注意规范化整个过程
     -箭头样式
@@ -40,3 +41,6 @@ TODO:改节点名称
     -界面美化
     -PPT转图片
     -视频解码器
+    -图片模糊
+    -节点乱跑
+    -选中图谱名

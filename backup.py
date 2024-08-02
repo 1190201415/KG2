@@ -25,7 +25,7 @@ import Myclass
 from Myclass import current_kg_name
 from untitled import Ui_MainWindow
 from new_entity import Ui_Form
-
+import runbat
 
 class childwindow_1(QtWidgets.QWidget, Ui_Form):
     my_sign1 = pyqtSignal(str)
@@ -355,6 +355,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         entityytpeclass1.appendRow(item2)
         entityytpeclass2.appendRow(item3)
         num = 0
+        f = 0
         for i in dict.keys():
             if num < 5:
                 item = QtGui.QStandardItem(dict[i].class_name)
@@ -367,8 +368,14 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 item2.appendRow(item)
                 num = num + 1
         for i in dict2.keys():
-            item = QtGui.QStandardItem(dict2[i].class_name)
+            if 'L' in dict2[i].class_name and f==0:
+                item = QtGui.QStandardItem('能力等级L1')
+                f=1
+            elif 'L' in dict2[i].class_name and f==1:
+                continue
             # item.setIcon(QIcon('picture/' + dict2[i].class_name + '.png'))
+            else:
+                item = QtGui.QStandardItem(dict2[i].class_name)
             item3.appendRow(item)
 
         model.appendRow(entityytpeclass1)
@@ -940,6 +947,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     # gc.enable()
+    #runbat.run_admin()
     if not os.path.exists(r'./.picture'):
         os.makedirs(r'./.picture')
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)

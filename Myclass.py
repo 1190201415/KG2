@@ -851,7 +851,7 @@ class my_treeview(QTreeView):
                 return i
 
     def class_nameToflag(self, class_name):
-        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4, '样式一': 1, '样式二': 2,'落实关系':5}
+        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4, '样式一': 1, '样式二': 2,'落实关系':8}
         for i in dict1.keys():
             if i in class_name:
                 return dict1[i]
@@ -1049,6 +1049,7 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         self.setupUi(self)
         self.label_4.setText(str(id))
         self.check_boxes = []
+        self.list = []
         self.setcombox(class_type=1)
         self.textEdit.setText(content)
         # self.check_boxes.append(self.checkBox)
@@ -1060,9 +1061,12 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         self.class_type = class_type
         self.pushButton_2.clicked.connect(self.clickpushbutton_2)
         self.comboBox_3.setCurrentText(linetext)
+
+
+
         self.setcombox_2()
         print(attach.currentTrue())
-        self.comboBox_2.setCurrentText(attach.currentTrue())
+        self.comboBox_2.setCurrentText(self.find_current(attach.currentTrue()))
         self.comboBox.currentIndexChanged.connect(self.setcombox_2)
 
         self.setWindowFlags(Qt.Popup)
@@ -1088,6 +1092,11 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
     #         self.gridLayout.addWidget(checkbo)
     #         self.check_boxes.append(checkbo)
 
+    def find_current(self,text):
+        for i in self.list:
+            if text in i:
+                return i
+
     def setcombox(self, class_type):
         list = []
         if class_type == 1:
@@ -1102,18 +1111,18 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
 
     def setcombox_2(self):
         self.comboBox_2.clear()
-        list = []
+        self.list = []
         linetext = self.comboBox_3.currentText()
         print(linetext)
         if linetext == '能力点':
             for i in ktsqepType_dict.keys():
                 if ktsqepType_dict[i].identity == '能力点':
-                    list.append(ktsqepType_dict[i].class_name)
+                    self.list.append(ktsqepType_dict[i].class_name)
         elif linetext == '学生任务':
             for i in ktsqepType_dict.keys():
                 if ktsqepType_dict[i].identity == '学生任务':
-                    list.append(ktsqepType_dict[i].class_name)
-        self.comboBox_2.addItems(list)
+                    self.list.append(ktsqepType_dict[i].class_name)
+        self.comboBox_2.addItems(self.list)
 
     def setfEnable(self, flag: bool):
         for i in self.check_boxes:
@@ -1710,12 +1719,12 @@ class GraphicView(QGraphicsView):
             if item.entity.class_name == '能力点':
                 f, t = getintext(text, name1)
                 if f:
-                    f2 = item.entity.attach.getbool(text=t)
+                    f2 = item.entity.attach.getbool(text='L1')
                     if f2:
                         item.entity.attach.allfalse()
                     else:
                         item.entity.attach.allfalse()
-                        item.entity.attach.textto(text=t, f=True)
+                        item.entity.attach.textto(text='L1', f=True)
                     self.updateRequest.emit()
             if item.entity.class_name == '学生任务':
                 f, t = getintext(text, name2)
@@ -2656,7 +2665,11 @@ class Link:
         if current_meta_kg_dict == '教学知识图谱':
             i = relationType_dict['LineType' + str(reflag)]
         if current_meta_kg_dict == '能力知识图谱':
-            i = relationType_dict['abLineType' + str(reflag)]
+            key = 'abLineType' + str(reflag)
+            if key in relationType_dict.keys():
+                i = relationType_dict['abLineType' + str(reflag)]
+            else:
+                return
         self.store(
             relation(class_name=i.class_name, mask=i.mask, classification=i.classification, head_need=i.head_need,
                      tail_need=i.tail_need, headnodeid=id1, tailnodeid=id2))
@@ -2723,14 +2736,15 @@ class GraphicEdge(QGraphicsPathItem):
             self._pen = QPen(QColor(0, 0, 0))  # 画线条的
             self._pen.setWidthF(self.width * 3)
             self._mark_pen = QPen(QColor(0, 0, 0))
-            self._mark_pen.setWidthF(3.6)
+            self._mark_pen.setWidthF(self.width * 3)
 
         if self.edge.flag == 8:
             self._pen = QPen(QColor(0, 0, 0))  # 画线条的
             self._pen.setWidthF(self.width*3)
             self.pen_2 = QPen(QColor(255, 255, 255))  # 画线条的
             self.pen_2.setWidthF(self.width)
-            self._mark_pen = QPen(QColor(225, 0, 0))
+            self._mark_pen = QPen(QColor(0, 0, 0))
+            self._mark_pen.setWidthF(self.width)
 
         if self.edge.flag == 6:
             self._pen = QPen(QColor(0, 0, 0))  # 画线条的
@@ -2764,7 +2778,7 @@ class GraphicEdge(QGraphicsPathItem):
     # override
     def shape(self):
         stker = QPainterPathStroker()
-        stker.setWidth(7)
+        stker.setWidth(10)
         stker.createStroke(self.calc_path())
         return stker.createStroke(self.calc_path())
 
@@ -2826,11 +2840,14 @@ class GraphicEdge(QGraphicsPathItem):
             # point3 = self.path().pointAtPercent(self.path().percentAtLength(0.5 * math.sqrt(a * a + b * b) + 10))
             # self.draw_arrow(length=10, point=point3, painter=painter, k=k)
             self.draw_arc(point=point2, painter=painter, k=k)
+            self.draw_arrow(length=10, point=point1, painter=painter, k=k)
         elif self.edge.flag == 4:
             self.draw_arrow(length=30, point=point1, painter=painter, k=k)
         elif self.edge.flag == 8:
+            self.draw_arrow(length=20, point=point1, painter=painter, k=k)
             painter.setPen(self.pen_2)
             painter.drawPath(self.path())
+
         else:
             self.draw_arrow(length=10, point=point1, painter=painter, k=k)
 
