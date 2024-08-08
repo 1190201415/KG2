@@ -8,6 +8,7 @@
 # Copyright 2021 Youcans, XUPT
 # Crated：2021-10-06
 # encoding=utf-8
+import copy
 import os
 import sys
 import time
@@ -25,7 +26,7 @@ import Myclass
 from Myclass import current_kg_name
 from untitled import Ui_MainWindow
 from new_entity import Ui_Form
-import runbat
+
 
 class childwindow_1(QtWidgets.QWidget, Ui_Form):
     my_sign1 = pyqtSignal(str)
@@ -87,6 +88,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.graphicsView.relationAdded.connect(self.setchange)
         self.graphicsView.relationRemove.connect(self.setchange)
         self.graphicsView.move.connect(self.setchange)
+        self.graphicsView.back_1.connect(self.back)
         self.graphicsSence.scenechanged.connect(self.setchange)
 
         self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
@@ -107,6 +109,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.action1_5.triggered.connect(self.choosedir)
         self.action1_6.triggered.connect(self.openfile)
         self.action1_7.triggered.connect(self.opendir)
+        self.action1_8.triggered.connect(self.change_name)
 
         self.action2_1.triggered.connect(self.confirm_auto_layout)
         self.action2_2.triggered.connect(self.save_as_picture)
@@ -120,18 +123,52 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.setWindowTitle('KT-SQEP知识图谱工具')
         Myclass.readfilepath = self.treeView_kg.special_initxml()
         self.update_kg_treeview(text=Myclass.readfilepath)
-        #self.init_comboBox_2()
+        # self.init_comboBox_2()
         self.init_tabwidegt()
 
-        self.comboBox.addItems(["教学知识图谱"])
+        self.combox_init()
+        self.comboBox.currentIndexChanged.connect(self.combox_change)
 
-        self.backbtn = QPushButton(self.graphicsView)
-        self.backbtn.resize(60, 35)
-        pos = self.graphicsView.pos()
-        self.backbtn.setText('回退')
-        self.backbtn.move(pos)
-        self.backbtn.clicked.connect(self.back)
+        # self.backbtn = QPushButton(self.graphicsView)
+        # self.backbtn.resize(60, 35)
+        # pos = self.graphicsView.pos()
+        # self.backbtn.setText('回退')
+        # self.backbtn.move(pos)
+        # self.backbtn.clicked.connect(self.back)
+
         self.graphicsSence.update_kg()
+
+    def combox_init(self, text=None):
+        self.comboBox.blockSignals(True)
+        self.comboBox.clear()
+        list = copy.deepcopy(Myclass.history)
+        self.comboBox.addItems(list)
+        list_name = []
+        num_items = self.comboBox.count()
+
+        # Read and print all items
+        for index in range(num_items):
+            item_text = self.comboBox.itemText(index)
+            list_name.append(item_text)
+        if text is None:
+            self.comboBox.blockSignals(False)
+            return
+        f, n = self.file_in(text, list_name)
+        if text is not None and f:
+            self.comboBox.setCurrentText(n)
+
+        self.comboBox.blockSignals(False)
+
+    def combox_change(self):
+        a = self.comboBox.currentText()
+        Myclass.readfilepath = a
+        self.asave_kgs()
+        Myclass.knowledge_graphs_class.clear()
+        self.treeView_kg.initxml(a)
+        self.update_kg_treeview(text=a)
+        self.graphicsSence.update_kg()
+        if len(Myclass.knowledge_graphs_class.keys()) == 0:
+            self.handle_my_sign1(name='未命名')
 
     def back(self):
         path = os.path.join('./.produrce', Myclass.current_kg_name + '.xml')
@@ -159,18 +196,28 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         else:
             return
 
+    def file_in(self, file, list):
+        for i in list:
+            if os.path.samefile(file, i):
+                return True, i
+        return False, None
+
     def openfile(self):
         m = QtWidgets.QFileDialog.getOpenFileName(None, "文件读取", '', 'xml 文件(*.xml)', )  # 起始路径
         if m[0] == '':
             return
         dirname, full_name = os.path.split(m[0])
-        if os.path.samefile(dirname,Myclass.readfilepath):
+        if os.path.samefile(dirname, Myclass.readfilepath):
             self.treeView_kg.readfile(m[0])
         else:
             self.asave_kgs()
             Myclass.knowledge_graphs_class.clear()
             self.treeView_kg.readfile(m[0])
             Myclass.readfilepath = dirname
+            f, n = self.file_in(dirname, Myclass.history)
+            if not f:
+                Myclass.history.append(dirname)
+            self.combox_init(dirname)
             self.update_kg_treeview(text=dirname)
             self.graphicsSence.update_kg()
             if len(Myclass.knowledge_graphs_class.keys()) == 0:
@@ -181,9 +228,13 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if m == '':
             return
         Myclass.readfilepath = m
+        f, n = self.file_in(m, Myclass.history)
+        if not f:
+            Myclass.history.append(m)
         self.asave_kgs()
         Myclass.knowledge_graphs_class.clear()
         self.treeView_kg.initxml(m)
+        self.combox_init(m)
         self.update_kg_treeview(text=m)
         self.graphicsSence.update_kg()
         if len(Myclass.knowledge_graphs_class.keys()) == 0:
@@ -202,7 +253,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     def another_save(self):
         Myclass.other_save_kg(parent=self)
 
-    def meta_dict_name_changed(self,name):
+    def meta_dict_name_changed(self, name):
         self.graphicsSence.update_kg()
         self.asave_kgs()
         self.csave_kgs()
@@ -214,6 +265,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.init_treeview_1(self.treeView, Myclass.entityType_dict, Myclass.ktsqepType_dict, name='独立实体类型',
                              name2='附加实体类型')
         self.update_kg_treeview(Myclass.readfilepath)
+        self.combox_init(Myclass.readfilepath)
         self.init_treeview(self.treeView_3, Myclass.relationType_dict, name='关系类型列表')
         self.graphicsSence.update_kg()
         if Myclass.current_kg_name == '知识图谱1' and Myclass.current_kg_name not in Myclass.knowledge_graphs_class.keys():
@@ -231,8 +283,8 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget.currentChanged.connect(self.on_tab_changed)
 
         # 初始化显示第一个 tab 的内容
-        #self.on_tab_changed(0)
-        #self.tabWidget.setTabText(self.tabWidget.indexOf(self.widget), _translate("MainWindow", "Tab 1"))
+        # self.on_tab_changed(0)
+        # self.tabWidget.setTabText(self.tabWidget.indexOf(self.widget), _translate("MainWindow", "Tab 1"))
 
     def on_tab_changed(self, index):
         self.tabWidget.blockSignals(True)
@@ -246,10 +298,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.tabWidget.addTab(self.placeholder, "教学知识图谱")
             self.tabWidget.addTab(self.widget, "能力知识图谱")
-        self.comboBox.setItemText(0,name)
         self.meta_dict_name_changed(name)
         self.tabWidget.setCurrentIndex(index)
         self.tabWidget.blockSignals(False)
+
     def copy_kg(self):
         print(1)
         self.childwindow2 = childwindow_1()
@@ -325,7 +377,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if text == '包含关系':
             self.graphicsView.draw_link_flag = 1
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-        if  '次序关系' in text:
+        if '次序关系' in text:
             self.graphicsView.draw_link_flag = 2
             self.graphicsView.setCursor(Qt.DragLinkCursor)
         if text == '连接资源':
@@ -337,7 +389,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         if text == '落实关系':
             self.graphicsView.draw_link_flag = 8
             self.graphicsView.setCursor(Qt.DragLinkCursor)
-
 
     def clicked_treeView(self):
         index = self.treeView.currentIndex()
@@ -368,10 +419,10 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                 item2.appendRow(item)
                 num = num + 1
         for i in dict2.keys():
-            if 'L' in dict2[i].class_name and f==0:
+            if 'L' in dict2[i].class_name and f == 0:
                 item = QtGui.QStandardItem('能力等级L1')
-                f=1
-            elif 'L' in dict2[i].class_name and f==1:
+                f = 1
+            elif 'L' in dict2[i].class_name and f == 1:
                 continue
             # item.setIcon(QIcon('picture/' + dict2[i].class_name + '.png'))
             else:
@@ -544,6 +595,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         #             self.progressDialog.show()
         #             self.save_file(name=i)
         #             self.progressDialog.setValue(NUM_FUN)
+        self.graphicsSence.update_kg()
         self.asave_kgs()
         self.csave_kgs()
         reply = QMessageBox.question(self, '退出', '确认退出？', QMessageBox.Yes, QMessageBox.No)
@@ -715,7 +767,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                                                                       classification='连接资源',
                                                                       head_need='内容方法型节点', tail_need='资源型节点')
 
-
         self.abilityinitrelationType()
 
     def initentityType(self):
@@ -760,12 +811,19 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
                                                                   level='三级', opentool='无')
         self.abilityinitentityType()
 
+    def name_exists(self, name):
+        if name in Myclass.knowledge_graphs_class.keys():
+            return True
+        return False
+
     def clickaction1_1(self):
-        self.childwindow = childwindow_1()
+        counter = 1
+        name = '未命名'
+        while self.name_exists(name):
+            name = f"未命名_{counter}"
+            counter += 1
 
-        self.childwindow.my_sign1.connect(self.handle_my_sign1)
-
-        self.childwindow.show()
+        self.handle_my_sign1(name)
 
     def insert_EntityType(self, name, class_name='实体类型列表'):
         model = self.treeView.model()
@@ -774,10 +832,35 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             if m_name == class_name:
                 model.item(i).appendRow(QtGui.QStandardItem(name))
 
+    def change_name(self):
+        self.graphicsSence.update_kg()
+        n = Myclass.current_kg_name
+        reply = QMessageBox.question(self, '保存更改', '是否保存  ' + n + '   更新?', QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.Yes)
+        if reply == QMessageBox.Yes:
+            NUM_FUN = 5
+            self.progressDialog = QProgressDialog('保存进度', None, 0, NUM_FUN, self)
+            self.progressDialog.setWindowTitle("退出中")
+            self.progressDialog.setWindowFlags((self.progressDialog.windowFlags() & ~Qt.WindowCloseButtonHint))
+            self.progressDialog.show()
+            self.save_file(name=n)
+            self.progressDialog.close()
+        self.windows1 = childwindow_1()
+        self.windows1.my_sign1.connect(self.rename)
+        self.windows1.show()
+
+    def rename(self, name):
+        n = Myclass.current_kg_name
+        if name not in Myclass.knowledge_graphs_class.keys():
+            Myclass.knowledge_graphs_class[name] = Myclass.knowledge_graphs_class.pop(n)
+            Myclass.knowledge_graphs_class[name]['is_change'] = True
+            self.update_kg_treeview()
+
     def handle_my_sign1(self, name):
+
         if name not in Myclass.knowledge_graphs_class.keys():
             Myclass.knowledge_graphs_class[name] = {"entities": [], "relations": [], 'save_dir': Myclass.readfilepath,
-                                                    'is_change': False}
+                                                    'is_change': True}
             Myclass.current_kg_name = name
             self.update_kg_treeview()
             self.treeView_kg.setselect(name)
@@ -947,7 +1030,6 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     # gc.enable()
-    #runbat.run_admin()
     if not os.path.exists(r'./.picture'):
         os.makedirs(r'./.picture')
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)

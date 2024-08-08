@@ -11,8 +11,7 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QScrollArea, QSlider, QFileDialog, \
     QHBoxLayout, QFrame
-from PyQt5.QtGui import QPixmap, QImage, QWheelEvent, QResizeEvent
-from pptx import Presentation
+from PyQt5.QtGui import QPixmap, QImage
 import fitz  # PyMuPDF
 import comtypes.client
 
@@ -182,8 +181,8 @@ def ppt_to_images(ppt_path, output_folder):
     # Save each slide as an image
     for i, slide in enumerate(presentation.Slides):
         print(i,slide)
-        image_path = os.path.join(output_folder, f"slide_{i + 1}.jpg")
-        slide.Export(image_path, "JPG")
+        image_path = os.path.join(output_folder, f"slide_{i + 1}.png")
+        slide.Export(image_path, "PNG")
 
     # Close the presentation and quit PowerPoint
     presentation.Close()
@@ -221,22 +220,21 @@ class PptWindow(QWidget):
         self.ppt_scroll.setWidgetResizable(True)
         self.path = ppt_path
         filename = os.path.basename(ppt_path)
-        container_width = self.width() - 40  # 减去一些边距
+        container_width = self.width()*2.0 # 减去一些边距
         self.img_dir = os.path.join(os.getcwd(), '.picture', filename)
         slide_to_image(im_path=self.img_dir, ppt_path=self.path)
         for img_file in sorted(os.listdir(self.img_dir)):
-            if img_file.endswith('.jpg'):
+            if img_file.endswith('.png'):
                 img_path = os.path.join(self.img_dir, img_file)
                 img = QImage(img_path)
-
                 pixmap = QPixmap.fromImage(img)
-                scaled_pixmap = pixmap.scaledToWidth(container_width, Qt.SmoothTransformation)
+                scaled_pixmap = pixmap.scaledToWidth(container_width,Qt.SmoothTransformation)
 
                 label = QLabel()
-                label.setPixmap(scaled_pixmap)
                 label.setAlignment(Qt.AlignCenter)
                 label.setScaledContents(False)
                 self.labels.append(label)
+                label.setPixmap(scaled_pixmap)
                 h_layout = QHBoxLayout()
                 h_layout.addStretch(1)
                 h_layout.addWidget(label)
@@ -303,29 +301,29 @@ class PptWindow(QWidget):
         #
 
 
-    def wheelEvent(self, event: QWheelEvent):
-        # Determine the zoom direction
-        if event.angleDelta().y() > 0:
-            self.scale_factor *= 1.1  # Zoom in
-        else:
-            self.scale_factor /= 1.1  # Zoom out
-
-        # Adjust the scaling factor within reasonable bounds
-        self.scale_factor = min(max(self.scale_factor, 0.1), 3.0)
-
-        self.resizeEvent(None)
-
-    def resizeEvent(self, event: typing.Optional[QResizeEvent]):
-        for label in self.labels:
-            pixmap = label.pixmap()
-            if pixmap:
-                scaled_pixmap = pixmap.scaled(
-                    self.size() * self.scale_factor,
-                    Qt.KeepAspectRatio,
-                    Qt.SmoothTransformation
-                )
-                label.setPixmap(scaled_pixmap)
-                label.resize(scaled_pixmap.size())
+    # def wheelEvent(self, event: QWheelEvent):
+    #     # Determine the zoom direction
+    #     if event.angleDelta().y() > 0:
+    #         self.scale_factor *= 1.1  # Zoom in
+    #     else:
+    #         self.scale_factor /= 1.1  # Zoom out
+    #
+    #     # Adjust the scaling factor within reasonable bounds
+    #     self.scale_factor = min(max(self.scale_factor, 0.1), 3.0)
+    #
+    #     self.resizeEvent(None)
+    #
+    # def resizeEvent(self, event: typing.Optional[QResizeEvent]):
+    #     for label in self.labels:
+    #         pixmap = label.pixmap()
+    #         if pixmap:
+    #             scaled_pixmap = pixmap.scaled(
+    #                 self.size() * self.scale_factor,
+    #                 Qt.IgnoreAspectRatio,
+    #                 Qt.SmoothTransformation
+    #             )
+    #             label.setPixmap(scaled_pixmap)
+    #             label.resize(scaled_pixmap.size())
 
     def closeEvent(self, event: typing.Optional[QtGui.QCloseEvent]) -> None:
         delete_files(self.img_dir)

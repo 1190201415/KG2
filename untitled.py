@@ -154,6 +154,8 @@ class Ui_MainWindow(object):
         self.action1_6.setObjectName("打开文件")
         self.action1_7 = QtWidgets.QAction(MainWindow)
         self.action1_7.setObjectName("打开文件")
+        self.action1_8 = QtWidgets.QAction(MainWindow)
+        self.action1_8.setObjectName("修改文件名")
 
         self.action2_1 = QtWidgets.QAction(MainWindow)
         self.action2_1.setObjectName("自动布局")
@@ -181,6 +183,7 @@ class Ui_MainWindow(object):
         self.menu.addAction(self.action1_5)
         self.menu.addAction(self.action1_6)
         self.menu.addAction(self.action1_7)
+        self.menu.addAction(self.action1_8)
 
         self.menu_2.addAction(self.action2_1)
         self.menu_2.addAction(self.action2_2)
@@ -199,6 +202,8 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.action1_5)
         self.toolBar.addAction(self.action1_6)
         self.toolBar.addAction(self.action1_7)
+        self.toolBar.addAction(self.action1_8)
+
 
         self.toolBar.addAction(self.action2_1)
         self.toolBar.addAction(self.action2_2)
@@ -225,6 +230,7 @@ class Ui_MainWindow(object):
         self.action1_5.setText(_translate("MainWindow", "保存课程"))#(保存整个图谱至选定文件夹)
         self.action1_6.setText(_translate("MainWindow", "打开文件"))
         self.action1_7.setText(_translate("MainWindow", "打开文件夹"))
+        self.action1_8.setText(_translate("MainWindow", "修改图谱名"))
 
 
 

@@ -44,12 +44,14 @@ class meta_kg(object):
         self.current_kg_name = '知识图谱1'
         self.node_id = 0
         self.save_dict = {}
+        self.history = ['./xml']
         self.readfilepath = './xml'
 
 
 meta_dict = {}
 current_meta_kg_dict = '教学知识图谱'
 readfilepath = './xml'
+history = ['./xml']
 
 
 def init_meta_kg_dict():
@@ -83,10 +85,11 @@ def save_meta_kg():
     kg_dict.node_id = node_id
     kg_dict.readfilepath = readfilepath
     kg_dict.save_dict = save_dict
+    kg_dict.history = history
 
 
 def change_meta_kg():
-    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id, save_dict, readfilepath
+    global entityType_dict, ktsqepType_dict, relationType_dict, knowledge_graphs_class, current_kg_name, node_id, save_dict, readfilepath, history
     kg_dict: meta_kg
     kg_dict = meta_dict[current_meta_kg_dict]
     entityType_dict = kg_dict.entityType_dict
@@ -97,6 +100,7 @@ def change_meta_kg():
     node_id = kg_dict.node_id
     readfilepath = kg_dict.readfilepath
     save_dict = kg_dict.save_dict
+    history = kg_dict.history
 
 
 def other_save_kg(parent):
@@ -207,13 +211,15 @@ def readVedio(PATH):
     a.show()
     pass
 
+
 def readPDF(PATH):
     try:
         a = readwps.createPDFWidget(path=PATH)
-        return True,a
+        return True, a
     except Exception as e:
         print(e)
-        return  False,None
+        return False, None
+
 
 def save_kgs(dir=None):
     global knowledge_graphs_class
@@ -851,7 +857,7 @@ class my_treeview(QTreeView):
                 return i
 
     def class_nameToflag(self, class_name):
-        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4, '样式一': 1, '样式二': 2,'落实关系':8}
+        dict1 = {'包含关系': 1, '次序关系': 2, '连接资源': 3, '关键次序': 4, '样式一': 1, '样式二': 2, '落实关系': 8}
         for i in dict1.keys():
             if i in class_name:
                 return dict1[i]
@@ -863,6 +869,8 @@ class my_treeview(QTreeView):
         filePath = filePathList.split('\n')[0]  # 拖拽多文件只取第一个地址
         filePath = filePath.replace('file:///', '', 1)  # 去除文件地址前缀的特定字符
         self.readfile(path=filePath)
+        knowledge_graphs_class[current_kg_name]['is_change'] = True
+        self.my_sign_kg.emit()
         # tree = ET.parse(filePath)  # 解析movies.xml这个文件
         # filePath = Path(filePath)
         # root = tree.getroot()  # 得到根元素，Element类
@@ -939,7 +947,7 @@ class re_my_Ui_Dialog(QDialog, resource.Ui_Dialog):
             readVedio(self.open)
         if self.class_type == '文档':
             self.clickpushbutton_2()
-            f,self.a = readPDF(self.open)
+            f, self.a = readPDF(self.open)
             if f:
                 self.a.show()
         if self.class_type == 'PPT':
@@ -1062,8 +1070,6 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         self.pushButton_2.clicked.connect(self.clickpushbutton_2)
         self.comboBox_3.setCurrentText(linetext)
 
-
-
         self.setcombox_2()
         print(attach.currentTrue())
         self.comboBox_2.setCurrentText(self.find_current(attach.currentTrue()))
@@ -1092,7 +1098,7 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
     #         self.gridLayout.addWidget(checkbo)
     #         self.check_boxes.append(checkbo)
 
-    def find_current(self,text):
+    def find_current(self, text):
         for i in self.list:
             if text in i:
                 return i
@@ -1128,8 +1134,8 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         for i in self.check_boxes:
             i.setEnabled(flag)
 
-    def getattch(self,flag):
-        list = ['L1','L2','L3','L4','L5','L6','L7','L8','L9','Pj','Tk']
+    def getattch(self, flag):
+        list = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9', 'Pj', 'Tk']
         for i in list:
             if i in flag:
                 return i
@@ -1139,7 +1145,7 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         content = self.textEdit.toPlainText()
         flag = self.comboBox_2.currentText()
         a = ABattachment()
-        b= self.getattch(flag)
+        b = self.getattch(flag)
         if name == '能力点' and 'L' in b:
             a.textto(b, True)
         if name == '学生任务' and b in ['Pj', 'Tk']:
@@ -1297,7 +1303,7 @@ class GraphicScene(QGraphicsScene):
             num_2 = 0
             for j in a.child_list:
                 id_dict[j.id].setcentpos(x=x + (num_2 - math.floor(num / 2)) * 60,
-                                      y=y + a_y * 0.5 + 30)
+                                         y=y + a_y * 0.5 + 30)
                 num_2 = num_2 + 1
         # for i in fnode_list:
         #     entities.remove(id_dict[i])
@@ -1440,6 +1446,7 @@ class GraphicView(QGraphicsView):
     entityDropped = pyqtSignal(str)  # 假设信号传递实体名称和坐标
     relationAdded = pyqtSignal(str, str)
     relationRemove = pyqtSignal(str, str)
+    back_1 = pyqtSignal(str)
     move = pyqtSignal(bool)
     updateRequest = pyqtSignal()
     list_of_copy = []
@@ -1836,6 +1843,9 @@ class GraphicView(QGraphicsView):
         self.actionG = QAction(u'垂直均布', self)
         self.groupBox_menu.addAction(self.actionG)
 
+        self.actionI = QAction(u'撤销操作', self)
+        self.groupBox_menu.addAction(self.actionI)
+
         # self.actionA.triggered.connect(self.button)  # 将动作A触发时连接到槽函数 button
         self.actionB.triggered.connect(lambda: self.button_2(item_list))
         self.actionA.triggered.connect(lambda: self.button_1(item_list, pos))
@@ -1844,8 +1854,12 @@ class GraphicView(QGraphicsView):
         self.actionE.triggered.connect(lambda: self.button_5(item_list))
         self.actionF.triggered.connect(lambda: self.button_6(item_list))
         self.actionG.triggered.connect(lambda: self.button_7(item_list))
+        self.actionI.triggered.connect(self.button_8)
 
         self.groupBox_menu.popup(QCursor.pos())  # 声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以
+
+    def button_8(self):
+        self.back_1.emit('back')
 
     def sortentity(self, list, s: str):
         b = []
@@ -1861,7 +1875,7 @@ class GraphicView(QGraphicsView):
         if s == 'y':
             return sorted(b, key=(lambda b: b[2]))
 
-    def button_CH_RES(self,item_list):
+    def button_CH_RES(self, item_list):
         item_list[0].right_button()
 
     def button_7(self, list):
@@ -2283,7 +2297,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
             if self.entity.class_name == '视频':
                 self.a = readVedio(self.entity.content)
             if self.entity.class_name == '文档':
-                f,self.a = readPDF(self.entity.content)
+                f, self.a = readPDF(self.entity.content)
                 if f:
                     self.a.show()
             if self.entity.class_name == 'PPT':
@@ -2740,7 +2754,7 @@ class GraphicEdge(QGraphicsPathItem):
 
         if self.edge.flag == 8:
             self._pen = QPen(QColor(0, 0, 0))  # 画线条的
-            self._pen.setWidthF(self.width*3)
+            self._pen.setWidthF(self.width * 3)
             self.pen_2 = QPen(QColor(255, 255, 255))  # 画线条的
             self.pen_2.setWidthF(self.width)
             self._mark_pen = QPen(QColor(0, 0, 0))
