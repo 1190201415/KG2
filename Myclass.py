@@ -1608,6 +1608,10 @@ class GraphicView(QGraphicsView):
         # current_index = self.parent.indexFromItem(current_item)  # 获取该item的index
         # print(current_index)
 
+    def leaveEvent(self, a0: typing.Optional[QtCore.QEvent]) -> None:
+        self.remove_drag_link()
+        super(GraphicView, self).leaveEvent(a0)
+
     def nameToentity(self, name, x, y):
         for i in entityType_dict.keys():
             j = entityType_dict[i]
@@ -1656,6 +1660,16 @@ class GraphicView(QGraphicsView):
         event.acceptProposedAction()
         treeView = event.source()
         if treeView is None:
+            filePathList = event.mimeData().text()
+            filePath = filePathList.split('\n')[0]  # 拖拽多文件只取第一个地址
+            filePath = filePath.replace('file:///', '', 1)  # 去除文件地址前缀的特定字符
+            dirname, full_name = os.path.split(filePath)
+            filname, file_ext = os.path.splitext(full_name)
+            if file_ext != '.png':
+                print('不是xml文件')
+                self.myreadfile = False
+                return
+            print(filePath)
             return
         index = treeView.currentIndex()
         text = treeView.model().data(index)
@@ -2074,6 +2088,11 @@ class GraphicView(QGraphicsView):
         elif current_meta_kg_dict == '能力知识图谱':
             return True
 
+    def remove_drag_link(self):
+        if self.draw_link_flag != 0 and self.drag_link is not None:
+            self.drag_link.remove()
+            self.drag_link = None
+
     def edge_drag_end(self, item):
         print("进行关系保存")
         if not self.LinkisRight(self.drag_start_item, item, self.draw_link_flag):
@@ -2172,24 +2191,23 @@ class GraphicItemGroup(QGraphicsItemGroup):
 
     def get_class(self, name):
         dict1 = {}
-        dict1['知识领域'] = 'KA'
-        dict1['知识单元'] = 'KU'
-        dict1['知识点'] = 'KP'
-        dict1['关键知识细节'] = 'KD'
-        if name in dict1.keys():
-            self.class_ = dict1[name]
-            self.classtype = 1
+        dict2 = {}
+        dict1['知识领域:KA'] = 'KA'
+        dict1['知识单元:KU'] = 'KU'
+        dict1['知识点:KP'] = 'KP'
+        dict1['关键知识细节:KD'] = 'KD'
+        dict2['视频:VD']  = 'VD'
+        dict2['PPT:PT'] = 'PT'
+        dict2['文档:PD'] = 'PD'
+        for key in dict1.keys():
+            if name in key:
+                self.class_ = dict1[key]
+                self.classtype = 1
         else:
-            if name == '视频':
-                self.class_ = 'VD'
-                pass
-            if name == '文档':
-                self.class_ = 'PD'
-                pass
-            if name == 'PPT':
-                self.class_ = 'PT'
-                pass
-            self.classtype = 2
+            for key in dict2.keys():
+                if name in key:
+                    self.class_ = dict2[key]
+                    self.classtype = 2
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
@@ -2487,25 +2505,21 @@ class ABGraphicItemGroup(QGraphicsItemGroup):
 
     def get_class(self, name):
         dict1 = {}
-        dict1['能力领域'] = 'CA'
-        dict1['能力单元'] = 'CU'
-        dict1['能力点'] = 'CP'
-        dict1['学生任务'] = 'SJ'
-        dict1['知识点'] = 'KP'
-        if name in dict1.keys():
-            self.class_ = dict1[name]
-            self.classtype = 1
+        dict2 = {}
+        dict1['能力领域:CA'] = 'CA'
+        dict1['能力单元:CU'] = 'CU'
+        dict1['能力点:CP'] = 'CP'
+        dict1['学生任务:SJ'] = 'SJ'
+        dict1['知识点:KP'] = 'KP'
+        for key in dict1.keys():
+            if name in key:
+                self.class_ = dict1[key]
+                self.classtype = 1
         else:
-            if name == '视频':
-                self.class_ = 'V'
-                pass
-            if name == '测试题':
-                self.class_ = 'TS'
-                pass
-            if name == '文档':
-                self.class_ = 'TX'
-                pass
-            self.classtype = 2
+            for key in dict2.keys():
+                if name in key:
+                    self.class_ = dict2[key]
+                    self.classtype = 2
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)

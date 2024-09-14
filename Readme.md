@@ -8,7 +8,7 @@ DONE:已经近乎完成了一个知识图谱结构的构建
 
 nuitka和项目中的一些库可能存在冲突问题，比如在此次项目中用到PyMuPDF，一开始使用的版本为1.2x.x，发现编译时存在问题无法编译，降低PyMuPDF版本到1.18.0得以解决
 
-
+nuitka -D backup.py
 
 nuitka --standalone --onefile --show-memory  --windows-disable-console --show-progress  --output-dir= --remove-output runbat.py
 
@@ -46,5 +46,10 @@ TODO:改节点名称
     -视频解码器()
     -图片模糊(
     -节点乱跑(
-    -选中图谱名
-    -名称太长不显示
+    -选中图谱名（
+    -名称太长不显示（
+    -实体对齐尝试写一下
+    -问题生成尝试写一下
+
+TODO:
+    -解决进行链接时鼠标移出view后出现各种bug的问题

@@ -239,7 +239,7 @@ class Ui_MainWindow(object):
 
 
         self.action3_1.setText(_translate("MainWindow", "鼠标"))
-        self.action3_2.setText(_translate("MainWindow", "拖拽"))
+        self.action3_2.setText(_translate("MainWindow", "拖拽画布"))
         # self.action5_1.setText(_translate("MainWindow", "水平居中对齐"))
         # self.action5_2.setText(_translate("MainWindow", "水平间距等分"))
         # self.action5_3.setText(_translate("MainWindow", "垂直居中对齐"))

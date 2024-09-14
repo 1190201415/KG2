@@ -606,6 +606,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
             a0.ignore()
 
     def save_file(self, name=None):
+        self.graphicsView.remove_drag_link()
         self.graphicsSence.update()
         if name is None or type(name) == bool:
             KG = Myclass.current_kg_name
@@ -691,19 +692,19 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         cwd = os.getcwd()
         path = os.path.join(cwd, 'xml')
         abidict.readfilepath = path
-        abidict.entityType_dict['abNodeType1'] = Myclass.entityType(class_name='能力领域', classification='内容方法型节点',
+        abidict.entityType_dict['abNodeType1'] = Myclass.entityType(class_name='能力领域:CA', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='一级', opentool='无')
-        abidict.entityType_dict['abNodeType2'] = Myclass.entityType(class_name='能力单元', classification='内容方法型节点',
+        abidict.entityType_dict['abNodeType2'] = Myclass.entityType(class_name='能力单元:CU', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='二级', opentool='无')
-        abidict.entityType_dict['abNodeType3'] = Myclass.entityType(class_name='能力点', classification='内容方法型节点',
+        abidict.entityType_dict['abNodeType3'] = Myclass.entityType(class_name='能力点:CP', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='归纳级', opentool='无')
-        abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='学生任务', classification='内容方法型节点',
+        abidict.entityType_dict['abNodeType4'] = Myclass.entityType(class_name='学生任务:SJ', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='内容级', opentool='无')
-        abidict.entityType_dict['abNodeType5'] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
+        abidict.entityType_dict['abNodeType5'] = Myclass.entityType(class_name='知识点:KP', classification='内容方法型节点',
                                                                     identity='知识',
                                                                     level='内容级', opentool='无')
         abidict.ktsqepType_dict["NodeType1"] = Myclass.entityType(class_name='能力等级L1', classification='附加节点',
@@ -770,25 +771,25 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         self.abilityinitrelationType()
 
     def initentityType(self):
-        Myclass.entityType_dict["NodeType1"] = Myclass.entityType(class_name='知识领域', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType1"] = Myclass.entityType(class_name='知识领域:KA', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='一级', opentool='无')
-        Myclass.entityType_dict["NodeType2"] = Myclass.entityType(class_name='知识单元', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType2"] = Myclass.entityType(class_name='知识单元:KU', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='二级', opentool='无')
-        Myclass.entityType_dict["NodeType3"] = Myclass.entityType(class_name='知识点', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType3"] = Myclass.entityType(class_name='知识点:KP', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='归纳级', opentool='无')
-        Myclass.entityType_dict["NodeType4"] = Myclass.entityType(class_name='关键知识细节', classification='内容方法型节点',
+        Myclass.entityType_dict["NodeType4"] = Myclass.entityType(class_name='关键知识细节:KD', classification='内容方法型节点',
                                                                   identity='知识',
                                                                   level='内容级', opentool='无')
-        Myclass.entityType_dict["NodeType5"] = Myclass.entityType(class_name='视频', classification='资源型节点',
+        Myclass.entityType_dict["NodeType5"] = Myclass.entityType(class_name='视频:VD', classification='资源型节点',
                                                                   identity='Video',
                                                                   level='微课', opentool='Mvideo.exe')
-        Myclass.entityType_dict["NodeType6"] = Myclass.entityType(class_name='PPT', classification='资源型节点',
+        Myclass.entityType_dict["NodeType6"] = Myclass.entityType(class_name='PPT:PT', classification='资源型节点',
                                                                   identity='PPT',
                                                                   level='练习题', opentool='Powpoint.exe')
-        Myclass.entityType_dict["NodeType7"] = Myclass.entityType(class_name='文档', classification='资源型节点',
+        Myclass.entityType_dict["NodeType7"] = Myclass.entityType(class_name='文档:PD', classification='资源型节点',
                                                                   identity='PDF',
                                                                   level='教学素材', opentool='PDFviewer')
         Myclass.ktsqepType_dict["NodeType1"] = Myclass.entityType(class_name='知识 K', classification='附加节点',
@@ -935,6 +936,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
     # 03/21 kg点击槽函数
     def on_kg_selected(self, selected, deselected):
         indexes = selected.indexes()
+        self.graphicsView.remove_drag_link()
         if indexes:
             selected_index = indexes[0]
             # 检查是否选中的是第二层节点
