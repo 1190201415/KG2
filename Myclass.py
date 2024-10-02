@@ -993,7 +993,10 @@ class my_Ui_Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         self.label_4.setText(str(id))
         self.setcombox(class_type=class_type)
-        self.comboBox.setCurrentText(linetext)
+        for i in self.list:
+            if linetext in i:
+                self.comboBox.setCurrentText(i)
+                break
         self.textEdit.setText(content)
         self.checkBox.setChecked(attach.K)
         self.checkBox_2.setChecked(attach.T)
@@ -1008,16 +1011,16 @@ class my_Ui_Dialog(QDialog, Ui_Dialog):
         self.activateWindow()
 
     def setcombox(self, class_type):
-        list = []
+        self.list = []
         if class_type == 1:
             for i in entityType_dict.keys():
                 if entityType_dict[i].classification == '内容方法型节点':
-                    list.append(entityType_dict[i].class_name)
+                    self.list.append(entityType_dict[i].class_name)
         elif class_type == 2:
             for i in entityType_dict.keys():
                 if entityType_dict[i].classification == '资源型节点':
-                    list.append(entityType_dict[i].class_name)
-        self.comboBox.addItems(list)
+                    self.list.append(entityType_dict[i].class_name)
+        self.comboBox.addItems(self.list)
 
     def setfEnable(self, flag: bool):
         self.checkBox.setEnabled(flag)
@@ -1068,8 +1071,10 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         # self.check_boxes.append(self.checkBox_6)
         self.class_type = class_type
         self.pushButton_2.clicked.connect(self.clickpushbutton_2)
-        self.comboBox_3.setCurrentText(linetext)
-
+        for i in self.list_2:
+            if linetext in i:
+                self.comboBox_3.setCurrentText(i)
+                break
         self.setcombox_2()
         print(attach.currentTrue())
         self.comboBox_2.setCurrentText(self.find_current(attach.currentTrue()))
@@ -1104,27 +1109,27 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
                 return i
 
     def setcombox(self, class_type):
-        list = []
+        self.list_2 = []
         if class_type == 1:
             for i in entityType_dict.keys():
                 if entityType_dict[i].classification == '内容方法型节点':
-                    list.append(entityType_dict[i].class_name)
+                    self.list_2.append(entityType_dict[i].class_name)
         elif class_type == 2:
             for i in entityType_dict.keys():
                 if entityType_dict[i].classification == '资源型节点':
-                    list.append(entityType_dict[i].class_name)
-        self.comboBox_3.addItems(list)
+                    self.list_2.append(entityType_dict[i].class_name)
+        self.comboBox_3.addItems(self.list_2)
 
     def setcombox_2(self):
         self.comboBox_2.clear()
         self.list = []
         linetext = self.comboBox_3.currentText()
         print(linetext)
-        if linetext == '能力点':
+        if linetext == '能力点:CP':
             for i in ktsqepType_dict.keys():
                 if ktsqepType_dict[i].identity == '能力点':
                     self.list.append(ktsqepType_dict[i].class_name)
-        elif linetext == '学生任务':
+        elif linetext == '学生任务:SJ':
             for i in ktsqepType_dict.keys():
                 if ktsqepType_dict[i].identity == '学生任务':
                     self.list.append(ktsqepType_dict[i].class_name)
@@ -1146,9 +1151,9 @@ class ABmy_Ui_Dialog(QDialog, Ui_Dialog_2):
         flag = self.comboBox_2.currentText()
         a = ABattachment()
         b = self.getattch(flag)
-        if name == '能力点' and 'L' in b:
+        if name == '能力点:CP' and 'L' in b:
             a.textto(b, True)
-        if name == '学生任务' and b in ['Pj', 'Tk']:
+        if name == '学生任务:SJ' and b in ['Pj', 'Tk']:
             a.textto(b, True)
         entity1 = entity(class_name=name, content=content, x=0, y=0,
                          attach=a)
@@ -2196,7 +2201,7 @@ class GraphicItemGroup(QGraphicsItemGroup):
         dict1['知识单元:KU'] = 'KU'
         dict1['知识点:KP'] = 'KP'
         dict1['关键知识细节:KD'] = 'KD'
-        dict2['视频:VD']  = 'VD'
+        dict2['视频:VD'] = 'VD'
         dict2['PPT:PT'] = 'PT'
         dict2['文档:PD'] = 'PD'
         for key in dict1.keys():
