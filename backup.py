@@ -9,6 +9,7 @@
 # Crated：2021-10-06
 # encoding=utf-8
 import copy
+import gc
 import os
 import sys
 import time
@@ -20,7 +21,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QCoreApplication, QSize
 from PyQt5.QtGui import QIcon, QPixmap, QPainter
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QWidget, \
     QListView, QProgressDialog, QHBoxLayout, QVBoxLayout, QSplitter, \
-    QGraphicsScene, QApplication, QPushButton, QGraphicsView
+    QGraphicsScene, QApplication, QPushButton, QGraphicsView, QAbstractItemView
 
 import Myclass
 from Myclass import current_kg_name
@@ -438,6 +439,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # 03/21：初始化右侧树视图
 
     def init_treeview_1(self, treeView, dict, dict2, name='', name2=''):
+        treeView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         treeView.setHeaderHidden(True)
         if Myclass.current_meta_kg_dict == '能力知识图谱':
             self.init_ab_treeview_1(treeView, dict, dict2, name, name2)
@@ -477,6 +479,7 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
         # 03/21：初始化右侧树视图
 
     def init_treeview(self, treeView, dict, name=''):
+        treeView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         treeView.setHeaderHidden(True)
         model = QtGui.QStandardItemModel()
         entityytpeclass1 = QtGui.QStandardItem(name)
@@ -1032,31 +1035,33 @@ class my_MainWindow(QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     # gc.enable()
-    if not os.path.exists(r'./.picture'):
-        os.makedirs(r'./.picture')
-    QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    app = 0
-    app = QtWidgets.QApplication(sys.argv)
-    QtCore.QResource.registerResource('resources.qrc')
-    MainWindow = my_MainWindow()
-    # MainWindow = QCandyUi.CandyWindow.createWindow(MainWindow,'blue')
+    try:
+        if not os.path.exists(r'./.picture'):
+            os.makedirs(r'./.picture')
+        gc.set_debug(gc.DEBUG_LEAK)
+        QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+        QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+        QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+        QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+        app = 0
+        app = QtWidgets.QApplication(sys.argv)
+        QtCore.QResource.registerResource('resources.qrc')
+        MainWindow = my_MainWindow()
+        # MainWindow = QCandyUi.CandyWindow.createWindow(MainWindow,'blue')
 
-    desktop = QApplication.desktop()
-    screen = app.primaryScreen()
-    available_geometry = screen.availableGeometry()
-    rect = desktop.frameSize()
-    MainWindow.resize(QSize(available_geometry.width(), available_geometry.height()))
-    # MainWindow.showFullScreen()
-    # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True)
-    # MainWindow.showFullScreen()  # 显示主窗口
-    MainWindow.show()
-    # app.exec_()
-    sys.exit(app.exec_())  # 在主线程中退出
+        desktop = QApplication.desktop()
+        screen = app.primaryScreen()
+        available_geometry = screen.availableGeometry()
+        rect = desktop.frameSize()
+        MainWindow.resize(QSize(available_geometry.width(), available_geometry.height()))
+        # MainWindow.showFullScreen()
+        # apply_stylesheet(app, theme='light_blue.xml', invert_secondary=True)
+        # MainWindow.showFullScreen()  # 显示主窗口
+        MainWindow.show()
+        # app.exec_()
+        sys.exit(app.exec_())  # 在主线程中退出
     # 收集所有对象
 #     all_objects = gc.get_objects()
 #     # 打印对象数量
@@ -1071,3 +1076,7 @@ if __name__ == '__main__':
 #
 #     # 打印未被垃圾回收的对象
 # #        print(unreachable)
+    except Exception as e:
+        with open('error.txt','a',encoding='utf-8') as f:
+            f.write(str(e)+"\n")
+

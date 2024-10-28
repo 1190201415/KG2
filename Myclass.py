@@ -647,8 +647,15 @@ class my_treeview(QTreeView):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setContextMenuPolicy(Qt.CustomContextMenu)  # 打开右键菜单的策略
         self.customContextMenuRequested.connect(self.treeWidgetItem_fun)  # 绑定事件
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         # 定义treewidget中item右键界面
+
+    def kg_rename(self, rename, name):
+        n = rename
+        if name not in knowledge_graphs_class.keys():
+            knowledge_graphs_class[name] = knowledge_graphs_class.pop(n)
+            knowledge_graphs_class[name]['is_change'] = True
 
     def treeWidgetItem_fun(self, pos):
         selected_indexes = self.selectionModel().selectedIndexes()
@@ -1712,6 +1719,7 @@ class GraphicView(QGraphicsView):
 
     def handleDropOnEntity(self, item, text):
         self.is_kg_changed = True
+
         # 根据text确定需要更新的属性
         if current_meta_kg_dict == '教学知识图谱':
             if '知识 K' in text:
@@ -1742,25 +1750,20 @@ class GraphicView(QGraphicsView):
 
             name1 = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9']
             name2 = ['Pj', 'Tk']
-            if item.entity.class_name == '能力点':
+            if '能力点' in item.entity.class_name:
                 f, t = getintext(text, name1)
                 if f:
                     f2 = item.entity.attach.getbool(text='L1')
-                    if f2:
-                        item.entity.attach.allfalse()
-                    else:
-                        item.entity.attach.allfalse()
-                        item.entity.attach.textto(text='L1', f=True)
+                    item.entity.attach.allfalse()
+                    item.entity.attach.textto(text='L1', f=True)
                     self.updateRequest.emit()
-            if item.entity.class_name == '学生任务':
+            if '学生任务' in item.entity.class_name:
                 f, t = getintext(text, name2)
                 if f:
                     f2 = item.entity.attach.getbool(text=t)
-                    if f2:
-                        item.entity.attach.allfalse()
-                    else:
-                        item.entity.attach.allfalse()
-                        item.entity.attach.textto(text=t, f=True)
+
+                    item.entity.attach.allfalse()
+                    item.entity.attach.textto(text=t, f=True)
                     self.updateRequest.emit()
 
     def wash_item(self, list):
@@ -2621,6 +2624,7 @@ class ABmyGraphicItem(QGraphicsItem):
         self.width = 200
         self.length = 200 * 0.62
         self.type = type
+        self.line_distance = 1
 
     def boundingRect(self):
         penWidth = self.paintwidth
@@ -2628,7 +2632,7 @@ class ABmyGraphicItem(QGraphicsItem):
 
     def paint1(self, painter, Q=QColor(255, 255, 255)):
         painter.setBrush(Q)
-        painter.setPen(QPen(Q, self.paintwidth))
+        painter.setPen(QPen(QColor(Q.red() - 60, Q.green() - 60, Q.blue() - 60), self.paintwidth))
         painter.drawRoundedRect(0, 0, self.width, self.length, 30, 30, Qt.AbsoluteSize)  # z坐标位置 长 宽
         # painter.drawLine(0, self.line_distance, self.width, self.line_distance)
 
@@ -2643,15 +2647,15 @@ class ABmyGraphicItem(QGraphicsItem):
               widget: typing.Optional[QWidget] = ...):
         Q = QColor(255, 255, 255)
         if self.Group.class_ == 'CA':
-            Q = QColor(255, 105, 97)
+            Q = QColor(252, 238, 99)
         if self.Group.class_ == 'CU':
-            Q = QColor(176, 217, 128)
+            Q = QColor(255, 223, 160)
         if self.Group.class_ == 'CP':
-            Q = QColor(189, 181, 225)
+            Q = QColor(249, 217, 207)
         if self.Group.class_ == 'SJ':
-            Q = QColor(182, 215, 232)
+            Q = QColor(219, 238, 222)
         if self.Group.class_ == 'KP':
-            Q = QColor(153, 153, 153)
+            Q = QColor(189, 181, 225)
         # if self.Group.class_ == '任务':
         #     Q = QColor(153, 153, 153)
         # if self.Group.class_ == '知识点':
